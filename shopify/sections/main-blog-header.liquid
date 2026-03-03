@@ -1,0 +1,48 @@
+{%- render 'section-spacing-and-color' -%}
+
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  <header class="pb-6 text-center ">
+    <h1 class="font-medium tracking-wide leading-1 text-4xl {% if current_tags == blank %} pb-8 {% else%} pt-12 md:pt-14 pb-8{% endif %}">
+      {{ current_tags.first | default: blog.title | escape }}
+    </h1>
+    <ul class="flex font-bold md:justify-center gap-x-6 md:gap-x-8 text-md max-md:overflow-auto max-md:pl-row">
+      <li class="flex">
+        <a
+          href="{{ blog.url }}"
+          class="cursor-pointer uppercase font-semibold tracking-wide text-sm text-grey-15  max-md:whitespace-nowrap {% if current_tags == blank %} opacity-100{% else %} opacity-50{% endif %}"
+        >
+          All
+        </a>
+      </li>
+
+      {% for tag in blog.all_tags %}
+        {% capture tag_class %}
+         {{ '<a' }}
+          class="
+            cursor-pointer uppercase font-semibold tracking-wide text-sm text-grey-15 max-md:whitespace-nowrap {% if current_tags contains tag %} opacity-100 {% else %} opacity-50{% endif %}
+          "
+        {% endcapture %}
+
+        <li class="flex">
+          {{ tag.title | link_to_tag: tag | replace_first: '<a ', tag_class }}
+        </li>
+      {% endfor %}
+    </ul>
+  </header>
+{% endif %}

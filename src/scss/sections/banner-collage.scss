@@ -1,0 +1,62 @@
+.c-banner-collage {
+  display: grid;
+  grid-gap: var(--gap);
+  grid-template-columns: 100%;
+
+  @screen xmd {
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  &__block {
+    position: relative;
+    display: grid;
+
+    &--right {
+      @screen xmd {
+        grid-column: 2 / span 2;
+        grid-row: span 2;
+      }
+    }
+
+    &--left {
+      @screen xmd {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+    }
+  }
+
+  &__link {
+    position: absolute;
+    bottom: 2rem;
+    display: flex;
+    grid-row: 3;
+    place-self: end center;
+    align-items: center;
+    justify-content: center;
+    min-width: min(100% - 32px * 2, 250px);
+  }
+
+  &__image {
+    grid-area: 1 / 1;
+  }
+
+  &__content {
+    display: grid;
+    grid-area: 1 / 1;
+    row-gap: theme("spacing.2");
+    place-content: center;
+    padding: 1.6rem;
+    text-align: center;
+    background: linear-gradient(
+      360deg,
+      rgb(25 25 25 / 50%) 0%,
+      rgb(25 25 25 / 0%) 72.4%
+    );
+
+    @screen lg {
+      padding: 1.6rem;
+    }
+  }
+}

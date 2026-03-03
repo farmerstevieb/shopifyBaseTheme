@@ -1,0 +1,195 @@
+@import "../base/mixins";
+
+.c-customer {
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &__main {
+    flex-grow: 2;
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+
+    &-orders {
+      padding: theme("spacing.7") 0 3.2rem;
+      font-size: 2.4rem;
+      font-weight: 700;
+      font-style: normal;
+      line-height: 1.1;
+      color: theme("colors.highlight");
+      letter-spacing: -0.02em;
+    }
+
+    &-address {
+      width: 100%;
+      max-width: 772px;
+      margin: 0 auto;
+    }
+  }
+
+  &__menu {
+    &-nav {
+      --col-gap: 50px;
+      --slides: 2.9;
+
+      @apply relative flex w-full text-md font-semibold max-lg:flex-col max-lg:overflow-auto max-lg:pt-12 lg:justify-center lg:gap-6;
+
+      @screen lg {
+        gap: 4rem;
+
+        &::before {
+          content: "";
+          position: absolute;
+          right: calc(theme("spacing.row") * -1);
+          bottom: 0;
+          left: calc(theme("spacing.row") * -1);
+          height: 1px;
+          background-color: theme("colors.border.light");
+        }
+      }
+
+      @screen xs {
+        --slides: 3;
+      }
+
+      @screen xmd {
+        --slides: 4;
+      }
+
+      &__slide {
+        width: 25%;
+      }
+
+      &__link {
+        width: 100%;
+
+        @apply flex w-full items-center gap-x-2 whitespace-nowrap border-border-light py-4 pr-rem text-sm uppercase tracking-standard max-lg:border-t lg:pb-6 lg:pt-10;
+
+        &.is-active {
+          --tw-text-opacity: 1;
+
+          @screen max-lg {
+            @apply font-bold;
+          }
+
+          @screen lg {
+            border-top: none;
+            border-bottom: 1px solid theme("colors.black");
+          }
+        }
+      }
+    }
+
+    &-head {
+      margin-bottom: 1.6rem;
+
+      @screen lg {
+        gap: 157px;
+      }
+    }
+  }
+
+  &-order-history {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    justify-content: center;
+
+    &__sidebar {
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    &__content {
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+
+      &-top {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      &-orders {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100%;
+
+        &__item {
+          display: flex;
+          flex-flow: column;
+          align-items: stretch;
+          justify-content: flex-start;
+          width: 100%;
+          margin-bottom: theme("spacing.4");
+          border: 1px solid rgb(39 67 47 / 12%);
+
+          @screen lg {
+            margin-bottom: theme("spacing.6");
+          }
+
+          &-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr ;
+            gap: 10px 0;
+            width: 100%;
+          }
+
+          &-row {
+            padding: theme("spacing.8");
+
+            a {
+              gap: 4px;
+              align-items: center;
+            }
+          }
+
+          &-order {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          &-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            justify-content: space-between;
+
+            @screen lg {
+              flex-direction: row;
+            }
+
+            &-row {
+              display: flex;
+              flex-direction: column;
+            }
+
+            &-btn {
+              width: 100%;
+              min-width: 18.7rem;
+              margin: auto;
+
+              @screen lg {
+                width: unset;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// stylelint-disable-next-line
+@import "../components/customer-order";

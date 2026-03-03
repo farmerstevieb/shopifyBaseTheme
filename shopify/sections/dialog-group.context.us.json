@@ -1,0 +1,30 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "dialog-group.json",
+  "context": {
+    "market": "us"
+  },
+  "sections": {
+    "drawer-cart": {
+      "settings": {},
+      "blocks": {
+        "61d16e6f-75d2-418e-a447-1497a72393d9": {
+          "disabled": true,
+          "settings": {}
+        },
+        "9d568a52-e2c8-4366-ae28-d641e117ea74": {
+          "disabled": true,
+          "settings": {}
+        }
+      }
+    }
+  }
+}

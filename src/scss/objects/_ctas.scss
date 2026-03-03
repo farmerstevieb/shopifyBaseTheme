@@ -1,0 +1,17 @@
+.o-ctas {
+  @apply flex flex-wrap;
+
+  &--default {
+    @apply flex-col md:flex-row;
+  }
+
+  &--full {
+    @apply flex-col w-full;
+  }
+
+  :where(.c-slider--testimonials) & {
+    .o-ctas__cta {
+      @apply mt-auto;
+    }
+  }
+}

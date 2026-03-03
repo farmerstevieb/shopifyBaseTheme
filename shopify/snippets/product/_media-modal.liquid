@@ -1,0 +1,43 @@
+{% comment %}
+  Renders a product media modal. Also see 'product-media-gallery'
+
+  Accepts:
+  - product: {Object} Product liquid object
+  - variant_images: {Array} Product images associated with a variant
+
+  Usage:
+  {% render 'product_media-modal' %}
+{% endcomment %}
+
+<modal-dialog id="ProductMediaModal" class="dialog dialog--full" modal-mode="lightbox">
+  <div role="document">
+    <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+      {%- render 'theme-icons' with 'close' -%}
+      <span class="sr-only">Close dialog</span>
+    </button>
+
+    <div class="c-lightbox js-product-lightbox">
+      <div class="c-lightbox__thumbnails"></div>
+
+      <div class="c-lightbox__viewport">
+        <ul class="c-lightbox__track">
+          {%- for media in product.media -%}
+            <li class="c-lightbox__item" data-thumbnail="{{ media | image_url: width: 72, height: 72 }}">
+              {%- case media.media_type -%}
+                {%- when 'image' -%}
+                  {%- render 'object-image' with media,
+                    class: 'o-picture--fill',
+                    img_class: 'o-img--contain o-img--fill',
+                    aspect: '1 / 1'
+                  -%}
+
+                {%- when 'video', 'external_video' -%}
+                  {%- render 'object-video' with media, class: 'aspect-square' -%}
+              {%- endcase -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  </div>
+</modal-dialog>

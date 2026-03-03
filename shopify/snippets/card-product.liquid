@@ -1,0 +1,295 @@
+{%- liquid
+  assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: product_index
+  assign selected_first_variant = product.selected_or_first_available_variant
+  assign aspect_ratio = aspect_ratio | default: '1 / 1'
+
+  if product.tags contains 'UK-Only' and localization.country.iso_code != 'GB'
+    assign form_class = 'flex button--primary flex-col gap-y-2 js-uk-only disabled-form'
+  else
+    assign form_class = 'flex button--primary lg:items-center max-md:justify-center md:justify-between max-lg:gap-y-[11px] lg:px-5 lg:py-3 lg:text-white relative hover:opacity-90 max-md:flex-col-reverse'
+  endif
+
+  assign button_class = 'button--collection'
+  assign bottom_class = 'text-center'
+  assign colorCountClass = 'mb-1 md:mb-4'
+
+  # Check if product is set up for pre-order via Stoq
+  assign is_preorder = false
+  assign variant = product.selected_or_first_available_variant
+
+  # Check Stoq metafields for pre-order setup
+  # Primary check: preorder_enabled metafield must be explicitly true
+  if variant.metafields.restockrocket_production.preorder_enabled.value == true
+    assign is_preorder = true
+  endif
+
+  # Note: selling_plan_ids alone is not sufficient to determine pre-order status
+  # as regular products may also have selling plans
+
+  # Check if pre-order is full
+  assign is_preorder_full = false
+  assign preorder_count = variant.metafields.restockrocket_production.preorder_count.value | default: 0
+  assign preorder_max = variant.metafields.restockrocket_production.preorder_max_count.value
+  if preorder_max
+    assign spots_remaining = preorder_max | minus: preorder_count
+    if spots_remaining <= 0
+      assign is_preorder_full = true
+    endif
+  endif
+-%}
+
+<div class="{{ class }} js-product-card group flex h-full w-full flex-col">
+  <div class="relative">
+    <div class="absolute left-0 right-0 top-0 z-1 flex flex-wrap  gap-1">
+      {%- render 'product-stickers', product: product -%}
+    </div>
+
+    {%- if product.metafields.info.badge -%}
+      <div class="absolute right-4 top-4 z-1 h-7 w-7 md:h-[42px] md:w-[42px]">
+        {%- render 'object-image' with product.metafields.info.badge -%}
+      </div>
+    {%- endif -%}
+
+    <div class="js-product-card-media relative grid bg-cover bg-center bg-no-repeat [&>*]:col-end-1 [&>*]:row-end-1">
+      {%- assign featured_media = product.featured_media -%}
+      {%- if featured_media.media_type == 'video' or featured_media.media_type == 'external_video' -%}
+        {%- render 'object-video' with featured_media, aspect: aspect_ratio, loop: true, autoplay: true -%}
+      {%- else -%}
+        {%- liquid
+          if product.images.size > 0
+            for image in product.images limit: 2
+              capture class_name
+                cycle '', 'transition-opacity opacity-0 group-hover:opacity-100'
+              endcapture
+
+              render 'object-image' with image, class: class_name, aspect: aspect_ratio, visible_placeholder: 'false'
+            endfor
+          else
+            assign placeholder_class = class_name | append: ' bg-grey-90 w-full h-full" style="aspect-ratio: ' | append: aspect_ratio
+            echo 'product-1' | placeholder_svg_tag: placeholder_class
+          endif
+        -%}
+      {%- endif -%}
+    </div>
+
+    <a
+      class="absolute inset-0"
+      href="{{ product.url }}"
+      aria-hidden="true"
+    ></a>
+    {%- if customer -%}
+      {%- if settings.enable_quick_shop -%}
+        {% assign product_url = product.url | split: '?' | first %}
+        <div class="coarse:hidden pointer-events-none absolute bottom-0 w-full opacity-0 transition-all group-hover:pointer-events-auto group-hover:-translate-y-4 group-hover:opacity-100 max-md:hidden">
+          <button
+            class="button--primary js-quickshop-trigger min-w-full"
+            type="button"
+            data-product-handle="{{ product_url }}"
+            data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+          >
+            {{- 'general.product.quick_shop' | t -}}
+          </button>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+
+  <div class="mt-4 flex h-full flex-col {{ bottom_class }}">
+    <p class="mb-1 text-xs font-semibold uppercase text-inherit md:text-sm">
+      <a href="{{ product.url }}">
+        {{- product.title -}}
+      </a>
+    </p>
+    <div class="{{ colorCountClass }}">
+      {% for tag in product.tags %}
+        {% if tag contains 'colourCount_' %}
+          {% assign colourCount = tag | replace: 'colourCount_', '' %}
+          {% assign colourCountReal = colourCount | plus: 0 %}
+          {% if colourCountReal > 50 %}
+            {% assign colourCountReal = 'over 50' %}
+          {% endif %}
+          <span class="block text-xs md:text-smd {{ color_count_class }}">
+            {{- 'general.product.available_in' | t: colourCountReal: colourCountReal -}}
+          </span>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% if settings.metafield_star_rating %}
+      <div class="flex items-center text-sm">
+        <div class="flex items-center text-sm">
+          {%- if product.metafields.reviews.rating.value != blank -%}
+            {% liquid
+              assign rating_decimal = 0
+              assign decimal = product.metafields.reviews.rating.value.rating | modulo: 1
+              if decimal >= 0.3 and decimal <= 0.7
+                assign rating_decimal = 0.5
+              elsif decimal > 0.7
+                assign rating_decimal = 1
+              endif
+            %}
+
+            <div
+              class="rating text-md"
+              role="img"
+              aria-label="{{ 'accessibility.star_reviews_info' | t: rating_value: product.metafields.reviews.rating.value, rating_max: product.metafields.reviews.rating.value.scale_max }}"
+            >
+              <span
+                aria-hidden="true"
+                class="rating-star color-icon-{{ settings.accent_icons }}"
+                style="--rating: {{ product.metafields.reviews.rating.value.rating | floor }}; --rating-max: {{ product.metafields.reviews.rating.value.scale_max }}; --rating-decimal: {{ rating_decimal }};"
+              ></span>
+            </div>
+
+            <p class="ml-1 text-sm">
+              <span aria-hidden="true">({{ product.metafields.reviews.rating_count }})</span>
+              <span class="sr-only">
+                {{- product.metafields.reviews.rating_count }}
+                {{ 'accessibility.total_reviews' | t -}}
+              </span>
+            </p>
+          {%- endif -%}
+        </div>
+      </div>
+    {% endif %}
+    <div
+      class="flex items-center js-product-form-error-{{ product_form_id }} js-product-form-error mb-2 gap-x-2 text-sm"
+      role="alert"
+      hidden
+    >
+      {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+      <span class="js-product-form-error-message-{{ product_form_id }}"></span>
+    </div>
+    {%- if customer -%}
+      <div class="mt-auto">
+        <div
+          class="product__details-price flex md:hidden"
+          id="button-price-{{ section.id }}"
+          role="status"
+        >
+          {%- render 'product-price',
+            product: product,
+            use_variant: true,
+            class: 'text-sm font-semibold flex gap-x-1 mb-1',
+            is_card: true
+          -%}
+        </div>
+
+        {% # For pre-order products, show button that links to PDP instead of form %}
+        {% if is_preorder %}
+          {% if is_preorder_full %}
+            <span class="{{ button_class }} w-full cursor-not-allowed text-center opacity-50"> Pre-Order Full </span>
+          {% else %}
+            <a
+              href="{{ shop.url }}{{ product.url }}"
+              class="{{ button_class }} w-full text-center"
+            >
+              Pre-Order Now
+            </a>
+            <span>
+              {%- if selected_first_variant.available or inventory_policy == 'continue' -%}
+                {{- 'general.product.add_to_bag' | t -}}
+              {%- else -%}
+                {{- 'general.product.sold_out' | t -}}
+              {%- endif -%}
+            </span>
+            <span class="loading-overlay--collection invisible">
+              <span class="loading-overlay__spinner">
+                {%- render 'theme-icons' with 'loading', width: 10, height: 10 -%}
+              </span>
+            </span>
+            </button>
+          {% endif %}
+        {% else %}
+          {% form 'product', product, is: 'product-form', class: form_class, id: product_form_id %}
+            <input
+              type="hidden"
+              name="id"
+              value="{{ selected_first_variant.id }}"
+            >
+
+            {% if product.variants.size > 1 %}
+              <a class="{{ button_class }}" href="{{ shop.url }}{{ product.url }}">
+                {{- 'general.product.shop_now' | t -}}
+              </a>
+            {% else %}
+              <button
+                class="{{ button_class }}"
+                name="add"
+                type="submit"
+                data-index="{{ product_form_id }}"
+                {% if selected_first_variant.available == false or inventory_policy == 'continue' %}
+                  disabled
+                {% endif %}
+              >
+                <span>
+                  {%- if selected_first_variant.available or inventory_policy == 'continue' -%}
+                    {{- 'general.product.add_to_bag' | t -}}
+                  {%- else -%}
+                    {{- 'products.product.sold_out' | t -}}
+                  {%- endif -%}
+                </span>
+                <span class="loading-overlay--collection invisible">
+                  <span class="loading-overlay__spinner">
+                    {%- render 'theme-icons' with 'loading', width: 10, height: 10 -%}
+                  </span>
+                </span>
+              </button>
+            {% endif %}
+
+            <div
+              class="product__details-price flex max-md:hidden"
+              id="button-price-{{ section.id }}"
+              role="status"
+            >
+              {%- render 'product-price',
+                product: product,
+                use_variant: true,
+                class: 'text-sm font-semibold flex gap-x-1',
+                is_card: true
+              -%}
+            </div>
+          {% endform %}
+        {% endif %}
+      </div>
+    {%- else -%}
+      <a
+        href="{{ routes.account_url }}"
+        {%- if customer == null %}
+          onclick="return DrawerAccount.show()"
+        {%- endif -%}
+        class="button button--{{ settings.login_button_style }} mt-auto"
+      >
+        {{- 'general.product.login_to_see_prices' | t -}}
+      </a>
+    {%- endif -%}
+
+    {% if settings.show_product_variants %}
+      {% assign variant_images = product.images | where: 'attached_to_variant?', true %}
+      {% if variant_images.size > 1 %}
+        {% assign placeholder = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 [w] [h]"/>'
+          | replace: '[w]', 60
+          | replace: '[h]', 60
+          | base64_encode
+          | prepend: 'src="data:image/svg+xml;base64,'
+          | append: '" data-src='
+        %}
+        <ul class="mt-2 flex flex-wrap gap-1">
+          {% for img in variant_images %}
+            {% assign v = img.variants | where: 'available', true | first | default: img.variants.first %}
+            <li class="h-6 w-6">
+              <button type="button" class="js-product-card-variant" data-variant-id="{{ v.id }}">
+                {{
+                  v.featured_image
+                  | image_url: width: 60, height: 60
+                  | image_tag: width: 60, height: 60, loading: 'lazy', sizes: '60px', class: 'js-lazyload'
+                  | replace: 'src=', placeholder
+                  | replace: 'srcset=', 'data-srcset='
+                }}
+              </button>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>

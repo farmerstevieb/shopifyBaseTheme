@@ -1,0 +1,215 @@
+{%- liquid
+  assign class = class | prepend: 'form ' | strip
+
+  if title contains ' | t'
+    assign title = title | replace: ' | t' | t
+  endif
+
+  if text contains ' | t'
+    assign text = text | replace: ' | t' | t
+  endif
+
+  assign label_class = 'text-sm tracking-standard font-semibold mb-2 uppercase'
+-%}
+
+{% form 'contact', class: class, id: 'ContactForm' %}
+  {%- if title or text -%}
+    <header class="form__header">
+      {%- if title -%}
+        <h2 class="text-2xl font-bold mb-2 font-heading">{{ title }}</h2>
+      {%- endif -%}
+
+      {%- if text -%}
+        <p>{{ text }}</p>
+      {%- endif -%}
+    </header>
+  {%- endif -%}
+
+  {%- if form.posted_successfully? -%}
+    <h2 tabindex="-1" autofocus>
+      {% render 'theme-icons' with 'success' %}
+      {{ 'templates.contact.form.post_success' | t }}
+    </h2>
+  {%- elsif form.errors -%}
+    <div class="form__message">
+      <h2 class="flex gap-2 font-heading" role="alert" tabindex="-1" autofocus>
+        {% render 'theme-icons' with 'error' %}
+        {{ 'templates.contact.form.error_heading' | t }}
+      </h2>
+      <ul class="text-md pl-2" role="list">
+        <li>
+          <a href="#ContactForm-email" class="link">
+            {{ form.errors.translated_fields.email | capitalize }}
+            {{ form.errors.messages.email }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  {%- endif -%}
+
+  <div class="form__fields">
+    <label class="o-input" for="ContactForm-name">
+      <span class="{{ label_class }}">
+        {{- 'templates.contact.form.name' | t -}}
+        <span aria-hidden="true">*</span>
+      </span>
+
+      <input
+        id="ContactForm-name"
+        class="o-input__field"
+        name="contact[{{ 'templates.contact.form.name' | t }}]"
+        value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+        type="text"
+        autocomplete="name"
+        required
+        aria-required="true"
+        placeholder="{{ 'templates.contact.form.name_placeholder' | t }}"
+      >
+    </label>
+
+    <label class="o-input" for="ContactForm-email">
+      <span class="{{ label_class }}">
+        {{- 'templates.contact.form.email' | t -}}
+        <span aria-hidden="true">*</span>
+      </span>
+
+      <input
+        class="o-input__field"
+        name="contact[email]"
+        id="ContactForm-email"
+        value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+        type="email"
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="email"
+        required
+        aria-required="true"
+        {% if form.errors contains 'email' %}
+          aria-invalid="true"
+          aria-describedby="ContactForm-email-error"
+        {% endif %}
+        placeholder="{{ 'templates.contact.form.email_placeholder' | t }}"
+      >
+
+      {%- if form.errors contains 'email' -%}
+        <small id="ContactForm-email-error" class="o-input__error">
+          <span class="sr-only">{{ 'accessibility.error' | t }}</span>
+          {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+          {{ form.errors.translated_fields.email | capitalize }}
+          {{ form.errors.messages.email }}.
+        </small>
+      {%- endif -%}
+    </label>
+
+    {% if require_phone != false %}
+      <label class="o-input" for="ContactForm-phone">
+        <span class="{{ label_class }}">
+          {{- 'templates.contact.form.phone' | t -}}
+          *
+        </span>
+
+        <input
+          id="ContactForm-phone"
+          class="o-input__field"
+          name="contact[{{ 'templates.contact.form.phone' | t }}]"
+          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+          type="tel"
+          autocomplete="tel"
+          placeholder="{{ 'templates.contact.form.phone_placeholder' | t }}"
+          pattern="[0-9\-]*"
+        >
+      </label>
+    {% endif %}
+
+    <label class="o-input o-input--form-type" for="ContactForm-type">
+      <span class="{{ label_class }}">
+        {{- 'templates.contact.form.enquiry_type' | t -}}
+        <span aria-hidden="true">*</span>
+      </span>
+
+      <select
+        id="ContactForm-type"
+        class="o-input__field o-input__field--type-select"
+        name="contact[{{ 'templates.contact.form.enquiry_type' | t }}]"
+        required
+        onchange="handleContactFormTypeChange(this)"
+      >
+        <option value="" disabled selected>{{ 'templates.contact.form.enquiry_type_placeholder' | t }}</option>
+        <option value="order" data-order-required>{{ 'templates.contact.enquiry_types.order' | t }}</option>
+        <option value="delivery" data-order-required>{{ 'templates.contact.enquiry_types.delivery' | t }}</option>
+        <option value="products">{{ 'templates.contact.enquiry_types.products' | t }}</option>
+        <option value="trade">{{ 'templates.contact.enquiry_types.trade' | t }}</option>
+      </select>
+
+      {% render 'theme-icons' with 'chevron-down',
+        width: 16,
+        height: 16,
+        classes: 'o-input__arrow  absolute bottom-3 right-4 pointer-events-none	'
+      %}
+    </label>
+
+    <label class="o-input" for="ContactForm-order" hidden>
+      <span class="{{ label_class }}">
+        {{- 'templates.contact.form.order' | t -}}
+        <span aria-hidden="true">*</span>
+      </span>
+
+      <input
+        id="ContactForm-order"
+        class="o-input__field"
+        name="contact[{{ 'templates.contact.form.order' | t }}]"
+        value=""
+        type="text"
+        disabled
+        placeholder="{{ 'templates.contact.form.order_placeholder' | t }}"
+      >
+    </label>
+
+    <label class="o-input" for="ContactForm-body">
+      <span class="{{ label_class }}">
+        {{- 'templates.contact.form.comment' | t -}}
+        <span aria-hidden="true">*</span>
+      </span>
+
+      <textarea
+        rows="8"
+        id="ContactForm-body"
+        class="o-input__field o-input__field--text-area"
+        name="contact[{{ 'templates.contact.form.comment' | t }}]"
+        placeholder="{{ 'templates.contact.form.comment_placeholder' | t }}"
+        required
+        aria-required="true"
+      >
+        {{- form.body -}}
+      </textarea>
+    </label>
+  </div>
+
+  <div class="form__footer">
+    <button class="button button--primary button--full" type="submit">
+      {{ 'templates.contact.form.send' | t }}
+    </button>
+  </div>
+{% endform %}
+
+<script type="module">
+  window.handleContactFormTypeChange = function (el) {
+    const elOrderField = el.form.querySelector(`[for=${el.form.id}-order]`);
+    if (!elOrderField) return;
+    const elInput = elOrderField.querySelector('input');
+    if (!elInput) return;
+
+    const [selectedOption] = el.selectedOptions;
+    if (selectedOption.hasAttribute('data-order-required')) {
+      elOrderField.hidden = false;
+      elInput.disabled = false;
+      elInput.required = true;
+      elInput.setAttribute('aria-required', 'true');
+    } else {
+      elOrderField.hidden = true;
+      elInput.disabled = true;
+      elInput.required = false;
+      elInput.removeAttribute('aria-required');
+    }
+  };
+</script>

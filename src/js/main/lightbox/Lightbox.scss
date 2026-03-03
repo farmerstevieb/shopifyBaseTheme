@@ -1,0 +1,84 @@
+.c-lightbox {
+  display: grid;
+  grid-template:
+    "main" max-content
+    "thumbnails" 48px / 1fr;
+  gap: theme("spacing.9");
+  place-content: center;
+  width: 100%;
+  height: 100%;
+
+  @screen md {
+    grid-template: "thumbnails main ." / 48px 1fr 48px;
+    justify-items: center;
+  }
+
+  &__viewport {
+    overflow: hidden;
+    grid-area: main;
+    aspect-ratio: 1;
+    width: 100%;
+    max-width: 945px;
+    max-height: 100%;
+
+    &.is-draggable {
+      cursor: move;
+      cursor: grab;
+    }
+
+    &.is-dragging {
+      cursor: grabbing;
+    }
+  }
+
+  &__track {
+    display: flex;
+    row-gap: theme("spacing.4");
+    width: 100%;
+    height: 100%;
+
+    @screen md {
+      flex-direction: column;
+    }
+  }
+
+  &__item {
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+
+    .pinch-zoom-container {
+      width: 100%;
+    }
+  }
+
+  &__thumbnails {
+    overflow: auto;
+    display: flex;
+    grid-area: thumbnails;
+    gap: theme("spacing.2");
+    margin-inline: auto;
+
+    @screen md {
+      flex-direction: column;
+    }
+
+    > button {
+      padding: 1px;
+      border: 1px solid theme("colors.grey.80");
+      border-radius: 3px;
+
+      &.is-selected {
+        border-color: theme("colors.grey.10");
+      }
+    }
+
+    img {
+      object-fit: contain;
+    }
+  }
+}
+
+[data-lightbox] {
+  cursor: zoom-in;
+}

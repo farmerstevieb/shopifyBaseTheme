@@ -1,0 +1,543 @@
+{%- liquid
+  assign header_font = settings.type_header_font
+  assign body_font = settings.type_body_font
+
+  assign header_font_fallback = settings.type_header_font_fallback
+  assign body_font_fallback = settings.type_body_font_fallback
+-%}
+
+<link rel="preload" href="{{ header_font | font_url: 'woff2' }}" as="font" type="font/woff2" crossorigin>
+{%- if body_font.family != header_font.family and body_font.weight != header_font.weight -%}
+  <link rel="preload" href="{{ body_font | font_url: 'woff2' }}" as="font" type="font/woff2" crossorigin>
+{%- endif -%}
+
+{% if collection.handle contains 'test' %}
+  <meta name="robots" content="noindex">
+{% endif %}
+
+{% # prettier-ignore %}
+<script>
+  Shopify.moneyFormat = {{ shop.money_format | json }};
+  Shopify.routes = {
+    ...Shopify.routes,
+    cartUrl: {{ routes.cart_url | json }},
+    cartAddUrl: {{ routes.cart_add_url | json }},
+    cartChangeUrl: {{ routes.cart_change_url | json }},
+    cartUpdateUrl: {{ routes.cart_update_url | json }},
+    predictiveSearchUrl: {{ routes.predictive_search_url | json }},
+  }
+  Shopify.theme.i18n = {
+    addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+    soldOut: `{{ 'products.product.sold_out' | t }}`,
+    unavailable: `{{ 'products.product.unavailable' | t }}`,
+    cart: {
+      error: `{{ 'sections.cart.cart_error' | t }}`,
+      quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`,
+    },
+    shareSuccess: `{{ 'general.share.success_message' | t }}`,
+    global: {
+      dialogs: {
+        accessibility: {
+          actions: {
+          open: {{ 'global.dialogs.accessibility.actions.open' | t | json }},
+            close: {{ 'global.dialogs.accessibility.actions.close' | t | json }}
+          }
+        }
+      }
+    }
+  };
+</script>
+
+{%- render 'nosto_config' -%}
+
+{%- style -%}
+  {% if settings.use_custom_font %}
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-Thin.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-Thin.woff' | asset_url }}) format('woff');
+      font-weight: 100;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-Light.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-Light.woff' | asset_url }}) format('woff');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-Regular.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-Regular.woff' | asset_url }}) format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-Medium.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-Medium.woff' | asset_url }}) format('woff');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-Bold.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-Bold.woff' | asset_url }}) format('woff');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-ThinItalic.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-ThinItalic.woff' | asset_url }}) format('woff');
+      font-weight: 100;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-LightItalic.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-LightItalic.woff' | asset_url }}) format('woff');
+      font-weight: 300;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-Italic.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-Italic.woff' | asset_url }}) format('woff');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-MediumItalic.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-MediumItalic.woff' | asset_url }}) format('woff');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Larken';
+      src: url({{ 'Larken-BoldItalic.woff2' | asset_url }}) format('woff2'),
+          url({{ 'Larken-BoldItalic.woff' | asset_url }}) format('woff');
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+    }
+  {% else %}
+    {% for font in header_font.variants %}
+      {{ font | font_face: font_display: 'swap' }}
+    {% endfor %}
+
+    {% if body_font.family != header_font.family %}
+      {% for font in body_font.variants %}
+        {{ font | font_face: font_display: 'swap' }}
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+
+  {% for font in header_font_fallback.variants %}
+    {{ font | font_face: font_display: 'swap' }}
+  {% endfor %}
+
+  {% if body_font_fallback.family != header_font_fallback.family %}
+    {% for font in body_font.variants %}
+      {{ font | font_face: font_display: 'swap' }}
+    {% endfor %}
+  {% endif %}
+
+  :root {
+    /* Layout */
+    --base-space: 24px;
+    --page-width: 1432;
+    --page-space: clamp(var(--base-space), 8.21vw + -1rem, 12.8rem);
+    --gap: clamp(2.4rem, 1.26vw + 1.88rem, 4rem);
+
+    /* Typography */
+    {%- liquid
+      assign font_header = header_font.family
+
+      if settings.use_custom_font
+        assign font_header = 'Larken'
+      endif
+    -%}
+
+    --font-primary: {{ body_font.family }}, {{ body_font_fallback.family }};
+    --font-secondary: {{ font_header }}, {{ header_font_fallback.family }};
+    --base-font-size: 1.6rem;
+    --base-line-height: 1.5;
+
+    /* Colors */
+    --c-highlight: {{ settings.colors_highlight }};
+
+    /* Primary Colors */
+    --c-primary-claret: {{ settings.colors_primary_claret }};
+    --c-primary-petal: {{ settings.colors_primary_petal }};
+    --c-primary-carrara: {{ settings.colors_primary_carrara }};
+    --c-primary-orchid: {{ settings.colors_primary_orchid }};
+    --c-primary-sable: {{ settings.colors_primary_sable }};
+
+    /* Secondary Colors */
+    --c-secondary-bramble: {{ settings.colors_secondary_bramble }};
+    --c-secondary-moss: {{ settings.colors_secondary_moss }};
+    --c-secondary-sage: {{ settings.colors_secondary_sage }};
+    --c-secondary-kelime: {{ settings.colors_secondary_kelime }};
+
+    --c-border-light: {{ settings.colors_border_light }};
+    --c-border-dark: {{ settings.colors_border_dark }};
+    --c-validation-success: {{ settings.colors_validation_success }};
+    --c-validation-error: {{ settings.colors_validation_error }};
+
+    --c-pricing-sale: {{ settings.colors_pricing_sale }};
+    --c-pricing-compare: {{ settings.colors_pricing_compare }};
+    --c-pricing-sale-inverse: {{ settings.colors_pricing_sale_inverse }};
+    --c-pricing-compare-inverse: {{ settings.colors_pricing_compare_inverse }};
+
+     /* Buttons */
+     --buttons-border-width: {{ settings.buttons_border_thickness }}px;
+    --buttons-radius: {{ settings.buttons_border_radius }}px;
+    --buttons-primary-color: {{ settings.buttons_primary_color }};
+    --buttons-primary-color-hover: {{ settings.buttons_primary_color_hover }};
+    --buttons-primary-color-active: {{ settings.buttons_primary_color_active }};
+    --buttons-primary-color-focus: {{ settings.buttons_primary_color_focus }};
+    --buttons-primary-color-disabled: {{ settings.buttons_primary_color_disabled }};
+    --buttons-primary-bg: {{ settings.buttons_primary_bg }};
+    --buttons-primary-bg-hover: {{ settings.buttons_primary_bg_hover }};
+    --buttons-primary-bg-active: {{ settings.buttons_primary_bg_active }};
+    --buttons-primary-bg-focus: {{ settings.buttons_primary_bg_focus }};
+    --buttons-primary-bg-disabled: {{ settings.buttons_primary_bg_disabled }};
+    --buttons-primary-border: {{ settings.buttons_primary_border }};
+    --buttons-primary-border-hover: {{ settings.buttons_primary_border_hover }};
+    --buttons-primary-border-active: {{ settings.buttons_primary_border_active }};
+    --buttons-primary-border-focus: {{ settings.buttons_primary_border_focus }};
+    --buttons-primary-border-disabled: {{ settings.buttons_primary_border_disabled }};
+
+    --buttons-secondary-color: {{ settings.buttons_secondary_color }};
+    --buttons-secondary-color-hover: {{ settings.buttons_secondary_color_hover }};
+    --buttons-secondary-color-active: {{ settings.buttons_secondary_color_active }};
+    --buttons-secondary-color-focus: {{ settings.buttons_secondary_color_focus }};
+    --buttons-secondary-color-disabled: {{ settings.buttons_secondary_color_disabled }};
+    --buttons-secondary-bg: {{ settings.buttons_secondary_bg }};
+    --buttons-secondary-bg-hover: {{ settings.buttons_secondary_bg_hover }};
+    --buttons-secondary-bg-active: {{ settings.buttons_secondary_bg_active }};
+    --buttons-secondary-bg-focus: {{ settings.buttons_secondary_bg_focus }};
+    --buttons-secondary-bg-disabled: {{ settings.buttons_secondary_bg_disabled }};
+    --buttons-secondary-border: {{ settings.buttons_secondary_border }};
+    --buttons-secondary-border-hover: {{ settings.buttons_secondary_border_hover }};
+    --buttons-secondary-border-active: {{ settings.buttons_secondary_border_active }};
+    --buttons-secondary-border-focus: {{ settings.buttons_secondary_border_focus }};
+    --buttons-secondary-border-disabled: {{ settings.buttons_secondary_border_disabled }};
+
+    --buttons-tertiary-color: {{ settings.buttons_tertiary_color }};
+    --buttons-tertiary-color-hover: {{ settings.buttons_tertiary_color_hover }};
+    --buttons-tertiary-color-active: {{ settings.buttons_tertiary_color_active }};
+    --buttons-tertiary-color-focus: {{ settings.buttons_tertiary_color_focus }};
+    --buttons-tertiary-color-disabled: {{ settings.buttons_tertiary_color_disabled }};
+    --buttons-tertiary-bg: {{ settings.buttons_tertiary_bg }};
+    --buttons-tertiary-bg-hover: {{ settings.buttons_tertiary_bg_hover }};
+    --buttons-tertiary-bg-active: {{ settings.buttons_tertiary_bg_active }};
+    --buttons-tertiary-bg-focus: {{ settings.buttons_tertiary_bg_focus }};
+    --buttons-tertiary-bg-disabled: {{ settings.buttons_tertiary_bg_disabled }};
+    --buttons-tertiary-border: {{ settings.buttons_tertiary_border }};
+    --buttons-tertiary-border-hover: {{ settings.buttons_tertiary_border_hover }};
+    --buttons-tertiary-border-active: {{ settings.buttons_tertiary_border_active }};
+    --buttons-tertiary-border-focus: {{ settings.buttons_tertiary_border_focus }};
+    --buttons-tertiary-border-disabled: {{ settings.buttons_tertiary_border_disabled }};
+
+    --buttons-underline-color: {{ settings.buttons_underline_color }};
+    --buttons-underline-color-hover: {{ settings.buttons_underline_color_hover }};
+    --buttons-underline-color-active: {{ settings.buttons_underline_color_active }};
+    --buttons-underline-color-focus: {{ settings.buttons_underline_color_focus }};
+    --buttons-underline-color-disabled: {{ settings.buttons_underline_color_disabled }};
+
+    --buttons-quaternary-color: {{ settings.buttons_quaternary_color }};
+    --buttons-quaternary-color-hover: {{ settings.buttons_quaternary_color_hover }};
+    --buttons-quaternary-color-active: {{ settings.buttons_quaternary_color_active }};
+    --buttons-quaternary-color-focus: {{ settings.buttons_quaternary_color_focus }};
+    --buttons-quaternary-color-disabled: {{ settings.buttons_quaternary_color_disabled }};
+    --buttons-quaternary-bg: {{ settings.buttons_quaternary_bg }};
+    --buttons-quaternary-bg-hover: {{ settings.buttons_quaternary_bg_hover }};
+    --buttons-quaternary-bg-active: {{ settings.buttons_quaternary_bg_active }};
+    --buttons-quaternary-bg-focus: {{ settings.buttons_quaternary_bg_focus }};
+    --buttons-quaternary-bg-disabled: {{ settings.buttons_quaternary_bg_disabled }};
+    --buttons-quaternary-border: {{ settings.buttons_quaternary_border }};
+    --buttons-quaternary-border-hover: {{ settings.buttons_quaternary_border_hover }};
+    --buttons-quaternary-border-active: {{ settings.buttons_quaternary_border_active }};
+    --buttons-quaternary-border-focus: {{ settings.buttons_quaternary_border_focus }};
+    --buttons-quaternary-border-disabled: {{ settings.buttons_quaternary_border_disabled }};
+
+    --buttons-quinary-color: {{ settings.buttons_quinary_color }};
+    --buttons-quinary-color-hover: {{ settings.buttons_quinary_color_hover }};
+    --buttons-quinary-color-active: {{ settings.buttons_quinary_color_active }};
+    --buttons-quinary-color-focus: {{ settings.buttons_quinary_color_focus }};
+    --buttons-quinary-color-disabled: {{ settings.buttons_quinary_color_disabled }};
+    --buttons-quinary-bg: {{ settings.buttons_quinary_bg }};
+    --buttons-quinary-bg-hover: {{ settings.buttons_quinary_bg_hover }};
+    --buttons-quinary-bg-active: {{ settings.buttons_quinary_bg_active }};
+    --buttons-quinary-bg-focus: {{ settings.buttons_quinary_bg_focus }};
+    --buttons-quinary-bg-disabled: {{ settings.buttons_quinary_bg_disabled }};
+    --buttons-quinary-border: {{ settings.buttons_quinary_border }};
+    --buttons-quinary-border-hover: {{ settings.buttons_quinary_border_hover }};
+    --buttons-quinary-border-active: {{ settings.buttons_quinary_border_active }};
+    --buttons-quinary-border-focus: {{ settings.buttons_quinary_border_focus }};
+    --buttons-quinary-border-disabled: {{ settings.buttons_quinary_border_disabled }};
+
+    --buttons-senary-color: {{ settings.buttons_senary_color }};
+    --buttons-senary-color-hover: {{ settings.buttons_senary_color_hover }};
+    --buttons-senary-color-active: {{ settings.buttons_senary_color_active }};
+    --buttons-senary-color-focus: {{ settings.buttons_senary_color_focus }};
+    --buttons-senary-color-disabled: {{ settings.buttons_senary_color_disabled }};
+    --buttons-senary-bg: {{ settings.buttons_senary_bg }};
+    --buttons-senary-bg-hover: {{ settings.buttons_senary_bg_hover }};
+    --buttons-senary-bg-active: {{ settings.buttons_senary_bg_active }};
+    --buttons-senary-bg-focus: {{ settings.buttons_senary_bg_focus }};
+    --buttons-senary-bg-disabled: {{ settings.buttons_senary_bg_disabled }};
+    --buttons-senary-border: {{ settings.buttons_senary_border }};
+    --buttons-senary-border-hover: {{ settings.buttons_senary_border_hover }};
+    --buttons-senary-border-active: {{ settings.buttons_senary_border_active }};
+    --buttons-senary-border-focus: {{ settings.buttons_senary_border_focus }};
+    --buttons-senary-border-disabled: {{ settings.buttons_senary_border_disabled }};
+
+    --buttons-septenary-color: {{ settings.buttons_septenary_color }};
+    --buttons-septenary-color-hover: {{ settings.buttons_septenary_color_hover }};
+    --buttons-septenary-color-active: {{ settings.buttons_septenary_color_active }};
+    --buttons-septenary-color-focus: {{ settings.buttons_septenary_color_focus }};
+    --buttons-septenary-color-disabled: {{ settings.buttons_septenary_color_disabled }};
+    --buttons-septenary-bg: {{ settings.buttons_septenary_bg }};
+    --buttons-septenary-bg-hover: {{ settings.buttons_septenary_bg_hover }};
+    --buttons-septenary-bg-active: {{ settings.buttons_septenary_bg_active }};
+    --buttons-septenary-bg-focus: {{ settings.buttons_septenary_bg_focus }};
+    --buttons-septenary-bg-disabled: {{ settings.buttons_septenary_bg_disabled }};
+    --buttons-septenary-border: {{ settings.buttons_septenary_border }};
+    --buttons-septenary-border-hover: {{ settings.buttons_septenary_border_hover }};
+    --buttons-septenary-border-active: {{ settings.buttons_septenary_border_active }};
+    --buttons-septenary-border-focus: {{ settings.buttons_septenary_border_focus }};
+    --buttons-septenary-border-disabled: {{ settings.buttons_septenary_border_disabled }};
+
+    --buttons-octonary-color: {{ settings.buttons_octonary_color }};
+    --buttons-octonary-color-hover: {{ settings.buttons_octonary_color_hover }};
+    --buttons-octonary-color-active: {{ settings.buttons_octonary_color_active }};
+    --buttons-octonary-color-focus: {{ settings.buttons_octonary_color_focus }};
+    --buttons-octonary-color-disabled: {{ settings.buttons_octonary_color_disabled }};
+    --buttons-octonary-bg: {{ settings.buttons_octonary_bg }};
+    --buttons-octonary-bg-hover: {{ settings.buttons_octonary_bg_hover }};
+    --buttons-octonary-bg-active: {{ settings.buttons_octonary_bg_active }};
+    --buttons-octonary-bg-focus: {{ settings.buttons_octonary_bg_focus }};
+    --buttons-octonary-bg-disabled: {{ settings.buttons_octonary_bg_disabled }};
+    --buttons-octonary-border: {{ settings.buttons_octonary_border }};
+    --buttons-octonary-border-hover: {{ settings.buttons_octonary_border_hover }};
+    --buttons-octonary-border-active: {{ settings.buttons_octonary_border_active }};
+    --buttons-octonary-border-focus: {{ settings.buttons_octonary_border_focus }};
+    --buttons-octonary-border-disabled: {{ settings.buttons_octonary_border_disabled }};
+
+    --buttons-nonary-color: {{ settings.buttons_nonary_color }};
+    --buttons-nonary-color-hover: {{ settings.buttons_nonary_color_hover }};
+    --buttons-nonary-color-active: {{ settings.buttons_nonary_color_active }};
+    --buttons-nonary-color-focus: {{ settings.buttons_nonary_color_focus }};
+    --buttons-nonary-color-disabled: {{ settings.buttons_nonary_color_disabled }};
+    --buttons-nonary-bg: {{ settings.buttons_nonary_bg }};
+    --buttons-nonary-bg-hover: {{ settings.buttons_nonary_bg_hover }};
+    --buttons-nonary-bg-active: {{ settings.buttons_nonary_bg_active }};
+    --buttons-nonary-bg-focus: {{ settings.buttons_nonary_bg_focus }};
+    --buttons-nonary-bg-disabled: {{ settings.buttons_nonary_bg_disabled }};
+    --buttons-nonary-border: {{ settings.buttons_nonary_border }};
+    --buttons-nonary-border-hover: {{ settings.buttons_nonary_border_hover }};
+    --buttons-nonary-border-active: {{ settings.buttons_nonary_border_active }};
+    --buttons-nonary-border-focus: {{ settings.buttons_nonary_border_focus }};
+    --buttons-nonary-border-disabled: {{ settings.buttons_nonary_border_disabled }};
+  }
+
+  /*
+    Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
+    - The "symbol *" part is to solve Firefox SVG sprite bug
+  */
+  *:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
+    all: unset;
+    display: revert;
+  }
+
+  /* Preferred box-sizing value */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* Reapply the pointer cursor for anchor tags */
+  a,
+  button {
+    display: inline-flex;
+    cursor: revert;
+  }
+
+  /* Remove list styles (bullets/numbers) */
+  ol,
+  ul,
+  menu {
+    list-style: none;
+  }
+
+  /* For images to not be able to exceed their container */
+  picture,
+  video,
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  svg {
+    flex-shrink: 0;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  /* removes spacing between cells in tables */
+  table {
+    border-collapse: collapse;
+  }
+
+  /* Safari - solving issue when using user-select:none on the <body> text input doesn't working */
+  input,
+  textarea {
+    -webkit-user-select: auto;
+  }
+
+  /* revert the 'white-space' property for textarea elements on Safari */
+  textarea {
+    white-space: revert;
+  }
+
+  /* minimum style to allow to style meter element */
+  meter {
+    -webkit-appearance: revert;
+    appearance: revert;
+  }
+
+  /* reset default text opacity of input placeholder */
+  ::placeholder {
+    color: unset;
+  }
+
+  /* fix the feature of 'hidden' attribute.
+   display:revert; revert to element instead of attribute
+  */
+  :where([hidden]) {
+    display: none !important;
+  }
+
+  /* revert for bug in Chromium browsers
+   - fix for the content editable attribute will work properly.
+   - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element
+  */
+  :where([contenteditable]:not([contenteditable='false'])) {
+    -moz-user-modify: read-write;
+    -webkit-user-modify: read-write;
+    overflow-wrap: break-word;
+    -webkit-line-break: after-white-space;
+    -webkit-user-select: auto;
+  }
+
+  /* apply back the draggable feature - exist only in Chromium and Safari */
+  :where([draggable='true']) {
+    -webkit-user-drag: element;
+  }
+
+  html {
+    height: 100%;
+    color: #222222;
+    font-size: 62.5%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    scroll-padding-top: var(--header-height);
+  }
+
+  body {
+    font-family: var(--font-primary);
+    font-size: var(--base-font-size);
+    line-height: var(--base-line-height);
+    text-rendering: optimizeSpeed;
+  }
+
+  :where(h1, h2) {
+  letter-spacing: 0;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6) {
+    word-break: break-word;
+  }
+
+  :where(summary[class])::-webkit-details-marker {
+    display: none;
+  }
+
+  mark {
+    all: revert;
+  }
+
+  a,
+  button,
+  [type="button"],
+  [type="submit"] {
+    cursor: pointer;
+  }
+
+  b,
+  strong {
+    font-weight: 600;
+  }
+
+  small {
+    font-size: 80%;
+  }
+
+  s {
+    text-decoration: revert;
+  }
+{%- endstyle -%}
+
+{% if request.path == '/challenge' %}
+  <style>
+    .shopify-challenge__container {
+      padding: 80px;
+    }
+
+    .shopify-challenge__message {
+      margin-bottom: 24px;
+    }
+
+    form .g-recaptcha {
+      margin-bottom: 24px;
+    }
+
+    .shopify-challenge__button {
+      padding: 14px 16px 13px;
+      border: var(--buttons-border-width) solid;
+      border-color: var(--buttons-primary-bg);
+      border-radius: var(--buttons-radius);
+      background-color: var(--buttons-primary-bg);
+      color: var(--buttons-primary-color);
+      font-weight: bold;
+      font-size: 1.4rem;
+      line-height: normal;
+      letter-spacing: -0.02em;
+    }
+  </style>
+{% endif %}

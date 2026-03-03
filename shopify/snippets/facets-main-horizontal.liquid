@@ -1,0 +1,226 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Facets - Main (Horizontal)
+  -------------------------------------------------------------------------------
+  Accepts
+  - section: {Object} the section object (required)
+  - product_grid: {Object} the product grid content, usually submitted
+    as a capture (required)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'facets-main-horizontal',
+    section: section,
+    product_grid: product_grid
+  -%}
+  -------------------------------------------------------------------------------
+  Description
+  Renders a horizontal facets bar, the section settings are reliant on
+  the facets.js part
+{%- endcomment -%}
+
+{%- liquid
+  assign product_grid = product_grid | default: 'You need to submit a capture of the content to interface with the facets'
+
+  # Translations
+  if template == 'search'
+    assign t = 'templates.search.'
+  else
+    assign t = 'templates.collection.'
+  endif
+
+  if collection != blank
+    assign results = collection
+  elsif search != blank
+    assign results = search
+  endif
+
+  # Section Padding Classes
+  capture container_class
+    if section.settings.padding != 'full'
+      echo '-ml-row w-[calc(100%+(var(--row-space)*2))]'
+    endif
+  endcapture
+-%}
+
+{%- if section.settings.filtering or section.settings.sorting -%}
+  {%- # Facets -%}
+  <div class="js-facets mb-9 block border-y border-solid border-border-light py-2 lg:mb-14 lg:py-[21px] {{ container_class }}">
+    {%- # Filters Form -%}
+    {%- liquid
+      capture justification_class
+        if results.filters.size == 0 or section.settings.filtering == false
+          echo 'justify-center lg:justify-between'
+        else
+          echo 'justify-between lg:justify-between'
+        endif
+      endcapture
+    -%}
+
+    <form
+      class="flex {{ justification_class }} js-facets-form items-start px-row lg:gap-x-4"
+      data-filtering="{{ section.settings.filtering }}"
+      data-sorting="{{ section.settings.filtering }}"
+      id="Facets"
+    >
+      {%- # Filters -%}
+      {%- if results.terms -%}
+        <input
+          type="hidden"
+          name="q"
+          value="{{ results.terms | escape }}"
+        >
+        <input
+          type="hidden"
+          name="options[prefix]"
+          value="last"
+        >
+      {%- endif -%}
+
+      {%- if results.current_vendor or results.current_type -%}
+        <input
+          type="hidden"
+          name="q"
+          value="{{ results.current_vendor }}{{ results.current_type }}"
+        >
+      {%- endif -%}
+
+      {%- if section.settings.filtering -%}
+        {%- # Filters -%}
+        {%- if results.filters.size > 0 -%}
+          {%- # Mobile Drawer Trigger -%}
+          {%- liquid
+            capture mobile_classes
+              if section.settings.sorting
+                echo 'w-1/2'
+              else
+                echo 'w-full'
+              endif
+            endcapture
+          -%}
+
+          <button
+            class="items-center gap-2 py-4 font-semibold {{ mobile_classes }} select-none text-sm uppercase tracking-standard lg:hidden"
+            onclick="return DrawerFacets.show()"
+            type="button"
+          >
+            {%- render 'theme-icons' with 'sliders', width: 18, height: 18, class: 'flex' -%}
+
+            {{- t | append: 'facets.mobile_drawer.trigger' | t -}}
+          </button>
+        {%- endif -%}
+      {%- endif -%}
+      {%- # Results Count -%}
+
+      <div
+        class="js-pagination-external-results min-w-fit text-sm font-semibold uppercase tracking-standard max-lg:hidden"
+        data-results-text-none="{{ t | append: 'results.none' | t }}"
+        data-results-text-one="{{ t | append: 'results.one' | t }}"
+        data-results-text-other="{{ t | append: 'results.other' | t }}"
+      >
+        {%- assign count = results.products_count | default: results.results_count -%}
+        {{- t | append: 'results.other' | t: count: count -}}
+      </div>
+    </form>
+
+    {%- # Active Filters -%}
+    {%- if results.filters.size > 0 -%}
+      {%- liquid
+        assign active_filters = 0
+
+        for filter in results.filters
+          if filter.min_value.value != null and filter.max_value.value != null
+            assign active_filters = active_filters | plus: 1
+
+            break
+          endif
+
+          if filter.active_values.size > 0
+            assign active_filters = active_filters | plus: 1
+
+            break
+          endif
+        endfor
+      -%}
+
+      <div class="js-facets-active">
+        {%- if active_filters > 0 -%}
+          {%- liquid
+            # Slider
+            # - [Start]
+            capture slider_snippet
+              render 'section-slider', target: section, name: 'facets-active-facets-horizontal'
+            endcapture
+
+            assign slider_snippet = slider_snippet | split: ' ** '
+
+            assign slider_settings = slider_snippet[0]
+            assign slider_classes = slider_snippet[1]
+            assign slider_styling = slider_snippet[2]
+            assign slider_components = slider_snippet[3] | split: '::'
+
+            assign slider_viewport = slider_components[0]
+            assign slider_track_class = slider_components[1] | append: ' px-row'
+            # - [End]
+          -%}
+
+          {{ slider_styling }}
+
+          <juno-slider
+            class="{{ slider_classes }} gap-3 border-t border-solid border-border-light pt-2 lg:mt-5 lg:pt-[21px]"
+            {{ slider_settings }}
+          >
+            <div {{ slider_viewport }}>
+              <ul class="{{ slider_track_class }}">
+                {%- liquid
+                  assign bubble_classes = 'inline-flex min-w-max items-center hover:border-grey-10 transition-colors px-[14px] py-[6px] py-1 text-xs font-semibold border select-none rounded-[50px] o-button gap-x-1 hover:bg-grey-100 js-facet-remove'
+                  assign slideIndex = 0
+                -%}
+
+                {%- for filter in results.filters -%}
+                  {%- for value in filter.active_values -%}
+                    {%- assign slideIndex = slideIndex | plus: 1 -%}
+                    <li data-slide-index="{{ slideIndex }}">
+                      <a
+                        href="{{ value.url_to_remove }}"
+                        class="{{ bubble_classes }}"
+                      >
+                        {{- value.label | escape | remove: '[Clothing]' | upcase -}}
+                        {%- render 'theme-icons' with 'close', width: 14, height: 14, class: 'stroke-current' -%}
+                        <span class="sr-only">{{- t | append: 'facets.clear_filter' | t -}}</span>
+                      </a>
+                    </li>
+                  {%- endfor -%}
+
+                  {%- if filter.type == 'price_range' -%}
+                    {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+                      {%- assign slideIndex = slideIndex | plus: 1 -%}
+                      <li data-slide-index="{{ slideIndex }}">
+                        <a
+                          href="{{ filter.url_to_remove }}"
+                          class="{{ bubble_classes }}"
+                        >
+                          {%- liquid
+                            assign min = filter.min_value.value | default: 0 | money | upcase
+                            assign max = filter.max_value.value | default: filter.range_max | money | upcase
+
+                            echo min | append: ' - ' | append: max
+                          -%}
+
+                          {%- render 'theme-icons' with 'close', width: 14, height: 14, class: 'stroke-current' -%}
+                          <span class="sr-only">{{- t | append: 'facets.clear_filter' | t -}}</span>
+                        </a>
+                      </li>
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          </juno-slider>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{%- # Product Grid -%}
+{{ product_grid }}

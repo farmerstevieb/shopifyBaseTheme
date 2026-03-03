@@ -1,0 +1,301 @@
+// General 'Dialog' Stylings
+.dialog {
+  @apply fixed inset-0 z-[9999] flex;
+
+  @screen lg {
+    &--quick-add {
+      @apply relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset-block: -1.6rem;
+        inset-inline: -4rem;
+      }
+
+      &:hover {
+        color: var(--hover-color);
+      }
+    }
+  }
+
+  &.no-animation {
+    * {
+      /* stylelint-disable-next-line declaration-no-important */
+      animation: none !important;
+    }
+  }
+
+  &.is-hiding {
+    > .dialog-overlay {
+      animation-name: overlay-hide;
+    }
+  }
+
+  &.has-error {
+    > [role="document"] {
+      @apply flex items-center justify-center text-red-50;
+    }
+  }
+
+  > .dialog-overlay {
+    @apply fixed inset-0 bg-overlay-dark;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: overlay-show 300ms both;
+    }
+  }
+
+  &[aria-hidden="true"] {
+    @apply hidden;
+  }
+
+  // Loader
+  [data-dialog-element="loader"] {
+    transition: opacity 300ms cubic-bezier(0.17, 0.67, 0.83, 0.67);
+
+    @apply h-full w-full items-center justify-center bg-white;
+
+    &.opacity-0 {
+      @apply pointer-events-none;
+    }
+
+    .loading-overlay__spinner {
+      @apply h-7 w-7;
+    }
+  }
+
+  // Close Buttons
+  [data-dialog-element="close"] {
+    @apply hover:opacity-75;
+  }
+
+  // HTML Application Element
+  [role="document"] {
+    width: min(var(--max-width, 100%), 100%);
+  }
+
+  // Drawer-specific 'Dialog' Stylings
+  &--drawer {
+    --max-width: 414px;
+    --dialog-drawer-header-height: 73px;
+    --dialog-drawer-main-height: calc(
+      100dvh -
+        (
+          var(--dialog-drawer-header-height) +
+            var(--dialog-drawer-footer-height)
+        )
+    );
+    --dialog-drawer-footer-height: 0px;
+
+    // The drawer opens from the left-hand side of the viewport.
+    &.dialog--drawer-left {
+      [role="document"] {
+        @apply mr-auto;
+
+        @media (prefers-reduced-motion: no-preference) {
+          animation: content-show-side-left 200ms both;
+        }
+      }
+
+      &.is-hiding > [role="document"] {
+        @media (prefers-reduced-motion: no-preference) {
+          animation: content-hide-side-left 200ms both;
+        }
+      }
+    }
+
+    // The drawer opens from the left-hand side of the viewport.
+    &.dialog--drawer-right {
+      [role="document"] {
+        @apply ml-auto;
+
+        @media (prefers-reduced-motion: no-preference) {
+          animation: content-show-side-right 200ms both;
+        }
+      }
+
+      &.is-hiding > [role="document"] {
+        @media (prefers-reduced-motion: no-preference) {
+          animation: content-hide-side-right 200ms both;
+        }
+      }
+    }
+
+    &:has([data-dialog-element="footer"]) {
+      &[id="DrawerNavigation"] {
+        --dialog-drawer-footer-height: calc(24px + (theme("spacing.6") * 2));
+      }
+
+      &[id="DrawerCart"] {
+        --dialog-drawer-footer-height: calc(145px + (theme("spacing.6") * 2));
+      }
+    }
+
+    &.dialog--drawer-cart {
+      [role="document"] {
+        @apply flex flex-col;
+      }
+
+      [data-dialog-element="footer"] {
+        @apply hidden;
+      }
+    }
+
+    // HTML Application Element
+    [role="document"] {
+      grid-template-rows:
+        var(--dialog-drawer-header-height) var(--dialog-drawer-main-height)
+        var(--dialog-drawer-footer-height);
+      max-width: 100vw;
+      height: 100dvh;
+      -webkit-overflow-scrolling: touch;
+
+      @apply relative mr-0 grid bg-white p-0;
+
+      @media (prefers-reduced-motion: no-preference) {
+        animation: content-show-side-right 200ms both;
+      }
+    }
+
+    &.is-hiding > [role="document"] {
+      @media (prefers-reduced-motion: no-preference) {
+        animation: content-hide-side-right 200ms both;
+      }
+    }
+
+    // Header Content
+    [data-dialog-element="header"] {
+      height: fit-content;
+
+      @apply flex flex-col border-b border-solid border-grey-90 px-6 py-5;
+    }
+
+    // Inner Content
+    [data-dialog-element="main"] {
+      -webkit-overflow-scrolling: touch;
+
+      @apply flex flex-col overflow-y-auto overflow-x-hidden overscroll-contain p-6;
+
+      &:has(+ [data-dialog-element="footer"][hidden]) {
+        grid-row: span 2;
+      }
+    }
+
+    // Footer Content
+    [data-dialog-element="footer"] {
+      height: fit-content;
+
+      @apply w-full border-t border-solid border-border-light bg-white p-6 font-bold;
+    }
+  }
+
+  // Modal-specific 'Dialog' Stylings
+  &--modal {
+    // HTML Application Element
+    [role="document"] {
+      width: min(var(--max-width, 100%), 90vw);
+
+      @apply mx-auto my-auto bg-white;
+
+      @media (prefers-reduced-motion: no-preference) {
+        animation: content-show 200ms both;
+      }
+    }
+
+    // Close Buttons
+    [data-dialog-element="close"] {
+      @apply absolute right-0 top-0 px-8 py-6;
+    }
+
+    // Inner Content
+    [data-dialog-element="main"] {
+      @apply p-8;
+    }
+
+    // Modal Modes
+    &[modal-style="mini"] {
+      --max-width: 438px;
+
+      &.is-hiding > [role="document"] {
+        animation: content-hide 200ms both;
+      }
+    }
+
+    &[modal-style="mega"],
+    &[modal-style="quickshop"] {
+      --max-width: 45em;
+
+      &.is-hiding > [role="document"] {
+        animation: content-hide 200ms both;
+      }
+    }
+
+    &[modal-style="quickshop"] {
+      > [role="document"] {
+        min-height: 436px;
+      }
+    }
+
+    &[modal-style="lightbox"] {
+      --max-width: 100%;
+
+      [role="document"] {
+        height: 100dvh;
+
+        @apply p-9;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes overlay-show {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes overlay-hide {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes content-show {
+  from {
+    transform: translateY(2%);
+    opacity: 0;
+  }
+}
+
+@keyframes content-hide {
+  to {
+    transform: translateY(-2%);
+    opacity: 0;
+  }
+}
+
+@keyframes content-show-side-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes content-hide-side-left {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes content-show-side-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes content-hide-side-right {
+  to {
+    transform: translateX(100%);
+  }
+}

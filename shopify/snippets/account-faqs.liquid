@@ -1,0 +1,19 @@
+<div class="c-account-faqs">
+  <div class="c-account-faqs__header">
+    <h2 class="font-heading">FAQs</h2>
+  </div>
+  <div class="c-account-faqs__body">
+    {%- assign faq_blocks = section.blocks | where: 'type', 'faqs' -%}
+
+    {% for block in faq_blocks %}
+      <div class="c-account-faqs__item js-accordion">
+        <div class="c-account-faqs__title js-accordion-trigger">
+          <span class="c-account-faqs__text">{{ block.settings.title }}</span>
+        </div>
+        <div class="c-account-faqs__content">
+          <div>{{ block.settings.text }}</div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>

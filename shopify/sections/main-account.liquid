@@ -1,0 +1,28 @@
+{% render 'theme_assets' with 'section-customer.min.css' %}
+
+{% render 'section-spacing' %}
+
+<div class="c-customer">
+  {%- liquid
+    render 'customer-menu'
+    assign total_spent = customer.total_spent | money_without_currency
+  -%}
+
+  <div class="c-customer__main js-spacing-content">
+    {%- if customer.orders.size > 0 -%}
+      <div class="flex items-center justify-end pb-6 pt-13 max-md:flex-col max-md:gap-4">
+        {%- render 'object-ctas',
+          settings: section.settings,
+          cta_sizes: section.settings.cta_sizes,
+          cta_sizes_dsk: section.settings.cta_sizes_desktop
+        -%}
+      </div>
+    {%- endif -%}
+    {%- render 'account-orders' -%}
+  </div>
+</div>
+{% if section.settings.apply_content == true %}
+  <script>
+    document.querySelector('.js-spacing-content').classList.add('o-row--content');
+  </script>
+{% endif %}

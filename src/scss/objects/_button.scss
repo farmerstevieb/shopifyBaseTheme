@@ -1,0 +1,793 @@
+@import "../base/mixins";
+
+/**
+ * Great article about styling buttons:
+ * https://ishadeed.com/article/styling-the-good-old-button/
+*/
+
+@mixin button {
+  min-width: 100%;
+  min-height: 42px;
+  padding-inline: 6px;
+  border-width: var(--buttons-border-width);
+  border-radius: var(--buttons-radius);
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-duration: 500ms;
+  transition-property: all;
+
+  @apply h-fit select-none items-center justify-center border-solid text-center text-sm font-medium uppercase leading-none tracking-standard;
+
+  @screen lg {
+    @include button-standard;
+  }
+
+  svg,
+  span {
+    @apply pointer-events-none;
+  }
+}
+
+@mixin button-primary {
+  @include button;
+
+  color: var(--buttons-primary-color);
+  background-color: var(--buttons-primary-bg);
+
+  /* Default */
+  border-color: var(--buttons-primary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-primary-color-hover);
+    background-color: var(--buttons-primary-bg-hover);
+    border-color: var(--buttons-primary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-primary-color-active);
+    background-color: var(--buttons-primary-bg-active);
+    border-color: var(--buttons-primary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-primary-color-focus);
+    background-color: var(--buttons-primary-bg-focus);
+    border-color: var(--buttons-primary-border-focus);
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-secondary {
+  @include button;
+
+  color: var(--buttons-secondary-color);
+  background-color: var(--buttons-secondary-bg);
+
+  /* Default */
+  border-color: var(--buttons-secondary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-secondary-color-hover);
+    background-color: var(--buttons-secondary-bg-hover);
+    border-color: var(--buttons-secondary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-secondary-color-active);
+    background-color: var(--buttons-secondary-bg-active);
+    border-color: var(--buttons-secondary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-secondary-color-focus);
+    background-color: var(--buttons-secondary-bg-focus);
+    border-color: var(--buttons-secondary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-secondary-color-disabled);
+    background-color: var(--buttons-secondary-bg-disabled);
+    border-color: var(--buttons-secondary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    &:hover {
+      color: var(--buttons-secondary-color-disabled);
+      background-color: var(--buttons-secondary-bg-disabled);
+      border-color: var(--buttons-secondary-border-disabled);
+
+      @apply cursor-not-allowed;
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-tertiary {
+  @include button;
+
+  color: var(--buttons-tertiary-color);
+  background-color: var(--buttons-tertiary-bg);
+
+  /* Default */
+  border-color: var(--buttons-tertiary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-tertiary-color-hover);
+    background-color: var(--buttons-tertiary-bg-hover);
+    border-color: var(--buttons-tertiary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-tertiary-color-active);
+    background-color: var(--buttons-tertiary-bg-active);
+    border-color: var(--buttons-tertiary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-tertiary-color-focus);
+    background-color: var(--buttons-tertiary-bg-focus);
+    border-color: var(--buttons-tertiary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-tertiary-color-disabled);
+    background-color: var(--buttons-tertiary-bg-disabled);
+    border-color: var(--buttons-tertiary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    &:hover {
+      color: var(--buttons-tertiary-color-disabled);
+      background-color: var(--buttons-tertiary-bg-disabled);
+      border-color: var(--buttons-tertiary-border-disabled);
+
+      @apply cursor-not-allowed;
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-quaternary {
+  @include button;
+
+  color: var(--buttons-quaternary-color);
+  background-color: var(--buttons-quaternary-bg);
+
+  /* Default */
+  border-color: var(--buttons-quaternary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-quaternary-color-hover);
+    background-color: var(--buttons-quaternary-bg-hover);
+    border-color: var(--buttons-quaternary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-quaternary-color-active);
+    background-color: var(--buttons-quaternary-bg-active);
+    border-color: var(--buttons-quaternary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-quaternary-color-focus);
+    background-color: var(--buttons-quaternary-bg-focus);
+    border-color: var(--buttons-quaternary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-quaternary-color-disabled);
+    background-color: var(--buttons-quaternary-bg-disabled);
+    border-color: var(--buttons-quaternary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    svg,
+    span {
+      @apply opacity-50;
+    }
+
+    &:hover {
+      color: var(--buttons-quaternary-color-disabled);
+      background-color: var(--buttons-quaternary-bg-disabled);
+      border-color: var(--buttons-quaternary-border-disabled);
+
+      @apply cursor-not-allowed;
+
+      svg,
+      span {
+        @apply opacity-50;
+      }
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-quinary {
+  @include button;
+
+  color: var(--buttons-quinary-color);
+  background-color: var(--buttons-quinary-bg);
+
+  /* Default */
+  border-color: var(--buttons-quinary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-quinary-color-hover);
+    background-color: var(--buttons-quinary-bg-hover);
+    border-color: var(--buttons-quinary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-quinary-color-active);
+    background-color: var(--buttons-quinary-bg-active);
+    border-color: var(--buttons-quinary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-quinary-color-focus);
+    background-color: var(--buttons-quinary-bg-focus);
+    border-color: var(--buttons-quinary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-quinary-color-disabled);
+    background-color: var(--buttons-quinary-bg-disabled);
+    border-color: var(--buttons-quinary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    &:hover {
+      color: var(--buttons-quinary-color-disabled);
+      background-color: var(--buttons-quinary-bg-disabled);
+      border-color: var(--buttons-quinary-border-disabled);
+
+      @apply cursor-not-allowed;
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-senary {
+  @include button;
+
+  color: var(--buttons-senary-color);
+  background-color: var(--buttons-senary-bg);
+
+  /* Default */
+  border-color: var(--buttons-senary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-senary-color-hover);
+    background-color: var(--buttons-senary-bg-hover);
+    border-color: var(--buttons-senary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-senary-color-active);
+    background-color: var(--buttons-senary-bg-active);
+    border-color: var(--buttons-senary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-senary-color-focus);
+    background-color: var(--buttons-senary-bg-focus);
+    border-color: var(--buttons-senary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-senary-color-disabled);
+    background-color: var(--buttons-senary-bg-disabled);
+    border-color: var(--buttons-senary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    &:hover {
+      color: var(--buttons-senary-color-disabled);
+      background-color: var(--buttons-senary-bg-disabled);
+      border-color: var(--buttons-senary-border-disabled);
+
+      @apply cursor-not-allowed;
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-septenary {
+  @include button;
+
+  color: var(--buttons-septenary-color);
+  background-color: var(--buttons-septenary-bg);
+
+  /* Default */
+  border-color: var(--buttons-septenary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-septenary-color-hover);
+    background-color: var(--buttons-septenary-bg-hover);
+    border-color: var(--buttons-septenary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-septenary-color-active);
+    background-color: var(--buttons-septenary-bg-active);
+    border-color: var(--buttons-septenary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-septenary-color-focus);
+    background-color: var(--buttons-septenary-bg-focus);
+    border-color: var(--buttons-septenary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-septenary-color-disabled);
+    background-color: var(--buttons-septenary-bg-disabled);
+    border-color: var(--buttons-septenary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    &:hover {
+      color: var(--buttons-septenary-color-disabled);
+      background-color: var(--buttons-septenary-bg-disabled);
+      border-color: var(--buttons-septenary-border-disabled);
+
+      @apply cursor-not-allowed;
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-octonary {
+  @include button;
+
+  color: var(--buttons-octonary-color);
+  background-color: var(--buttons-octonary-bg);
+
+  /* Default */
+  border-color: var(--buttons-octonary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-octonary-color-hover);
+    background-color: var(--buttons-octonary-bg-hover);
+    border-color: var(--buttons-octonary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-octonary-color-active);
+    background-color: var(--buttons-octonary-bg-active);
+    border-color: var(--buttons-octonary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-octonary-color-focus);
+    background-color: var(--buttons-octonary-bg-focus);
+    border-color: var(--buttons-octonary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-octonary-color-disabled);
+    background-color: var(--buttons-octonary-bg-disabled);
+    border-color: var(--buttons-octonary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    &:hover {
+      color: var(--buttons-octonary-color-disabled);
+      background-color: var(--buttons-octonary-bg-disabled);
+      border-color: var(--buttons-octonary-border-disabled);
+
+      @apply cursor-not-allowed;
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-nonary {
+  @include button;
+
+  color: var(--buttons-nonary-color);
+  background-color: var(--buttons-nonary-bg);
+
+  /* Default */
+  border-color: var(--buttons-nonary-border);
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-nonary-color-hover);
+    background-color: var(--buttons-nonary-bg-hover);
+    border-color: var(--buttons-nonary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-nonary-color-active);
+    background-color: var(--buttons-nonary-bg-active);
+    border-color: var(--buttons-nonary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-nonary-color-focus);
+    background-color: var(--buttons-nonary-bg-focus);
+    border-color: var(--buttons-nonary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-nonary-color-disabled);
+    background-color: var(--buttons-nonary-bg-disabled);
+    border-color: var(--buttons-nonary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    &:hover {
+      color: var(--buttons-nonary-color-disabled);
+      background-color: var(--buttons-nonary-bg-disabled);
+      border-color: var(--buttons-nonary-border-disabled);
+
+      @apply cursor-not-allowed;
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-solid {
+  font-weight: 600;
+  color: theme("colors.grey.10");
+  background-color: transparent;
+
+  /* Default */
+  border-color: theme("colors.grey.10");
+
+  /* Hover */
+  &:hover {
+    color: var(--buttons-primary-color-hover);
+    background-color: var(--buttons-primary-bg-hover);
+    border-color: var(--buttons-primary-border-hover);
+  }
+
+  /* Click */
+  &:active {
+    color: var(--buttons-primary-color-active);
+    background-color: var(--buttons-primary-bg-active);
+    border-color: var(--buttons-primary-border-active);
+  }
+
+  /* Focus */
+  &:focus {
+    color: var(--buttons-primary-color-focus);
+    background-color: var(--buttons-primary-bg-focus);
+    border-color: var(--buttons-primary-border-focus);
+  }
+
+  /* Disabled */
+  &[aria-disabled="true"],
+  &[disabled] {
+    color: var(--buttons-primary-color-disabled);
+    background-color: var(--buttons-primary-bg-disabled);
+    border-color: var(--buttons-primary-border-disabled);
+
+    @apply cursor-not-allowed;
+
+    svg,
+    span {
+      @apply opacity-50;
+    }
+
+    &:hover {
+      color: var(--buttons-primary-color-disabled);
+      background-color: var(--buttons-primary-bg-disabled);
+      border-color: var(--buttons-primary-border-disabled);
+
+      @apply cursor-not-allowed;
+
+      svg,
+      span {
+        @apply opacity-50;
+      }
+    }
+  }
+
+  /* Error */
+  .error &,
+  &--error {
+    @apply border-red-20 bg-red-20 text-white;
+
+    &:hover,
+    &:active,
+    &:focus {
+      @apply border-red-20 bg-red-20 text-white;
+    }
+  }
+}
+
+@mixin button-tall {
+  min-height: 52px;
+}
+
+@mixin button-standard {
+  min-width: 180px;
+}
+
+@mixin button-small {
+  min-width: 160px;
+}
+
+@mixin button-medium {
+  min-width: 246px;
+}
+
+@mixin button-large {
+  min-width: 309px;
+}
+
+@mixin button-standard-dsk {
+  min-width: 180px;
+}
+
+@mixin button-small-dsk {
+  min-width: 160px;
+}
+
+@mixin button-medium-dsk {
+  min-width: 246px;
+}
+
+@mixin button-large-dsk {
+  min-width: 309px;
+}
+
+@layer components {
+  .button {
+    &--tall {
+      @include button-tall;
+    }
+
+    &--standard {
+      @include button-standard;
+    }
+
+    &--small {
+      @include button-small;
+    }
+
+    &--medium {
+      @include button-medium;
+    }
+
+    &--large {
+      @include button-large;
+    }
+
+    &--underline {
+      @apply underline underline-offset-2 hover:no-underline;
+    }
+
+    &--full {
+      @apply w-full min-w-full;
+    }
+  }
+}
+
+.button {
+  &--primary {
+    @include button-primary;
+  }
+
+  &--secondary {
+    @include button-secondary;
+  }
+
+  &--tertiary {
+    @include button-tertiary;
+  }
+
+  &--quaternary {
+    @include button-quaternary;
+  }
+
+  &--quinary {
+    @include button-quinary;
+  }
+
+  &--senary {
+    @include button-senary;
+  }
+
+  &--septenary {
+    @include button-septenary;
+  }
+
+  &--octonary {
+    @include button-octonary;
+  }
+
+  &--nonary {
+    @include button-nonary;
+  }
+
+  &--solid {
+    @include button-solid;
+  }
+
+  &--collection {
+    @screen max-lg {
+      @include button-primary;
+
+      @apply text-xs;
+
+      min-width: unset;
+    }
+
+    @screen md {
+      min-width: unset;
+    }
+
+    @screen lg {
+      @apply text-sm font-semibold uppercase tracking-standard;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+  }
+
+  &--product {
+    @apply w-auto min-w-unset text-sm font-medium uppercase tracking-standard;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+  }
+
+  &--flex-btn {
+    @screen max-md {
+      @apply w-full min-w-full;
+    }
+
+    @screen md {
+      @include button-small;
+    }
+  }
+}

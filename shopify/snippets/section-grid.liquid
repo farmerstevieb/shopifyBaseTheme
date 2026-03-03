@@ -1,0 +1,63 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Section - Grid
+  -------------------------------------------------------------------------------
+  Accepts
+  - section: {Object} the section object (required)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'section-grid', section: section -%}
+  -------------------------------------------------------------------------------
+  Description
+  Keeps consistent grid spacing and items per row settings across all sections,
+  designed for use with the ...gridSpacing() and ...gridItems() parts.
+{%- endcomment -%}
+
+{%- # Grid Structure and Spacing -%}
+{%- style -%}
+  #shopify-section-{{ section.id }} .section-grid {
+    {% if section.settings.mob_gap_x != blank or section.settings.mob_gap_y != blank %}
+      column-gap: {{ section.settings.mob_gap_x }}px;
+      row-gap: {{ section.settings.mob_gap_y }}px;
+    {% endif %}
+    {% if section.settings.mob_per_row != blank %}
+      grid-template-columns: repeat({{ section.settings.mob_per_row }}, minmax(0, 1fr));
+    {% endif %}
+  }
+
+  @media (min-width: 768px) {
+    #shopify-section-{{ section.id }} .section-grid {
+      {% if section.settings.tab_gap_x != blank or section.settings.tab_gap_y != blank %}
+        column-gap: {{ section.settings.tab_gap_x }}px;
+        row-gap: {{ section.settings.tab_gap_y }}px;
+      {% endif %}
+      {% if section.settings.tab_per_row != blank %}
+        grid-template-columns: repeat({{ section.settings.tab_per_row }}, minmax(0, 1fr));
+      {% endif %}
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #shopify-section-{{ section.id }} .section-grid {
+      {% if section.settings.dsk_gap_x != blank or section.settings.dsk_gap_y != blank %}
+        column-gap: {{ section.settings.dsk_gap_x }}px;
+        row-gap: {{ section.settings.dsk_gap_y }}px;
+      {% endif %}
+      {% if section.settings.dsk_per_row != blank %}
+        grid-template-columns: repeat({{ section.settings.dsk_per_row }}, minmax(0, 1fr));
+      {% endif %}
+    }
+  }
+
+  @media (min-width: 1280px) {
+    #shopify-section-{{ section.id }} .section-grid {
+      {% if section.settings.xl_dsk_gap_x != blank or section.settings.xl_dsk_gap_y != blank %}
+        column-gap: {{ section.settings.xl_dsk_gap_x }}px;
+        row-gap: {{ section.settings.xl_dsk_gap_y }}px;
+      {% endif %}
+      {% if section.settings.xl_dsk_per_row != blank %}
+        grid-template-columns: repeat({{ section.settings.xl_dsk_per_row }}, minmax(0, 1fr));
+      {% endif %}
+    }
+  }
+{%- endstyle -%}

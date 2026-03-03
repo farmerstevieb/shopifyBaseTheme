@@ -1,0 +1,48 @@
+{%- liquid
+  assign banner_width = block.settings.banner_width
+
+  case banner_width
+    when 'double'
+      assign card_banner_class = 'col-span-2'
+    when 'triple'
+      assign card_banner_class = 'col-span-2 lg:col-span-3'
+    when 'full'
+      assign card_banner_class = 'col-span-2 lg:col-span-4'
+    else
+      assign card_banner_class = ''
+  endcase
+-%}
+
+<li class="card__banner {{ card_banner_class }}">
+  {%- liquid
+    assign media_class = 'card__banner-media o-picture--fill'
+    assign image_class = 'o-img--' | append: block.settings.image_fit
+    assign video_src = block.settings.video_file | default: block.settings.video_url
+
+    if video_src
+      assign play_video_on_mobile = true
+
+      if block.settings.image_mobile
+        assign play_video_on_mobile = false
+      endif
+
+      if block.settings.image_mobile
+        render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: forloop.first, class: media_class, img_class: image_class, visible_placeholder: false, widths: '1500'
+      else
+        capture placeholder
+          render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: forloop.first, class: 'o-video__image js-video-image', img_class: image_class, visible_placeholder: false, widths: '1500'
+        endcapture
+
+        render 'object-video' with video_src, placeholder: placeholder, autoplay: block.settings.video_autoplay, muted: block.settings.video_muted, loop: true, fit: 'cover', class: media_class, play_on_mobile: play_video_on_mobile
+      endif
+    else
+      render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: forloop.first, class: media_class, img_class: image_class, visible_placeholder: false, widths: '1500'
+    endif
+  -%}
+
+  {%- render 'object-content',
+    block: block.settings,
+    attributes: block.shopify_attributes,
+    class: 'card__banner-text'
+  -%}
+</li>

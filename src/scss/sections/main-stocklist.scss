@@ -1,0 +1,209 @@
+/* stylelint-disable declaration-no-important */
+
+@screen md-lg {
+  .stockist-map {
+    min-height: 300px;
+  }
+}
+
+@screen max-stock-mob {
+  .stockist-search-filter-checkbox {
+    margin-top: 16px !important;
+  }
+}
+
+@screen max-lg {
+  #stockist-widget {
+    gap: 48px;
+  }
+
+  .stockist-horizontal {
+    display: flex !important;
+    flex-direction: column-reverse;
+    width: 100% !important;
+  }
+
+  .stockist-side-panel {
+    width: 100% !important;
+  }
+
+  .stockist-query-entry input::placeholder {
+    font-size: 12px;
+  }
+
+  .stockist-result-list ul > li:first-child {
+    border-top: none !important;
+  }
+
+  .stockist-search-form {
+    margin-bottom: 0 !important;
+  }
+
+  .stockist-result.stockist-list-result:first-of-type {
+    padding-top: 0 !important;
+
+    .stockist-result-distance,
+    .stockist-result-name.stockist-feature-color {
+      top: 0 !important;
+      margin-top: 0 !important;
+    }
+  }
+}
+
+@screen lg {
+  .stockist-search-form {
+    margin-bottom: 64px !important;
+  }
+
+  .stockist-horizontal {
+    display: flex !important;
+    flex-direction: row;
+    gap: 40px;
+    width: 100% !important;
+  }
+
+  .stockist-query-entry input::placeholder {
+    font-size: 14px;
+  }
+}
+
+.stockist-result-list {
+  max-height: 500px;
+}
+
+.stockist-side-panel {
+  top: unset !important;
+  left: unset !important;
+}
+
+.stockist-map {
+  position: relative !important;
+  top: unset !important;
+  right: unset !important;
+  bottom: unset !important;
+  left: unset !important;
+  width: 100%;
+  margin: 0 !important;
+}
+
+.stockist-search-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 936px !important;
+  padding: 16px !important;
+  box-shadow: 0 6px 14px 0 rgb(0 0 0 / 12%), 0 1.1px 3.4px 0 rgb(0 0 0 / 10%);
+}
+
+.stockist-feature-bg-color {
+  align-items: center;
+  justify-content: center;
+  width: 151px !important;
+  min-height: 42px;
+  margin-left: 8px !important;
+  padding-inline: 6px;
+  font-size: 12px !important;
+  color: #fff;
+  background-color: #222 !important;
+  border-color: #fff;
+  border-radius: 0;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-duration: 500ms;
+  transition-property: all;
+}
+
+.stockist-feature-bg-color:hover,
+.stockist-feature-bg-color:active,
+.stockist-feature-bg-color:focus {
+  color: #191919 !important;
+  background-color: #fff !important;
+  border-color: #fff !important;
+}
+
+.stockist-icon-search {
+  top: 0 !important;
+  font-family: theme("fontFamily.body") !important;
+  font-weight: 600 !important;
+
+  &::before {
+    content: "SEARCH" !important;
+  }
+}
+
+.stockist-search-filters {
+  margin: 0 !important;
+}
+
+.stockist-horizontal {
+  width: 100% !important;
+}
+
+#stockist-widget {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.stockist-search-filter-checkbox input {
+  width: 17px !important;
+  height: 17px !important;
+  margin-right: 3px !important;
+  appearance: auto !important;
+}
+
+.stockist-search-filter-checkbox label {
+  font-size: 14px !important;
+}
+
+.stockist-result-distance .stockist-icon {
+  color: #111 !important;
+}
+
+.stockist-result-name.stockist-feature-color {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-style: normal !important;
+  line-height: 150% !important;
+  color: #191919 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2.1px !important;
+}
+
+.stockist-feature-color {
+  color: #a3a861 !important;
+}
+
+.stockist-result-addr-1,
+.stockist-result-addr-locality,
+.stockist-result-addr-country,
+.stockist-result-filter {
+  font-size: 14px !important;
+  line-height: 150% !important;
+}
+
+.stockist-result-distance-text {
+  display: none;
+}
+
+.stockist-result-phone,
+.stockist-result-email,
+.stockist-result-website {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 150% !important;
+}
+
+.stockist-result-email,
+.stockist-result-website {
+  text-decoration: underline;
+}
+
+.stockist-result > div {
+  margin-top: 16px !important;
+}
+
+.stockist-result-list ul > li {
+  border-top: 1px solid #e9e9e9 !important;
+}

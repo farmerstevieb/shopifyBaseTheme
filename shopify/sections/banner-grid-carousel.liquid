@@ -1,0 +1,114 @@
+{%- liquid
+  capture show_section
+    echo section.settings.show_if
+  endcapture
+
+  assign show_section = show_section | strip
+
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+-%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {% if show_section == blank or show_section == 'true' or show_section == true %}
+    {%- liquid
+      render 'theme_assets' with 'section-banner-grid.min.css'
+      render 'section-spacing-and-color'
+
+      # Spacing Class (Required)
+      capture section_padding_class
+        echo 'section-spacing--' | append: section.settings.padding
+      endcapture
+
+      # Header
+      assign section_header = section.blocks | where: 'type', 'section_header' | first
+
+      if section_header
+        render 'object-content', block: section_header.settings, attributes: section_header.shopify_attributes, class: 'section-header mb-9', heading_font_weight: 'font-medium'
+      endif
+
+      # Slider
+      capture slider_snippet
+        render 'slider-settings', target: section, extend_beyond_padding: true
+      endcapture
+
+      assign slider_snippet = slider_snippet | split: ' ** '
+
+      assign slider_settings = slider_snippet[0]
+      assign slider_classes = slider_snippet[1]
+      assign slider_variables = slider_snippet[2]
+    -%}
+
+    {{ slider_variables }}
+
+    <juno-slider
+      class="slider slider--banner-grid-carousel {{ section_padding_class }} {{ slider_classes }}"
+      style="--overlay:{{ section.settings.overlay | default: 'none' }}"
+      {{ slider_settings }}
+    >
+      <div
+        class="slider__viewport"
+        data-slider="viewport"
+      >
+        <ul class="flex slider__track">
+          {%- assign blocks = section.blocks | where: 'type', 'card' -%}
+          {%- for block in blocks -%}
+            <li class="slider__item" {{ block.shopify_attributes }}>
+              <div class="card card--banner-grid {% if section.settings.content_position != blank %} card--banner-grid-position {% endif %} {% if section.settings.show_overlay %} card--banner-grid-overlay {% endif %}">
+                {%- liquid
+                  assign image_class = 'o-img--' | append: block.settings.image_fit
+
+                  assign video_src = block.settings.video_file | default: block.settings.video_url
+                  if video_src
+                    assign play_video_on_mobile = true
+
+                    if block.settings.image_mobile
+                      assign play_video_on_mobile = false
+                    endif
+
+                    capture placeholder
+                      render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: forloop.first, class: 'o-video__image js-video-image', img_class: image_class
+                    endcapture
+
+                    render 'object-video' with video_src, placeholder: placeholder, autoplay: block.settings.video_autoplay, muted: block.settings.video_muted, loop: true, fit: 'cover', play_on_mobile: play_video_on_mobile
+                  endif
+                -%}
+                {%- if video_src == blank and block.settings.image -%}
+                  {% if block.settings.cta_1_link %}
+                    <a href="{{ block.settings.cta_1_link }}">
+                  {% endif %}
+                  {%- render 'object-image' with block.settings.image,
+                    mobile_image: block.settings.image_mobile,
+                    aspect: '341 / 454',
+                    class: 'card__media',
+                    img_class: image_class
+                  -%}
+                  {% if block.settings.cta_1_link %}
+                    </a>
+                  {% endif %}
+                {%- endif -%}
+                {%- render 'object-content',
+                  block: block.settings,
+                  attributes: block.shopify_attributes,
+                  class: 'card__content',
+                  heading_tag: 'h3'
+                -%}
+              </div>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </juno-slider>
+  {%- endif -%}
+{% endif %}

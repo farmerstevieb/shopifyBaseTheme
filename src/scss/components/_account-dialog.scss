@@ -1,0 +1,40 @@
+.c-account-dialog {
+  &__header {
+    display: flex;
+    column-gap: 16px;
+    padding: 20px 24px;
+  }
+
+  &__trigger {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    transition: opacity 100ms;
+
+    &[aria-selected="true"] {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    &[aria-selected="false"] {
+      opacity: 0.5;
+
+      &:hover {
+        opacity: 0.75;
+      }
+    }
+  }
+
+  &__main {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-auto-columns: 100%;
+    grid-auto-flow: column;
+
+    > div {
+      transform: translateX(calc(-100% * var(--tab-offset, 0)));
+      padding: 24px;
+      transition: transform 200ms;
+    }
+  }
+}

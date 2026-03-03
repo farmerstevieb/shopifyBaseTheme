@@ -1,0 +1,37 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Section - User Restrictions
+  -------------------------------------------------------------------------------
+  Accepts
+  - section: {Object} the section object (required)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- liquid
+    capture display_section_snippet
+      render 'section_user-restriction'
+    endcapture
+    assign display_section = display_section_snippet | strip
+  -%}
+  -------------------------------------------------------------------------------
+  Description
+  This section allows the restriction of content visibility based on the user's login status.
+{%- endcomment -%}
+
+{%- liquid
+  case section.settings.user_restriction
+    when ''
+      echo 'true'
+    when 'customer'
+      if customer
+        echo 'true'
+      else
+        echo 'false'
+      endif
+    when 'visitor'
+      if customer
+        echo 'false'
+      else
+        echo 'true'
+      endif
+  endcase
+-%}

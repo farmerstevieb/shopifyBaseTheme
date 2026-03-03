@@ -1,0 +1,25 @@
+{%- # prettier-ignore -%}
+
+{%- liquid
+  render 'section-spacing-and-color'
+
+  capture display_section
+    render 'section_user-restriction'
+  endcapture
+-%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  <h1 class="capitalise py-12 text-3xl font-medium leading-1 tracking-0 text-grey-0 md:text-center lg:py-14">
+    {{- page.title -}}
+  </h1>
+  <div data-lion-integrated-page=""></div>
+{% endif %}

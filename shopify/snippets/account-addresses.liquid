@@ -1,0 +1,351 @@
+{% render 'format-postcode', enable: true %}
+
+<div class="c-customer__main c-customer__main-address js-addresses js-spacing-content">
+  <div class="border border-grey-80 lg:my-13 max-lg:my-12 pt-8 pb-10 px-8 ">
+    <div class="flex justify-between border-b border-grey-80 pb-8 mb-8">
+      <h2 class="font-headingc text-md font-semibold tracking-[2.1px]">Addresses</h2>
+      <div class="flex items-center">
+        {%- render 'theme-icons' with 'plus', width: 16, height: 16 -%}
+        <button
+          type="button"
+          class="text-sm font-semibold tracking-[1.44px] js-add-address-button"
+          href="{{ customer.addresses.add_new }}"
+        >
+          Add Address
+        </button>
+      </div>
+    </div>
+    <div class="c-customer-addresses__content-addresses js-address-list">
+      {% for address in customer.addresses %}
+        <div class="c-customer-addresses__content-addresses__item border-b border-grey-80 mb-8 pb-8 js-edit-address-form-parent">
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-between gap-4 max-lg:flex-col">
+              <span class="text-md font-semibold tracking-[2.1px] uppercase">
+                {{ address.street }}, {{ address.city }}
+                {% if address == customer.default_address %}
+                  <span class="normal-case">
+                    {{- 'customer.addresses.default_address' | t }}
+                  </span>
+                {%- endif %}
+              </span>
+              <div class="text-smd lg:hidden">
+                {{ customer.name }},<br>
+                {{ address.company }},<br>
+                {{ address.street }},<br>
+                {{ address.city }},<br>
+                {{ address.country }},<br>
+                {{ address.zip }}
+              </div>
+              <div class="flex items-center min-w-[130px] gap-4 js-edit-address-button--parent">
+                {%- assign address_data_id = "data-id='" | append: address.id | append: "'" -%}
+                <button
+                  type="button"
+                  class="flex gap-1 items-center js-edit-address-button"
+                  {{ address_data_id }}
+                >
+                  {%- render 'theme-icons' with 'pencil', width: 16, height: 16 -%}
+                  <span class="text-sm font-semibold tracking-[1.44px]">Edit</span>
+                </button>
+                <form
+                  class=""
+                  method="post"
+                  action="/account/addresses/{{ address.id }}"
+                >
+                  <input type="hidden" name="_method" value="delete">
+                  <button
+                    type="submit"
+                    class="flex gap-1 items-center text-brand-moss text-sm js-delete-address-button"
+                    {{ address_data_id }}
+                  >
+                    {%- render 'theme-icons' with 'close', width: 16, height: 16 -%}
+                    <span class="text-sm font-semibold tracking-[1.44px]">Delete</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div class="text-smd max-lg:hidden">
+              {{ customer.name }},
+              {%- if address.company != blank -%}{{ address.company }},{%- endif -%}
+              {%- if address.street != blank -%}{{ address.street }},{%- endif -%}
+              {%- if address.city != blank -%}{{ address.city }},{%- endif -%}
+              {%- if address.country != blank -%}{{ address.country }},{%- endif -%}
+              {%- if address.zip != blank -%}{{ address.zip }}{%- endif -%}
+            </div>
+          </div>
+
+          <!-- Edit address form -->
+          <div
+            id="EditAddress_{{ address.id }}"
+            class="c-customer-addresses__content-addresses__item-edit  hidden-modal  js-edit-address-form  preload"
+          >
+            <div class="c-customer-addresses__content-addresses__item-edit__form">
+              <div class="c-customer-addresses__content-addresses__item-edit__form-header">
+                <h6>Edit address</h6>
+                <button
+                  type="button"
+                  data-id="{{ address.id }}"
+                  aria-label="Close edit address form "
+                  aria-controls="addresses"
+                  data-title="false"
+                  class="c-customer-addresses__content-addresses__item-edit__form-header__close  js-edit-address-form-close"
+                >
+                  {%- render 'theme-icons' with 'close' -%}
+                </button>
+              </div>
+              {% form 'customer_address',
+                address,
+                class: 'c-customer-addresses__content-addresses__item-edit__form-fields'
+              %}
+                <input
+                  class="o-input__field focus:opacity-100 opacity-50"
+                  type="text"
+                  placeholder="{{ 'customer.addresses.first_name' | t }}"
+                  id="AddressFirstName_{{ form.id }}"
+                  name="address[first_name]"
+                  value="{{ form.first_name }}"
+                >
+                <input
+                  class="o-input__field focus:opacity-100 opacity-50"
+                  type="text"
+                  placeholder="{{ 'customer.addresses.last_name' | t }}"
+                  id="AddressLastName_{{ form.id }}"
+                  name="address[last_name]"
+                  value="{{ form.last_name }}"
+                >
+                <input
+                  class="o-input__field focus:opacity-100 opacity-50"
+                  type="text"
+                  placeholder="{{ 'customer.addresses.address1' | t }}"
+                  id="AddressAddress1_{{ form.id }}"
+                  name="address[address1]"
+                  value="{{ form.address1 }}"
+                >
+                <input
+                  class="o-input__field focus:opacity-100 opacity-50"
+                  type="text"
+                  placeholder="{{ 'customer.addresses.address2' | t }}"
+                  id="AddressAddress2_{{ form.id }}"
+                  name="address[address2]"
+                  value="{{ form.address2 }}"
+                >
+                <input
+                  class="o-input__field focus:opacity-100 opacity-50"
+                  type="text"
+                  placeholder="{{ 'customer.addresses.city' | t }}"
+                  id="AddressCity_{{ form.id }}"
+                  name="address[city]"
+                  value="{{ form.city }}"
+                >
+                <input
+                  class="o-input__field focus:opacity-100 opacity-50"
+                  type="text"
+                  placeholder="{{ 'customer.addresses.company' | t }}"
+                  id="AddressCompany_{{ form.id }}"
+                  name="address[company]"
+                  value="{{ form.company }}"
+                >
+
+                <div class="o-input__field select relative">
+                  <label class="opacity-50" for="AddressCountry_{{ form.id }}">
+                    {{- 'customer.addresses.country' | t -}}
+                  </label>
+                  <select
+                    class="relative w-full h-full bottom-[20px] flex items-end"
+                    id="AddressCountry_{{ form.id }}"
+                    class="address-country-option"
+                    data-form-id="{{ form.id }}"
+                    name="address[country]"
+                    data-default="{{ form.country }}"
+                  >
+                    {{ country_option_tags }}
+                  </select>
+                  {%- render 'theme-icons' with 'chevron-down',
+                    width: 18,
+                    height: 18,
+                    classes: 'absolute top-1/2 right-4 -translate-y-1/2'
+                  -%}
+                </div>
+
+                <div id="AddressProvinceContainer_{{ form.id }}" class="select-wrapper" style="display:none">
+                  <select
+                    id="AddressProvince_{{ form.id }}"
+                    name="address[province]"
+                    data-default="{{ form.province }}"
+                  ></select>
+                </div>
+
+                <input
+                  class="o-input__field focus:opacity-100 opacity-50"
+                  type="text"
+                  placeholder="{{ 'customer.addresses.zip' | t }}"
+                  id="AddressZip_{{ form.id }}"
+                  name="address[zip]"
+                  value="{{ form.zip }}"
+                  autocapitalize="characters"
+                >
+                <input
+                  class="o-input__field focus:opacity-100 opacity-50"
+                  type="tel"
+                  placeholder="{{ 'customer.addresses.phone' | t }}"
+                  id="AddressPhone_{{ form.id }}"
+                  name="address[phone]"
+                  value="{{ form.phone }}"
+                >
+                <div class="c-customer-addresses__content-addresses__item-edit__form-fields--checkbox">
+                  {{ form.set_as_default_checkbox }}
+                  <label for="address_default_address_{{ form.id }}">{{ 'customer.addresses.set_default' | t }}</label>
+                </div>
+                <div class="c-customer-addresses__content-addresses__item-edit__form-fields--buttons">
+                  {%- assign address_data_id = "data-id='" | append: address.id | append: "'" -%}
+                  <button type="submit" class="button button--primary button--full">Save Changes</button>
+                  <button
+                    type="button"
+                    {{ address_data_id }}
+                    class="button button--secondary button--full js-edit-address-form-close"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              {% endform %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      <a class="flex items-center gap-1" href="/account">
+        {%- render 'theme-icons' with 'arrow-left' -%}
+        <span class="text-sm trancking-[1.44px] uppercase font-semibold">Back</span>
+      </a>
+    </div>
+  </div>
+  <div class="c-customer-addresses__content-add  hidden-modal  js-new-address-form  preload">
+    <div class="c-customer-addresses__content-add__form">
+      <div class="c-customer-addresses__content-add__form-header">
+        <h6>Add address</h6>
+        <button
+          type="button"
+          aria-label="Close mini cart "
+          aria-controls="cart"
+          data-title="false"
+          class="c-customer-addresses__content-add__form-header__close  js-new-address-form-close"
+        >
+          {%- render 'theme-icons' with 'close' -%}
+        </button>
+      </div>
+      {% form 'customer_address', customer.new_address, class: 'c-customer-addresses__content-add__form-fields' %}
+        <input
+          class="o-input__field focus:opacity-100 opacity-50"
+          type="text"
+          placeholder="{{ 'customer.addresses.first_name' | t }}"
+          id="AddressFirstNameNew"
+          name="address[first_name]"
+          value="{{ form.first_name }}"
+          autocomplete="given-name"
+        >
+        <input
+          class="o-input__field focus:opacity-100 opacity-50"
+          type="text"
+          placeholder="{{ 'customer.addresses.last_name' | t }}"
+          id="AddressLastNameNew"
+          name="address[last_name]"
+          value="{{ form.last_name }}"
+          autocomplete="family-name"
+        >
+        <input
+          class="o-input__field focus:opacity-100 opacity-50"
+          type="text"
+          placeholder="{{ 'customer.addresses.address1' | t }}"
+          id="AddressAddress1New"
+          name="address[address1]"
+          value="{{ form.address1 }}"
+          autocomplete="address-line1"
+        >
+        <input
+          class="o-input__field focus:opacity-100 opacity-50"
+          type="text"
+          placeholder="{{ 'customer.addresses.address2' | t }}"
+          id="AddressAddress2New"
+          name="address[address2]"
+          value="{{ form.address2 }}"
+          autocomplete="address-line2"
+        >
+        <input
+          class="o-input__field focus:opacity-100 opacity-50"
+          type="text"
+          placeholder="{{ 'customer.addresses.city' | t }}"
+          id="AddressCityNew"
+          name="address[city]"
+          value="{{ form.city }}"
+          autocomplete="address-level2"
+        >
+        <input
+          class="o-input__field focus:opacity-100 opacity-50"
+          type="text"
+          placeholder="{{ 'customer.addresses.company' | t }}"
+          id="AddressCompanyNew"
+          name="address[company]"
+          value="{{ form.company }}"
+          autocomplete="company"
+        >
+        <div class="o-input__field select relative">
+          <label for="AddressCountryNew">{{ 'customer.addresses.country' | t }}</label>
+          <select
+            class="relative w-full h-full bottom-[20px] flex items-end"
+            id="AddressCountryNew"
+            name="address[country]"
+            data-default="{{ form.country }}"
+            autocomplete="country"
+            placeholder="{{ 'customer.addresses.address2' | t }}"
+          >
+            {{ country_option_tags }}
+          </select>
+          {%- render 'theme-icons' with 'chevron-down',
+            width: 18,
+            height: 18,
+            classes: 'absolute top-1/2 right-4 -translate-y-1/2'
+          -%}
+        </div>
+
+        <div id="AddressProvinceContainerNew" class="select-wrapper" style="display:none">
+          {% comment %} <label for="AddressProvinceNew">{{ 'customer.addresses.province' | t }}</label> {% endcomment %}
+          <select id="AddressProvinceNew" name="address[province]" data-default="{{ form.province }}"></select>
+        </div>
+        <input
+          class="o-input__field focus:opacity-100 opacity-50"
+          type="text"
+          placeholder="{{ 'customer.addresses.zip' | t }}"
+          id="AddressZipNew"
+          name="address[zip]"
+          value="{{ form.zip }}"
+          autocapitalize="characters"
+          autocomplete="postal-code"
+        >
+        <input
+          class="o-input__field focus:opacity-100 opacity-50"
+          type="tel"
+          placeholder="{{ 'customer.addresses.phone' | t }}"
+          id="AddressPhoneNew"
+          name="address[phone]"
+          value="{{ form.phone }}"
+          autocomplete="tel"
+        >
+        <div class="c-customer-addresses__content-add__form-fields--checkbox">
+          {{ form.set_as_default_checkbox }}
+          <label for="address_default_address_new" class="text-md">
+            {{- 'customer.addresses.set_default' | t -}}
+          </label>
+        </div>
+
+        <div class="c-customer-addresses__content-add__form-fields--buttons">
+          <button type="submit" class="button button--primary button--full">Save Changes</button>
+          <button type="button" class="button button--secondary button--full js-new-address-form-close">Cancel</button>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+</div>
+
+{% if section.settings.apply_content == true %}
+  <script>
+    document.querySelector('.js-spacing-content').classList.add('o-row--content');
+  </script>
+{% endif %}

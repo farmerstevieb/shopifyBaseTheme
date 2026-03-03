@@ -1,0 +1,133 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Pagination - Dynamic
+  -------------------------------------------------------------------------------
+  Accepts
+  - paginate: {Object} (required)
+  - items: {Object} the amount of items you're paginating, we get this
+    via paginate.items by default, but if you're hiding products for example,
+    you'll want to pass an alternate object with those items removed from the
+    total paginatable items (optional)
+  - class: {String} additional classes (optional)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- paginate results by 2 -%}
+    {%- render 'pagination-dynamic', items: collection_size, paginate: paginate -%}
+  {%- endpaginate -%}
+
+  You also need to apply various JS classes to elements within the { paginate }
+  wrapper.
+
+  Container: 'js-paginatable'
+  ItemList: 'js-paginatable-list'
+  Item: 'js-paginatable-item'
+  -------------------------------------------------------------------------------
+  Description
+  Renders a button that will load a selected amount of items without a page
+  refresh, continuously down the page.
+{%- endcomment -%}
+
+{%- liquid
+  assign path = request.path
+
+  assign current_page = paginate.current_page
+  assign items = items | default: paginate.items
+  assign pages = paginate.pages
+
+  assign current_items = items | minus: paginate.current_offset
+  if items > paginate.page_size
+    assign current_items = paginate.page_size
+  endif
+
+  capture next_state
+    if current_page == pages
+      echo 'disabled'
+    endif
+  endcapture
+
+  case request.page_type
+    when 'list-collections'
+      assign type = 'templates.list_collections'
+    when 'search'
+      assign type = 'templates.search'
+    when 'collection'
+      assign type = 'templates.collection'
+    when 'blog'
+      assign type = 'templates.blog'
+    else
+      assign type = 'general'
+  endcase
+
+  assign translation = type | append: '.pagination.'
+  assign class = class | default: 'text-center'
+-%}
+
+<div
+  class="pt-8 pb-10 js-pagination {{ class }}"
+  data-text-template="{{ translation | append: 'info' | t }}"
+  data-initial-button-text-template="{{- translation | append: 'load_more' | t -}}"
+  data-button-text-template="{{- translation | append: 'loaded' | t -}}"
+  data-per-page="{{ paginate.page_size }}"
+  data-current-page="{{ current_page }}"
+  data-total-items="{{ items }}"
+  data-pages="{{ paginate.pages }}"
+  data-url="{{ path }}"
+>
+  <div class="relative mx-auto w-fit">
+    {%- if show_text -%}
+      <p
+        class="mb-4 text-md text-center js-pagination-text"
+      >
+        {{- 'general.pagination.info' | t: pagination_amount: current_items, total_count: items -}}
+      </p>
+    {%- endif -%}
+
+    <button
+      class="button button--large button--primary js-pagination-trigger"
+      type="button"
+      name="button"
+      {{ next_state }}
+    >
+      {%- liquid
+        if current_items == 0
+          assign t = translation | append: 'no_results'
+        elsif current_page == pages
+          assign t = translation | append: 'loaded'
+        else
+          assign t = translation | append: 'load_more'
+        endif
+
+        echo t | t
+      -%}
+    </button>
+
+    <div class="absolute top-0 left-0 w-full h-full transition-opacity js-pagination-load-state bg-yellow-500 opacity-0 pointer-events-none rounded-[3px] z-1">
+      <div class="absolute w-8 h-8 loading-overlay top-1/2 left-1/2 -translate-y-2/4 -translate-x-2/4">
+        <div class="w-8 h-8 loading-overlay__spinner">
+          {%- render 'theme-icons' with 'loading', classes: 'w-full' -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %}theme-check-disable ContentForHeaderModification{% endcomment %}
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+{% comment %}theme-check-enable ContentForHeaderModification{% endcomment %}
+
+{%- assign queryString = contentForQuerystring
+  | split: '"pageurl":"'
+  | last
+  | split: '"'
+  | first
+  | replace: '\/', '/'
+  | replace: '%20', ' '
+  | replace: '\u0026', '&'
+-%}
+
+{% # Redirects to the first page if the customer navigates to a paginated url when using dynamic pagination %}
+{%- if queryString contains '?page=' -%}
+  <script>
+    window.location.replace('{{ request.path }}');
+  </script>
+{%- endif -%}

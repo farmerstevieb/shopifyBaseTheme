@@ -1,0 +1,87 @@
+@mixin hover {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+.slider-arrows {
+  grid-area: slider;
+
+  @apply flex justify-between items-center w-full h-full;
+
+  .section-header & {
+    @screen xmd {
+      @apply flex;
+    }
+
+    &__item {
+      --size: 24px;
+
+      @apply self-end mx-0;
+
+      &::before {
+        @apply content-none;
+      }
+    }
+  }
+
+  &__item {
+    --size: 40px;
+
+    width: var(--size);
+    height: var(--size);
+    stroke: var(--arrow-color);
+
+    @apply relative flex justify-center items-center
+      self-center mx-2 isolate;
+
+    @screen md {
+      @apply mx-4;
+    }
+
+    &::before {
+      content: "";
+      top: calc(50% - calc(var(--size) / 2));
+
+      @apply absolute w-10 h-10;
+    }
+
+    &--prev {
+      grid-area: arrow-prev;
+
+      @apply justify-self-start;
+
+      &::before {
+        left: calc(50% - calc(var(--size) / 2));
+      }
+
+      svg {
+        @apply -ml-1;
+      }
+    }
+
+    &--next {
+      grid-area: arrow-next;
+
+      @apply justify-self-end;
+
+      &::before {
+        right: calc(50% - calc(var(--size) / 2));
+      }
+    }
+
+    &[disabled] {
+      @apply opacity-50 cursor-not-allowed;
+    }
+
+    svg {
+      height: var(--size);
+    }
+
+    .product & {
+      @apply bg-white rounded-full shadow-1 border;
+    }
+  }
+}

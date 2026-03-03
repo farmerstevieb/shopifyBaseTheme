@@ -1,0 +1,167 @@
+{% comment %}
+  Renders product variant options
+
+  Accepts:
+  - product: {Object} product object.
+  - option: {Object} current product_option object.
+  - block: {Object} block object.
+
+
+  Usage:
+  {% render 'product-variant-options',
+    product: product,
+    option: option,
+    block: block
+  %}
+{% endcomment %}
+{%- liquid
+  assign variants_available_arr = product.variants | map: 'available'
+  assign variants_option1_arr = product.variants | map: 'option1'
+  assign variants_option2_arr = product.variants | map: 'option2'
+  assign variants_option3_arr = product.variants | map: 'option3'
+-%}
+
+{% if sibling_products %}
+  {% liquid
+    assign sibling_products = sibling_products | sort: 'title'
+  %}
+
+  {% for sibling_product in sibling_products %}
+    {% liquid
+      assign option_id = section.id | append: '-' | append: 'length' | append: '-' | append: forloop.index0
+
+      # Figure out the size
+      assign option_value = sibling_product.title | split: ' ' | first
+
+      # Find variant matching current options
+      assign alternate_matching_variant = sibling_product.variants
+      for _opt in sibling_product.options_with_values
+        # Skip if colour
+        if _opt.name != 'Colour'
+          continue
+        endif
+        assign key = 'option' | append: _opt.position
+        assign value = product.selected_or_first_available_variant[key]
+        assign alternate_matching_variant = alternate_matching_variant | where: key, value
+      endfor
+      assign alternate_matching_variant = alternate_matching_variant | first
+    %}
+
+    <label class="flex cursor-pointer js-sibling-variant" for="{{ option_id }}">
+      <input
+        type="radio"
+        id="{{ option_id }}"
+        name="Length"
+        value="{{ option_value | escape }}"
+        {% if sibling_product.handle == product.handle %}
+          checked
+        {% endif %}
+        {% if sibling_product.available == false %}
+          class="disabled"
+        {% endif %}
+        data-redirect-url="{{ alternate_matching_variant.url | default: sibling_product.url }}"
+      >
+      <span class="font-semibold text-sm variant">
+        {{ option_value -}}
+      </span>
+
+      {% # TODO: Move to translations %}
+      {% if sibling_product.available == false -%}
+        <span class="sr-only">{{ 'Variant sold out or unavailable' }}</span>
+      {% endif %}
+    </label>
+  {% endfor %}
+
+{% else %}
+  {%- for value in option.values -%}
+    {%- liquid
+      assign option_disabled = true
+
+      for option1_name in variants_option1_arr
+        case option.position
+          when 1
+            if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+              assign option_disabled = false
+            endif
+          when 2
+            if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+              assign option_disabled = false
+            endif
+          when 3
+            if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+              assign option_disabled = false
+            endif
+        endcase
+      endfor
+    -%}
+
+    {%- case picker_style -%}
+      {%- when 'swatch' -%}
+        {%- liquid
+          assign option_id = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index0
+          assign key = 'option' | append: option.position
+          assign variant_image = product.variants | where: key, value | map: 'featured_image' | first
+        -%}
+        <div class="w-full flex gap-3 items-center">
+          <label
+            class="flex cursor-pointer items-center w-full"
+            data-tooltip="{{ option_id }}-tooltip"
+            for="{{ option_id}}"
+          >
+            <input
+              type="radio"
+              id="{{ option_id}}"
+              name="{{ option.name }}"
+              value="{{ value | escape }}"
+              data-index="{{ forloop.index}}"
+              data-color="{{ value | handleize | replace: '-', '_' }}"
+              {% if option.selected_value == value %}
+                checked
+              {% endif %}
+              {% if option_disabled %}
+                class="disabled"
+              {% endif %}
+            >
+            <span
+              class="rounded-full"
+              data-swatch="{{ value | handleize | replace: '-', '_' }}"
+              {% if variant_image and settings.overwrite_swatch == false %}
+                style="--_bg: url({{ variant_image | image_url }});"
+              {% endif %}
+            >
+            </span>
+            <span class="text-md ml-3">{{ value -}}</span>
+            {% # TODO: Move to translations %}
+            {% if option_disabled -%}
+              <span class="sr-only">{{ 'Variant sold out or unavailable' }}</span>
+            {% endif %}
+          </label>
+        </div>
+
+      {%- when 'button' -%}
+        <label class="flex cursor-pointer col-span-1" for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
+          <input
+            type="radio"
+            id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+            name="{{ option.name }}"
+            value="{{ value | escape }}"
+            {% if option.selected_value == value %}
+              checked
+            {% endif %}
+            {% if option_disabled %}
+              class="disabled"
+            {% endif %}
+          >
+
+          <span class="font-semibold text-sm variant">
+            {{ value -}}
+          </span>
+
+          {% if option_disabled -%}
+            {% # TODO: Move to translations %}
+            <span class="sr-only">{{ 'Variant sold out or unavailable' }}</span>
+          {% endif %}
+        </label>
+    {%- endcase -%}
+  {%- endfor -%}
+{% endif %}

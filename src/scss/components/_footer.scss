@@ -1,0 +1,51 @@
+.footer-columns {
+  &__columns {
+    column-gap: var(--gap);
+
+    @apply flex flex-col;
+
+    @screen lg {
+      @apply flex-row;
+    }
+  }
+
+  &__column {
+    min-width: 12.44%;
+
+    @apply border-solid border-border-inverseLighter border-t order-2;
+
+    @screen lg {
+      @apply border-t-0 border-r;
+    }
+
+    &--newsletter-socials {
+      @screen max-lg {
+        @apply order-1 border-t-0 pb-6 text-center;
+
+        .form__header-title {
+          @apply text-lg font-medium;
+        }
+      }
+    }
+
+    &:last-child {
+      @apply border-r-0 flex-grow;
+    }
+
+    .o-accordion__heading {
+      @screen lg {
+        @apply pb-4;
+      }
+    }
+  }
+}
+
+.footer-bottom {
+  &__logo {
+    @apply pb-6 h-fit;
+
+    @screen lg {
+      @apply pb-0;
+    }
+  }
+}

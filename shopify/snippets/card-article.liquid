@@ -1,0 +1,89 @@
+{% comment %}
+  Renders an article card for a given blog with settings to either show the image or not.
+
+  Accepts:
+  - blog: {Object} Blog object
+  - article: {Object} Article object
+  - show_image: {String} The setting either show the article image or not. If it's not included it will show the image by default
+  - show_date: {String} The setting either show the article date or not. If it's not included it will not show the image by default
+  - show_author: {String} The setting either show the article author or not. If it's not included it will not show the author by default
+  - show_badge: {String} The setting either show the blog badge or not.
+  - preload: {Boolean} Image should be preloaded. Default: false (optional)
+
+  Usage:
+  {% render 'article-card' blog: blog, article: article, show_image: section.settings.show_image %}
+{% endcomment %}
+
+{%- if article and article != empty -%}
+  <div
+    class="
+      group flex flex-col gap-6
+      {% if is_large %} gap-auto lg:grid lg:grid-cols-2{% endif %}
+      {{ class }}
+      relative
+    "
+  >
+    <a href="{{ article.url }}" class="absolute inset-0" aria-hidden="true" focusable="false"></a>
+
+    {%- if show_image == true and article.image -%}
+      {% liquid
+        assign img_class = 'aspect-square'
+        if is_large
+          assign img_class = img_class | append: ' lg:aspect-[4/3]'
+        else
+          assign img_class = img_class | append: ' lg:aspect-[450/444]'
+        endif
+      %}
+      {% render 'object-image' with article.image,
+        aspect: aspect,
+        aspect_mobile: aspect_mobile,
+        preload: preload,
+        img_class: img_class
+      %}
+    {%- endif -%}
+
+    <div class="flex-grow {% if is_large %} lg:p-9 xl:p-13 lg:flex lg:items-center lg:justify-center{% endif %}">
+      <div class="h-full flex flex-col justify-center">
+        <div class="text-xs uppercase tracking-2 mb-4 lg:mb-5 empty:hidden">
+          {%- if show_author -%}
+            <span>
+              By
+              <span class="text-highlight">{{ article.author }}</span>
+            </span>
+          {%- endif -%}
+          {%- if show_date -%}
+            <span class="">
+              on
+              {{ article.published_at | time_tag: format: 'date' -}}
+            </span>
+          {%- endif -%}
+        </div>
+
+        <h3 class="uppercase text-md tracking-wide font-semibold mb-1 group-hover:underline">
+          <a href="{{ article.url }}" class="line-clamp-2">
+            {{ article.title | escape }}
+          </a>
+        </h3>
+
+        {%- if show_excerpt -%}
+          {%- if article.excerpt.size > 0 or article.content.size > 0 -%}
+            <p class="text-grey-25 text-md mb-6">
+              {{ article.excerpt | default: article.content | strip_html | truncatewords: 30 }}
+            </p>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if show_tags -%}
+          <ul class="flex flex-wrap gap-2 {% unless is_large %} mt-auto{% endunless %}">
+            {% for tag in article.tags %}
+              <li class="py-[1px] px-[5px] text-sm bg-border-light rounded-1 list-none">{{ tag }}</li>
+            {% endfor %}
+          </ul>
+        {%- endif -%}
+
+        <a class="link flex gap-4 font-semibold text-sm text-grey-0 uppercase"
+          >read more {% render 'theme-icons' with 'arrow-right', width: '1.5em', height: '1.5em' -%}
+        </a>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

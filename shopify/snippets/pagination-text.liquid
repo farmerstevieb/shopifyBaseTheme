@@ -1,0 +1,107 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Pagination - Text
+  -------------------------------------------------------------------------------
+  Accepts
+  - paginate: {Object} (required)
+  - anchor: {String} (optional) This can be added so that on page reload
+    it takes you to wherever you've placed your anchor tag. (optional)
+  - class: {String} additional classes (optional)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- paginate results by 2 -%}
+    {%- render 'pagination-text', paginate: paginate, anchor: '#yourID' -%}
+  {%- endpaginate -%}
+  -------------------------------------------------------------------------------
+  Description
+  Renders a set of links for paginated results. Must be used within paginate tags.
+{%- endcomment -%}
+
+{%- liquid
+  assign class = class | default: 'mt-8 lg:mb-14'
+  assign anchor = anchor
+-%}
+
+{%- if paginate.pages > 1 -%}
+  <div
+    class="js-pagination {{ class }}"
+    data-pages="{{ paginate.pages }}"
+    role="navigation"
+  >
+    <div class="flex flex-wrap items-center	justify-center space-x-[-1px]" role="list">
+      <div class="flex">
+        {%- liquid
+          capture previous_state
+            unless paginate.previous
+              echo 'disabled'
+            endunless
+          endcapture
+
+          capture previous_page
+            unless paginate.current_page == 1
+              echo paginate.current_page | minus: 1
+            else
+              echo paginate.current_page
+            endunless
+          endcapture
+        -%}
+
+        <a
+          href="{{ paginate.previous.url }}{{ anchor }}"
+          class="p-2 o-button o-button--secondary o-button--remove-icon w-fit h-fit min-h-fit min-w-fit js-pagination-prev"
+          data-previous="{{ previous_page }}"
+          aria-label="{{ 'general.pagination.previous' | t }}"
+          {{ previous_state }}
+        >
+          {%- render 'theme-icons' with 'chevron-left', width: 24, height: 24 -%}
+        </a>
+      </div>
+
+      <p class="flex px-5 text-sm font-bold select-none">
+        <span class="js-pagination-current-page">
+          {%- liquid
+            if paginate.parts.size > 0
+              echo 'general.pagination.page' | t: number: paginate.current_page
+            else
+              echo 'general.pagination.page' | t: number: 1
+            endif
+          -%}
+        </span>
+        <span class="mx-1">
+          {{- 'general.pagination.of' | t -}}
+        </span>
+        <span class="js-pagination-total-pages">
+          {{- paginate.pages -}}
+        </span>
+      </p>
+
+      <div class="flex">
+        {%- liquid
+          capture next_state
+            unless paginate.next
+              echo 'disabled'
+            endunless
+          endcapture
+
+          capture next_page
+            unless paginate.current_page == paginate.pages
+              echo paginate.current_page | plus: 1
+            else
+              echo paginate.current_page
+            endunless
+          endcapture
+        -%}
+
+        <a
+          href="{{ paginate.next.url }}{{ anchor }}"
+          class="p-2 o-button o-button--secondary o-button--remove-icon w-fit h-fit min-h-fit min-w-fit js-pagination-next"
+          data-next="{{ next_page }}"
+          aria-label="{{ 'general.pagination.next' | t }}"
+          {{ next_state }}
+        >
+          {%- render 'theme-icons' with 'chevron-right', width: 24, height: 24 -%}
+        </a>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

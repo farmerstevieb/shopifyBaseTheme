@@ -1,0 +1,84 @@
+{%- liquid
+  render 'theme_assets' with 'section-content-cards-collection.min.css'
+  render 'section-spacing-and-color'
+-%}
+
+{% liquid
+capture display_section_snippet
+render 'section_user-restriction'
+endcapture
+assign display_section = display_section_snippet | strip
+%}
+
+{% capture media_aspect %}
+    {% render 'section-aspect-ratios', section: section %}
+  {% endcapture %}
+
+{% capture media_aspect_mobile %}
+  {% render 'section-aspect-ratios', section: section %}
+{% endcapture %}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {%- assign section_header = section.blocks | where: 'type', 'section_header' | first -%}
+  {%- if section_header -%}
+    {%- render 'object-content',
+      block: section_header.settings,
+      attributes: section_header.shopify_attributes,
+      class: 'section-header mb-9'
+    -%}
+  {%- endif -%}
+
+  <ul class="content-cards-collection">
+    {%- assign blocks = section.blocks | where: 'type', 'card' -%}
+    {%- for block in blocks -%}
+      <li class="flex-grow {{ block.settings.width }} {{ block.settings.width_desk }}" {{ block.shopify_attributes }}>
+        <div class="card {{ block.settings.card_layout }}" style="gap: {{ block.settings.content_gap }}px;">
+          {%- liquid
+            assign image_class = 'o-img--' | append: block.settings.image_fit
+            assign video_src = block.settings.video_file | default: block.settings.video_url
+            if video_src
+              assign play_video_on_mobile = true
+              if block.settings.image_mobile
+                assign play_video_on_mobile = false
+              endif
+              capture placeholder
+                render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: forloop.first, class: 'o-video__image js-video-image', img_class: image_class
+              endcapture
+              render 'object-video' with video_src, placeholder: placeholder, autoplay: block.settings.video_autoplay, muted: block.settings.video_muted, loop: true, fit: 'cover', aspect: media_aspect, aspect_mobile: '1/1', play_on_mobile: play_video_on_mobile
+
+            elsif block.settings.image
+              render 'object-image' with block.settings.image, hide_mobile_media: block.settings.hide_mobile_media, mobile_image: block.settings.image_mobile, aspect: media_aspect, aspect_mobile: '1/1', img_class: image_class
+            else
+              assign placeholder_class = 'bg-grey-80" style="aspect-ratio:var(--ar,' | append: media_aspect | append: ')'
+              echo 'image' | placeholder_svg_tag: placeholder_class
+            endif
+          -%}
+
+          {%- liquid
+            assign heading_tag = 'h2'
+            if section_header
+              assign heading_tag = 'h3'
+            endif
+          -%}
+          {%- render 'object-content',
+            block: block.settings,
+            attributes: block.shopify_attributes,
+            class: 'card__content',
+            heading_tag: heading_tag,
+            heading_class: 'tracking-3',
+            heading_font_weight: 'font-medium'
+          -%}
+        </div>
+      </li>
+    {%- endfor -%}
+  </ul>
+{% endif %}

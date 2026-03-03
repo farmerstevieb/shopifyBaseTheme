@@ -1,0 +1,90 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Object - USPs
+  -------------------------------------------------------------------------------
+  Accepts
+  - target {Object}: the section or block object where the usp settings
+    are inherited from.
+  - amount_of_usps {Number}: the amount of usps to generate
+  - icon_width {Number}: the icon's width (required)
+  - icon_height {Number}: the icon's height (required)
+  -------------------------------------------------------------------------------
+  Usage
+  {% render 'object-usps' %}
+  -------------------------------------------------------------------------------
+  Description
+  Generates a list of icons and accompanying text. Intended specifically for use
+  with the 'usp' schema part.
+{%- endcomment -%}
+
+{%- liquid
+  assign target = target | default: section
+
+  assign icon_width = icon_width | default: 48
+  assign icon_height = icon_height | default: 48
+
+  assign usps = ''
+  assign amount_of_usps = amount_of_usps | default: 1
+
+  for i in (1..amount_of_usps)
+    assign s = target.settings
+    assign accessor = 'usp_' | append: i | append: '_#'
+
+    assign icon = accessor | replace: '#', 'icon'
+    assign title = accessor | replace: '#', 'title'
+    assign text = accessor | replace: '#', 'text'
+    if s[title] != blank
+      assign usps = usps | append: s[icon] | append: '||' | append: s[title] | append: '||' | append: s[text]
+    endif
+    unless forloop.last
+      assign usps = usps | append: '**'
+    endunless
+  endfor
+
+  assign usps = usps | split: '**'
+
+  assign color = color | default: block.color
+
+  case target.settings.color
+    when 'dark'
+      assign text_color = ' text-primary'
+    when 'light'
+      assign text_color = ' text-primaryInverse'
+  endcase
+-%}
+
+{%- if usps.size > 0 -%}
+  <ul class="flex flex-col py-2 gap-y-6 {{ text_color }}">
+    {%- for usp in usps -%}
+      {%- liquid
+        assign usp_array = usp | split: '||'
+
+        assign icon = usp_array[0]
+        assign title = usp_array[1]
+        assign text = usp_array[2]
+      -%}
+
+      <li class="flex items-center gap-x-4">
+        {%- liquid
+          if icon != blank
+            render 'theme-icons' with icon, width: icon_width, height: icon_height, classes: 'col-start-1 row-span-2 w-12'
+          endif
+        -%}
+
+        <div class="flex flex-col">
+          {%- if title != empty -%}
+            <p class="col-start-2 font-semibold tracking-wide uppercase text-md">
+              {{- title -}}
+            </p>
+          {%- endif -%}
+
+          {%- if text != empty -%}
+            <p class="col-start-2 text-md">
+              {{- text -}}
+            </p>
+          {%- endif -%}
+        </div>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

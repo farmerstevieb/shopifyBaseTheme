@@ -1,0 +1,123 @@
+{%- liquid
+  render 'theme_assets' with 'section-text-media.min.css'
+  render 'section-spacing-and-color', set_bg: false, set_padding: false
+
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+
+  assign is_full_width = false
+  if section.settings.padding == 'full'
+    assign is_full_width = true
+  endif
+
+  assign has_bg = true
+  if section.settings.background_color == empty or section.settings.background_color == 'rgba(0,0,0,0)'
+    assign has_bg = false
+  endif
+
+  assign aspect_mobile = '1/1'
+
+  # Different mobile image ratio for PLP
+  if request.page_type == 'collection'
+    assign aspect_mobile = '414/256'
+  endif
+
+  case section.settings.media_width
+    when 'two-thirds'
+      assign media_aspect = '948/526'
+
+      assign text_block_class = 'lg:col-span-2'
+      assign media_block_class = 'lg:col-span-4'
+
+    when 'half'
+      assign media_aspect = '692/526'
+
+      assign text_block_class = 'lg:col-span-3'
+      assign media_block_class = 'lg:col-span-3'
+  endcase
+-%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  <div class="text-media text-media--{{ section.settings.padding }}{% if has_bg %} text-media--bg{% endif %} grid lg:grid-cols-6 items-center">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'text' -%}
+          {% liquid
+            case block.settings.content_position
+              when 'center'
+                assign content_class = ' mx-auto'
+              when 'right'
+                assign content_class = ' ml-auto'
+              when ''
+                assign content_class = ''
+            endcase
+          %}
+          <div
+            class="
+              text-media__text
+              {{ text_block_class }}
+              {% if is_full_width %}text-media__text--wide{% endif %}
+              {% if has_bg %}pt-9 pb-9{% endif %}
+              {% if section.settings.media_first %}max-lg:mt-9{% else %}max-lg:mb-9{% endif %}
+            "
+          >
+            {%- render 'object-content',
+              block: block.settings,
+              attributes: block.shopify_attributes,
+              class: content_class
+            -%}
+          </div>
+
+        {%- when 'media' -%}
+          {%- liquid
+            assign img_class = 'o-img--' | append: block.settings.image_fit
+            assign videoSrc = block.settings.video_file | default: block.settings.video_url
+            if block.settings.image_ratio != blank
+              assign media_aspect = block.settings.image_ratio | replace: ' ', ''
+            endif
+          -%}
+          <div
+            class="text-media__media {{ media_block_class }}{% if section.settings.media_first %} max-lg:row-start-1{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- liquid
+              if videoSrc
+                capture placeholder
+                  if block.settings.image
+                    render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, class: 'o-video__image js-video-image'
+                  else
+                    echo 'image' | placeholder_svg_tag: 'o-video__image js-video-image'
+                  endif
+                endcapture
+                render 'object-video' with videoSrc, placeholder: placeholder, autoplay: block.settings.video_autoplay, muted: block.settings.video_muted, loop: true, fit: 'cover', aspect: media_aspect
+              else
+                if block.settings.image
+                  render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, class: 'o-picture--fill', aspect: media_aspect, aspect_mobile: aspect_mobile, img_class: img_class
+                else
+                  assign placeholder_class = 'o-picture--fill bg-grey-80" style="aspect-ratio:' | append: media_aspect
+                  echo 'image' | placeholder_svg_tag: placeholder_class
+                endif
+              endif
+            -%}
+
+            {%- render 'shop-the-look',
+              products: block.settings.stl_products,
+              position: block.settings.stl_position,
+              title: block.settings.stl_title
+            -%}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+{% endif %}

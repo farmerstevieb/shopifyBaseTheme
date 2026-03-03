@@ -1,0 +1,9 @@
+.o-sticker {
+  display: flex;
+  max-width: max-content;
+  padding: 1px 5px;
+  font-size: theme("fontSize.sm");
+  font-weight: theme("fontWeight.bold");
+  letter-spacing: 0.02em;
+  border-radius: 3px;
+}

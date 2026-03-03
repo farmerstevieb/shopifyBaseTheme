@@ -1,0 +1,61 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Slider Settings
+  -------------------------------------------------------------------------------
+  Accepts
+  - target: {Object} the section or block object we inherit
+    the settings from (required)
+  - breakpoint: {MediaQuery} relay a media query to set on what breakpoint
+    the slideshow is actually active (optional)
+  - extend_beyond_padding: {Boolean} ignores the section var(--row-space)
+    values (optional)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'slider-settings' -%}
+  -------------------------------------------------------------------------------
+  Description
+  The global site slider settings used on multiple sections.
+{%- endcomment -%}
+
+{%- liquid
+  assign section = section
+  assign target = target | default: section
+  assign breakpoint = breakpoint | default: 'true'
+
+  # Slideshow
+  capture settings
+    if target.blocks.size >= 1 or target.blocks == blank
+      assign autoplay = target.settings.slider_autoplay | times: 1000
+
+      echo 'enabled="' | append: breakpoint | append: '"'
+      echo 'wheelGestures '
+      echo 'autoPlay="#" ' | replace: '#', autoplay
+      echo target.settings.slider_loop | append: ' '
+      echo target.settings.slider_arrows | append: ' '
+      echo target.settings.slider_dots | append: ' '
+    endif
+  endcapture
+
+  capture classes
+    # Arrows Class (Required)
+    if target.settings.slider_arrows != empty
+      echo 'slider--arrows'
+    endif
+
+    if extend_beyond_padding
+      echo ' slider--full'
+    endif
+  endcapture
+-%}
+
+{%- # Arrow/Dots Styling -%}
+{%- capture styling -%}
+  {%- style -%}
+    #shopify-section-{{ section.id }} {
+      --dot-color: {{ target.settings.slider_dots_color | default: '#000' }};
+      --arrow-color: {{ target.settings.slider_arrows_color | default: '#000' }};
+    }
+  {%- endstyle -%}
+{%- endcapture -%}
+
+{{ settings }} ** {{ classes }} ** {{ styling }}

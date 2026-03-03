@@ -1,0 +1,82 @@
+.cf-form-inner{
+  .cf-form-actions{
+    button {
+      @apply button--primary button--full
+    }
+
+    .cf-cancel{
+      display: none;
+    }
+  }
+}
+
+.cf-fields-container{
+  .cf-field {
+    gap:8px;
+
+    &[data-cf-invalid="true"]:not([data-cf-field-type="repeating_group"]){
+      background: none;
+      border-color: transparent;
+    }
+
+    label {
+      @apply text-md font-semibold;
+    }
+
+    input, select {
+      height: 42px;
+
+      &::-webkit-search-decoration,
+      &::-webkit-search-cancel-button,
+      &::-webkit-search-results-button,
+      &::-webkit-search-results-decoration {
+        @apply hidden;
+      }
+
+      &[type="file"] {
+        height: auto;
+        padding-right: 0;
+        padding-left: 0;
+        border: none;
+      }
+
+      &[disabled] {
+        @apply cursor-not-allowed border-input-disabled-border bg-input-disabled-background text-input-disabled-text;
+
+        &:where(select):invalid,
+        &::placeholder {
+          @apply text-input-disabled-text;
+        }
+      }
+
+      &:where(select):invalid,
+      &::placeholder {
+        @apply text-grey-10;
+      }
+
+      /* Hover State */
+      &:active {
+        @apply border-input-disabled-border shadow-1;
+      }
+
+      /* Click State */
+      &:hover {
+        @apply border-input-active-border;
+      }
+
+      .form--error & {
+        @apply border-validation-error;
+      }
+
+      @apply block w-full px-4 border border-solid border-input-default-border leading-base text-md bg-white text-grey-10 text-start transition-all;
+    }
+
+    select {
+      padding: 10px;
+    }
+
+    .cf-enum-field__choice{
+      @apply text-smd font-normal
+    }
+  }
+}

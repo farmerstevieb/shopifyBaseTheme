@@ -1,0 +1,76 @@
+@charset "UTF-8";
+
+@import "base/mixins";
+@import "base/animations";
+
+/** Custom Base  */
+@import "objects/row";
+@import "objects/accordion";
+@import "objects/aspect-ratio";
+@import "objects/content";
+@import "objects/icon";
+@import "objects/img";
+@import "objects/input";
+@import "objects/hr";
+@import "objects/video";
+@import "objects/sticker";
+
+/**	Tailwind base */
+@import "tailwind/base";
+
+/**	Tailwind Components */
+@import "tailwind/components";
+
+/**	App Components */
+@import "components/customer-fields";
+@import "objects/button";
+
+/**	Components */
+@import "components/slider";
+@import "components/header";
+@import "components/section-header";
+@import "components/quantity-input";
+@import "components/delivery-progress";
+@import "components/variants-picker";
+@import "components/loading-overlay";
+@import "components/cart-item";
+@import "components/product/product-price";
+@import "components/product/product-quickshop";
+@import "components/footer";
+@import "components/nav";
+@import "components/card";
+@import "components/cart-count";
+@import "components/pagination";
+@import "components/form";
+@import "components/modal";
+@import "components/account-dialog";
+@import "components/star-rating";
+@import "components/account-drawer";
+
+/* Nosto */
+@import "components/nosto/icons";
+@import "components/nosto/predictive-search";
+
+/* App Components */
+@import "components/app/easy-appointment";
+
+/** Tailwind Utilities */
+@import "tailwind/utilities";
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+.main-overlay {
+  top: var(--header-group-height);
+  transition-timing-function: ease-in-out;
+  transition-duration: 100ms;
+  transition-property: opacity, visibility;
+
+  @apply invisible fixed inset-0 z-overlay h-full w-full bg-[#1c1c1c] opacity-0 duration-700;
+
+  &--visible {
+    @apply visible opacity-40;
+  }
+}

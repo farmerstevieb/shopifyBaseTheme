@@ -1,0 +1,235 @@
+{%- liquid
+  assign class = class | prepend: 'form ' | strip
+
+  if title contains ' | t'
+    assign title = title | replace: ' | t' | t
+  endif
+
+  if text contains ' | t'
+    assign text = text | replace: ' | t' | t
+  endif
+
+  assign span_class = 'text-md font-semibold text-[#2a2a2a] mb-2'
+  assign container_class = 'flex gap-4 w-full'
+-%}
+
+{%- form 'create_customer', class: class -%}
+  {%- if title or text -%}
+    <header class="form__header">
+      {%- if title -%}
+        <h2 class="{% if request.page_type contains 'customers' %}text-2xl {% endif %} font-semibold text-md text-primary mb-2">
+          {{ title }}
+        </h2>
+      {%- endif -%}
+
+      {%- if text -%}
+        <p class="text-grey-25 {% if text_center %}text-center{% endif %} text-smd {% unless request.page_type contains 'customers' %} text-md text-secondary{% endunless %}">
+          {{ text }}
+        </p>
+      {%- endif -%}
+    </header>
+  {%- endif -%}
+
+  {% if form.errors %}
+    <div class="form__message">
+      <h2 class="flex gap-2 font-heading" role="alert" tabindex="-1" autofocus>
+        {% render 'theme-icons' with 'error' %}
+        {{ 'customer.register.error_heading' | t }}
+      </h2>
+      <ul class="text-md pl-2" role="list">
+        {%- for field in form.errors -%}
+          <li>
+            {%- if field == 'form' -%}
+              {{ form.errors.messages[field] }}
+            {%- else -%}
+              {{ form.errors.translated_fields[field] | capitalize }}
+              {{ form.errors.messages[field] }}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {% endif %}
+
+  <div class="form__fields gap-y-2">
+    <div class="{{ container_class }}">
+      <label class="o-input" data-field="input">
+        <span class="{{ span_class }} {% unless request.page_type contains 'customers' %}sr-only{% endunless %}">
+          {{- 'customer.register.form.first_name' | t -}}
+        </span>
+
+        <input
+          class="o-input__field"
+          name="customer[first_name]"
+          value="{{ form.first_name }}"
+          type="text"
+          autocomplete="given-name"
+          {% if show_placeholder %}
+            placeholder="{{- 'customer.register.form.first_name' | t -}}"
+          {% endif %}
+          required
+        >
+      </label>
+
+      <label class="o-input" data-field="input">
+        <span class="{{ span_class }} {% unless request.page_type contains 'customers' %}sr-only{% endunless %}">
+          {{- 'customer.register.form.last_name' | t -}}
+        </span>
+
+        <input
+          class="o-input__field"
+          name="customer[last_name]"
+          value="{{ form.last_name }}"
+          type="text"
+          autocomplete="family-name"
+          {% if show_placeholder %}
+            placeholder="{{- 'customer.register.form.last_name' | t -}}"
+          {% endif %}
+          required
+        >
+      </label>
+    </div>
+
+    <div class="{{ container_class }}">
+      <label class="o-input" data-field="input">
+        <span class="{{ span_class }} {% unless request.page_type contains 'customers' %}sr-only{% endunless %}">
+          {{- 'customer.register.form.email' | t -}}
+        </span>
+
+        <input
+          class="o-input__field"
+          name="customer[email]"
+          value="{{ form.email }}"
+          type="email"
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="email"
+          required
+          aria-required="true"
+          {% if form.errors contains 'email' %}
+            aria-invalid="true"
+            aria-describedby="RegisterForm-email-error"
+          {% endif %}
+          {% if show_placeholder %}
+            placeholder="{{- 'customer.register.form.email' | t -}}"
+          {% endif %}
+        >
+
+        {%- if form.errors contains 'email' -%}
+          <small id="RegisterForm-email-error" class="o-input__error">
+            {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+            {{ form.errors.translated_fields.email | capitalize }}
+            {{ form.errors.messages.email }}.
+          </small>
+        {%- endif -%}
+      </label>
+
+      <label class="o-input" data-field="input">
+        <span class="{{ span_class }} {% unless request.page_type contains 'customers' %}sr-only{% endunless %}">
+          {{- 'customer.register.form.telephone' | t -}}
+        </span>
+        <input
+          class="o-input__field"
+          id="ContactForm-phone"
+          name="customer[phone]"
+          type="tel"
+          autocomplete="tel"
+          {% if show_placeholder %}
+            placeholder="{{- 'customer.register.form.telephone' | t -}}"
+          {% endif %}
+          pattern="[0-9\-]*"
+          size="11"
+          required
+        >
+      </label>
+    </div>
+
+    <label class="o-input" data-field="input">
+      <span class="{{ span_class }} {% unless request.page_type contains 'customers' %}sr-only{% endunless %}">
+        {{- 'customer.register.form.address_line_1' | t -}}
+      </span>
+      <input
+        class="o-input__field"
+        type="text"
+        {% if show_placeholder %}
+          placeholder="{{- 'customer.register.form.address_line_1' | t -}}"
+        {% endif %}
+        id="AddressAddress1New"
+        name="address[address1]"
+        value="{{ form.address1 }}"
+        autocomplete="address-line1"
+        required
+      >
+    </label>
+    <label class="o-input" data-field="input">
+      <span class="{{ span_class }} {% unless request.page_type contains 'customers' %}sr-only{% endunless %}">
+        {{- 'customer.register.form.address_line_2' | t -}}
+      </span>
+      <input
+        class="o-input__field"
+        type="text"
+        {% if show_placeholder %}
+          placeholder="{{- 'customer.register.form.address_line_2' | t -}}"
+        {% endif %}
+        id="AddressAddress2New"
+        name="address[address2]"
+        value="{{ form.address2 }}"
+        autocomplete="address-line2"
+      >
+    </label>
+
+    <label class="o-input" data-field="input">
+      <span class="{{ span_class }} {% unless request.page_type contains 'customers' %}sr-only{% endunless %}">
+        {{- 'customer.register.form.city' | t -}}
+      </span>
+      <input
+        class="o-input__field"
+        type="text"
+        {% if show_placeholder %}
+          placeholder="{{- 'customer.register.form.city' | t -}}"
+        {% endif %}
+        id="AddressCityNew"
+        name="address[city]"
+        value="{{ form.city }}"
+        autocomplete="address-level2"
+        required
+      >
+    </label>
+
+    <label class="o-input" data-field="input">
+      <span class="{{ span_class }} {% unless request.page_type contains 'customers' %}sr-only{% endunless %}">
+        {{- 'customer.register.form.password' | t -}}
+      </span>
+
+      <input
+        class="o-input__field"
+        name="customer[password]"
+        value="{{ form.password }}"
+        type="password"
+        autocomplete="new-password"
+        required
+        aria-required="true"
+        {% if form.errors contains 'password' %}
+          aria-invalid="true"
+          aria-describedby="RegisterForm-password-error"
+        {% endif %}
+        {% if show_placeholder %}
+          placeholder="{{- 'customer.register.form.password' | t -}}"
+        {% endif %}
+        minlength="5"
+      >
+
+      {%- if form.errors contains 'password' -%}
+        <small id="RegisterForm-password-error" class="o-input__error">
+          {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+          {{ form.errors.translated_fields.password | capitalize }}
+          {{ form.errors.messages.password }}.
+        </small>
+      {%- endif -%}
+    </label>
+
+    <button class="button button--primary button--full mt-5" type="submit">
+      {{ 'customer.register.form.submit' | t }}
+    </button>
+  </div>
+{%- endform -%}

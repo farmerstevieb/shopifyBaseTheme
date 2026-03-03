@@ -1,0 +1,31 @@
+{%- liquid
+  render 'section-spacing-and-color'
+
+  # Image Aspect Ratios
+  capture media_aspect
+    render 'section-aspect-ratios', section: section
+  endcapture
+
+  # Grid Spacing, Structure
+  render 'section-grid', section: section
+-%}
+
+<div
+  id="nosto-serp-content"
+  class="relative flex items-center justify-center w-full"
+  style="
+    --nosto-card-size-dsk: {{ media_aspect }};
+    --nosto-card-size-mob: {{ media_aspect }};
+  "
+  data-nst-serp-pagination-amount="{{ section.settings.pagination_amount }}"
+  data-nst-serp-pagination-type="{{ section.settings.pagination_style }}"
+  data-nst-serp-customer-is-logged-in="{{ customer.has_account }}"
+>
+  <div class="relative min-h-[calc(100dvh_-_var(--header-group-height,_11.2rem))] w-full">
+    <div class="loading-overlay w-[5rem] h-[5rem]">
+      <div class="loading-overlay__spinner w-[5rem] h-[5rem] text-highlight">
+        {%- render 'theme-icons' with 'loading' -%}
+      </div>
+    </div>
+  </div>
+</div>

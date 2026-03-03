@@ -1,0 +1,111 @@
+.shop-the-look {
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: theme("spacing.5");
+  color: theme("colors.black");
+
+  > * {
+    pointer-events: all;
+  }
+
+  &__shopping-icon {
+    line-height: 0;
+  }
+
+  &__products {
+    position: absolute;
+    bottom: 85px;
+    overflow: auto;
+    overscroll-behavior: contain;
+    width: 100%;
+    max-width: 335px;
+    height: 250px;
+    visibility: hidden;
+    opacity: 0;
+    background-color: theme("colors.white");
+    border-radius: 4px;
+    box-shadow: 0 1.1px 3.4px rgb(0 0 0 / 10%), 0 6px 14px rgb(0 0 0 / 12%);
+
+    transition: {
+      duration: 0.5s;
+      property: opacity, visibility;
+      timing-function: ease-in;
+    }
+
+    &.is-active {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &__header {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    width: 100%;
+    padding: 14px theme("spacing.4");
+    text-align: center;
+    background-color: theme("colors.white");
+    border-bottom: 1px solid theme("colors.grey.90");
+  }
+
+  &__product {
+    display: flex;
+    flex-direction: row;
+    padding: theme("spacing.4") theme("spacing.5");
+    border-bottom: 1px solid theme("colors.grey.90");
+
+    &:last-of-type {
+      border: none;
+    }
+
+    &-image {
+      width: 48px;
+      height: 48px;
+    }
+
+    &-details {
+      padding-left: theme("spacing.5");
+
+      // TODO: Fix later
+      .flex-col-reverse {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+
+  &__button {
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    padding: 10px;
+    background-color: theme("colors.white");
+    border-radius: 50%;
+    transition: all 0.25s ease-in-out;
+
+    &-icon {
+      width: 18px;
+      height: 18px;
+
+      &.is-hidden {
+        display: none;
+      }
+    }
+  }
+
+  &--bottom-right {
+    justify-content: flex-end;
+  }
+}

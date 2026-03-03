@@ -1,0 +1,106 @@
+<juno-slider
+  class="slider slider--pdp"
+  enabled="true"
+  loop
+  align="center"
+  thumbnails="true"
+  showDots
+>
+  <div class="slider__viewport" data-slider="viewport">
+    <ul class="slider__track">
+      {% assign img_class = 'o-img--' | append: media_fit %}
+
+      {% assign count = 0 %}
+      {%- if product.selected_or_first_available_variant.featured_media != null -%}
+        {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+        <li
+          class="slider__item"
+          data-thumbnail-source="{{ featured_media | image_url: width: 64, height: 80 }}"
+          data-thumbnail-height="80"
+          data-thumbnail-width="64"
+          {% if image_zoom == 'lightbox' %}
+            data-lightbox="{{ count }}"
+            {% assign count = count | plus: 1 %}
+          {% endif %}
+        >
+          {%- case featured_media.media_type -%}
+            {%- when 'image' -%}
+              {%- render 'object-image' with featured_media,
+                class: 'o-picture--fill',
+                img_class: img_class,
+                preload: true,
+                sizes: '(min-width: 768px) 50vw',
+                aspect: '1 / 1.25'
+              -%}
+
+            {%- when 'video', 'external_video' -%}
+              {%- render 'object-video' with featured_media,
+                class: 'h-full',
+                aspect: '1 / 1.25',
+                fit: media_fit,
+                play_overlay: true,
+                autoplay: true
+              -%}
+          {%- endcase -%}
+        </li>
+      {%- endif -%}
+
+      {%- for media in product.media -%}
+        {% liquid
+          if media.id == product.selected_or_first_available_variant.featured_media.id
+            continue
+          endif
+
+          unless product.has_only_default_variant
+            # Hide other variant images
+            if section.settings.hide_variants == '1'
+              if variant_images contains media.src
+                continue
+              endif
+            endif
+
+            if section.settings.hide_variants == '2'
+              # Hide images by alt tag
+              # TODO: This currently assumes that alt tag contains only ONE option value e.g. color
+              assign alt = media.alt | upcase
+              assign options = product.selected_or_first_available_variant.options
+
+              unless options contains alt
+                continue
+              endunless
+            endif
+          endunless
+        %}
+        <li
+          class="slider__item"
+          data-thumbnail-source="{{ media | image_url: width: 64, height: 80 }}"
+          data-thumbnail-height="80"
+          data-thumbnail-width="64"
+          {% if image_zoom == 'lightbox' %}
+            data-lightbox="{{ count }}"
+            {% assign count = count | plus: 1 %}
+          {% endif %}
+        >
+          {%- case media.media_type -%}
+            {%- when 'image' -%}
+              {%- render 'object-image' with media,
+                class: 'o-picture--fill',
+                img_class: img_class,
+                preload: forloop.first,
+                sizes: '(min-width: 768px) 50vw',
+                aspect: '1 / 1.25'
+              -%}
+
+            {%- when 'video', 'external_video' -%}
+              {%- render 'object-video' with media,
+                class: 'h-full',
+                aspect: '1 / 1.25',
+                fit: media_fit,
+                play_overlay: true
+              -%}
+          {%- endcase -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</juno-slider>

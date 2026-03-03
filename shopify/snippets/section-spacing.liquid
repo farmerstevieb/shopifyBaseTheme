@@ -1,0 +1,76 @@
+{%- liquid
+  # Set width
+  assign width = width | default: 'var(--page-width)'
+
+  # In this theme, the user is able to change the max width of a section inside of the section settings.
+  # Refrain from using the 'width' variable when you render this snippet, and feed the default max width for the
+  # section into the schema file instead using default_max_width inside of ...sectionSettings
+  if section.settings.section_max_width != 0 and section.settings.section_max_width != blank and width == 'var(--page-width)'
+    assign width = section.settings.section_max_width
+  endif
+
+  # Set section padding
+  case section.settings.padding
+    when 'full'
+      assign padding = '0px'
+    when 'contained'
+      assign padding = '0px var(--row-space)'
+    when 'padded'
+      assign padding = 'var(--block-padding) var(--row-space)'
+  endcase
+
+  # Set padding size
+  case section.settings.spacing
+    when '0'
+      assign spacing = '0px'
+    when 'sm'
+      assign spacing = '16px'
+    when 'md'
+      assign spacing = '32px'
+    when 'lg'
+      assign spacing = '48px'
+  endcase
+
+  # Set padding size on desktop
+  case section.settings.spacing
+    when '0'
+      assign spacing_dsk = '0px'
+    when 'sm'
+      assign spacing_dsk = '32px'
+    when 'md'
+      assign spacing_dsk = '48px'
+    when 'lg'
+      assign spacing_dsk = '64px'
+  endcase
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --section-padding: {{ padding }};
+    --block-padding: 48px;
+    --row-width: calc({{ width }} + 19);
+    --row-spacing: {{ spacing }};
+    --row-spacing-dsk: {{ spacing_dsk }};
+    {% if section.settings.background_color != empty and section.settings.background_color != 'rgba(0,0,0,0)' %}
+      --bg: {{ section.settings.background_color }};
+    {% endif %}
+    {% if set_padding != false %}
+      padding: {{ padding }};
+    {% endif %}
+    {% if set_bg != false %}
+      background: var(--bg);
+    {% endif %}
+  }
+
+  .o-row--content{
+    {% if section.settings.apply_content == true %}
+      padding: 0px calc(var(--row-space) + 10px);
+    {% endif %}
+  }
+
+  @media (min-width: 640px) {
+    #shopify-section-{{ section.id }} {
+      --block-padding: 64px;
+    }
+  }
+{% endstyle %}

@@ -1,0 +1,21 @@
+.o-ar {
+  aspect-ratio: var(--ar-w) / var(--ar-h);
+
+  @supports not (aspect-ratio: 1) {
+    &:not(.o-ar--auto)::before {
+      content: " ";
+      display: block;
+      padding-bottom: calc(var(--ar-w) / var(--ar-h) * 100%);
+    }
+
+    &:not(.o-ar--auto) > * {
+      /* stylelint-disable-next-line declaration-no-important */
+      position: absolute !important;
+      inset: 0;
+    }
+  }
+
+  &--auto {
+    aspect-ratio: auto;
+  }
+}

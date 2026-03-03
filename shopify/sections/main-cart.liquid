@@ -1,0 +1,452 @@
+{%- liquid
+  render 'section-spacing-and-color', set_padding: false
+  assign heading_class = 'font-medium tracking-wide text-grey-10'
+-%}
+
+<div
+  class="grid max-w-[1228px] grid-cols-12 mx-auto md:gap-x-[40px] xl:gap-x-[80px] lg:px-row box-content mt-12 md:mt-14"
+  id="main-cart"
+>
+  <header
+    class="flex flex-col items-center justify-center w-full h-full col-span-full py-9 lg:py-11 js-cart-header"
+    {% if cart != empty %}
+      hidden
+    {% endif %}
+  >
+    <h2 class="mb-6 text-4xl font-extrabold leading-1 -tracking-2 font-heading">{{ 'sections.cart.empty' | t }}</h2>
+    {%- render 'object-ctas', settings: section.settings, class: 'justify-center', size_mob: 'medium' -%}
+  </header>
+
+  {%- # Items -%}
+  <div
+    class="col-span-12 max-lg:px-row lg:col-span-7 max-lg:mb-[30px] js-cart-items"
+    {% if cart == empty %}
+      hidden
+    {% endif %}
+  >
+    <h1 class="{{ heading_class }} text-2xl mb-[6px]">
+      {{- 'sections.cart.title' | t -}}
+    </h1>
+
+    <p class="mb-6 capitalize text-md">
+      {{- 'sections.cart.item_count' | t: count: cart.item_count -}}
+    </p>
+
+    <div class="mb-6 lg:hidden">
+      <button
+        type="submit"
+        class="button button--primary button--full"
+        name="checkout"
+        form="Cart-Form"
+      >
+        {{ 'sections.cart.checkout' | t }}
+      </button>
+    </div>
+
+    <cart-items>
+      <form
+        action="{{ routes.cart_url }}"
+        id="Cart-Form"
+        method="post"
+      >
+        <div id="Cart-CartItems" data-id="{{ section.id }}">
+          {%- if cart != empty -%}
+            <table role="table" class="w-full">
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th id="Cart-ColumnProductImage" role="columnheader">
+                    <span class="sr-only">{{ 'sections.cart.headings.image' | t }}</span>
+                  </th>
+                  <th id="Cart-ColumnProduct" scope="col" role="columnheader">
+                    <span class="sr-only">{{ 'sections.cart.headings.product' | t }}</span>
+                  </th>
+                  <th id="Cart-ColumnTotal" scope="col" role="columnheader">
+                    <span class="sr-only">{{ 'sections.cart.headings.total' | t }}</span>
+                  </th>
+                  <th id="Cart-ColumnQuantity" role="columnheader">
+                    <span class="sr-only">{{ 'sections.cart.headings.quantity' | t }}</span>
+                  </th>
+                  <th id="Cart-ColumnRemove" role="columnheader">
+                    <span class="sr-only">{{ 'sections.cart.headings.remove' | t }}</span>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody role="rowgroup">
+                {%- for item in cart.items -%}
+                  <tr id="Cart-Item-{{ item.index | plus: 1 }}" class="p-5 mb-6 cart-item" role="row">
+                    <td class="relative cart-item__media" role="cell" headers="Cart-ColumnProductImage">
+                      {%- if item.image -%}
+                        <a href="{{ item.url }}" class="absolute inset-0" tabindex="-1" aria-hidden="true"> </a>
+                        <img
+                          src="{{ item.image | image_url: width: 192 }}"
+                          alt="{{ item.image.alt | escape }}"
+                          loading="lazy"
+                          width="128"
+                          height="164 "
+                          class="object-contain aspect-[128/164]"
+                        >
+                      {%- endif -%}
+                    </td>
+
+                    <td class="cart-item__details text-md" role="cell" headers="Cart-ColumnProduct">
+                      <a href="{{ item.url }}" class="text-sm font-semibold uppercase tracking-standard text-grey-10">
+                        {{- item.product.title | escape -}}
+                      </a>
+
+                      {% # Check if item is pre-order and show label %}
+                      {%- liquid
+                        assign is_preorder = false
+                        assign variant = item.product.selected_or_first_available_variant
+
+                        # Check Stoq metafields for pre-order setup
+                        # Primary check: selling_plan_ids indicates pre-order is configured
+                        if variant.metafields.restockrocket_production.selling_plan_ids != blank
+                          assign is_preorder = true
+                        endif
+
+                        # Secondary check: preorder_enabled metafield (if available)
+                        if variant.metafields.restockrocket_production.preorder_enabled.value == true
+                          assign is_preorder = true
+                        endif
+
+
+
+                        # Check if pre-order is full
+                        assign is_preorder_full = false
+                        assign preorder_count = variant.metafields.restockrocket_production.preorder_count.value | default: 0
+                        assign preorder_max = variant.metafields.restockrocket_production.preorder_max_count.value
+                        if preorder_max
+                          assign spots_remaining = preorder_max | minus: preorder_count
+                          if spots_remaining <= 0
+                            assign is_preorder_full = true
+                          endif
+                        endif
+                      -%}
+
+
+
+                      {%- if item.product.has_only_default_variant == false or item.properties.size != 0 -%}
+                        <dl class="text-smd text-grey-40">
+                          {%- if item.product.has_only_default_variant == false -%}
+                            {%- for option in item.options_with_values -%}
+                              <dt class="sr-only">{{ option.name }}:</dt>
+                              <dd class="inline">
+                                {{ option.value -}}
+                                {%- unless forloop.last %}
+                                  <span aria-hidden="true">/</span>
+                                {% endunless %}
+                              </dd>
+                            {%- endfor -%}
+                          {%- endif -%}
+
+                          {%- for property in item.properties -%}
+                            {%- assign property_first_char = property.first | slice: 0 -%}
+                            {%- if property.last != blank and property_first_char != '_' -%}
+                              <div>
+                                <dt class="inline">{{ property.first }}:</dt>
+                                <dd class="inline">{{ property.last }}</dd>
+                              </div>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        </dl>
+                      {%- endif -%}
+
+                      {%- if item.selling_plan_allocation != null -%}
+                        <p>{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                      {%- endif -%}
+
+                      <ul class="text-secondary" role="list" aria-label="{{ 'customer.order.discount' | t }}">
+                        {%- for discount in item.discounts -%}
+                          <li class="flex items-center gap-x-1">
+                            {%- render 'theme-icons' with 'discount', class: 'stroke-current' -%}
+                            {{ discount.title }}
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+
+                      <div
+                        class="flex items-center mt-2 gap-x-1"
+                        id="Cart-LineItemError-{{ item.index | plus: 1 }}"
+                        role="alert"
+                      >
+                        <span class="order-1 peer"></span>
+                        <span class="inline-flex flex-shrink-0 peer-empty:hidden">
+                          {%- render 'theme-icons' with 'error', width: 12, height: 12 -%}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td
+                      class="relative flex items-center justify-end cart-item__totals"
+                      role="cell"
+                      headers="Cart-ColumnTotal"
+                    >
+                      <div class="hidden loading-overlay">
+                        <div class="loading-overlay__spinner">
+                          {%- render 'theme-icons' with 'loading', class: 'stroke-current' -%}
+                        </div>
+                      </div>
+
+                      <div class="flex flex-col text-sm font-semibold text-grey-10">
+                        {%- if item.original_line_price != item.final_line_price -%}
+                          <span class="sr-only">{{ 'products.product.price.regular_price' | t }}</span>
+                          <s class="text-secondary">{{ item.original_line_price | money }}</s>
+                          <span class="sr-only">{{ 'products.product.price.sale_price' | t }}</span>
+                          <span class="font-semibold">{{ item.final_line_price | money }}</span>
+                        {%- else -%}
+                          <span class="font-semibold">{{ item.original_line_price | money }}</span>
+                        {%- endif -%}
+                      </div>
+                    </td>
+
+                    <td class="flex justify-end cart-item__quantity" role="cell" headers="Cart-ColumnQuantity">
+                      <quantity-input class="font-semibold quantity-input quantity-input--small text-md text-grey-10">
+                        <button name="minus">
+                          <span class="sr-only">
+                            {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                          </span>
+                          {%- render 'theme-icons' with 'minus',
+                            width: 16,
+                            height: 16,
+                            class: 'max-lg:w-4 stroke-current'
+                          -%}
+                        </button>
+                        <input
+                          id="Quantity-{{ item.index | plus: 1 }}"
+                          type="number"
+                          data-quantity-variant-id="{{ item.variant.id }}"
+                          name="updates[]"
+                          value="{{ item.quantity }}"
+                          data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
+                          min="{{ item.variant.quantity_rule.min }}"
+                          {% if item.variant.quantity_rule.max != null %}
+                            max="{{ item.variant.quantity_rule.max }}"
+                          {% endif %}
+                          step="{{ item.variant.quantity_rule.increment }}"
+                          aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+                          data-index="{{ item.index | plus: 1 }}"
+                        >
+                        <button name="plus">
+                          <span class="sr-only">
+                            {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                          </span>
+                          {%- render 'theme-icons' with 'plus',
+                            width: 16,
+                            height: 16,
+                            class: 'max-lg:w-4 stroke-current'
+                          -%}
+                        </button>
+                      </quantity-input>
+                    </td>
+
+                    <td
+                      class="inline-flex justify-end cart-item__remove"
+                      role="cell"
+                      headers="Cart-ColumnRemove"
+                    >
+                      {%- liquid
+                        capture remove_button_bg
+                          if section.settings.background_color != 'rgba(0,0,0,0)'
+                            echo section.settings.background_color
+                          else
+                            echo '#fff'
+                          endif
+                        endcapture
+                      -%}
+
+                      <button
+                        is="remove-cart-item"
+                        id="Cart-Remove-{{ item.index | plus: 1 }}"
+                        data-index="{{ item.index | plus: 1 }}"
+                        class="absolute flex items-center justify-center bg-current border border-solid rounded-full cursor-pointer -top-3 -right-3 w-7 h-7 border-grey-95 hover:shadow-2"
+                        style="background-color: {{ remove_button_bg }}"
+                        aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}"
+                      >
+                        <span class="sr-only">{{ 'sections.cart.remove_title' | t: title: item.title }}</span>
+                        {%- render 'theme-icons' with 'close', class: 'stroke-current block', width: 14, height: 14 -%}
+                      </button>
+                    </td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+          {%- endif -%}
+
+          <p id="Cart-LiveRegionText" class="sr-only" role="status"></p>
+          <p id="Cart-LineItemStatus" class="sr-only" aria-hidden="true" role="status">
+            {{- 'accessibility.loading' | t -}}
+          </p>
+        </div>
+        <div class="mb-6 text-validation-error text-md empty:hidden" id="Cart-CartErrors" role="alert"></div>
+      </form>
+    </cart-items>
+  </div>
+
+  {%- # Summary -%}
+  {%- liquid
+    # Text Classes
+    capture summary_text_color
+      case section.settings.summary_text_color
+        when 'dark'
+          echo 'text-primary'
+        when 'light'
+          echo 'text-primaryInverse'
+      endcase
+    endcapture
+  -%}
+
+  <div
+    class="col-span-12 lg:col-span-5 relative {{ summary_text_color }} max-lg:py-9 max-lg:px-row lg:p-14 js-cart-footer"
+    style="background-color: {{ section.settings.summary_background_color }}"
+    {% if cart == empty %}
+      hidden
+    {% endif %}
+  >
+    <div class="sticky top-[var(--header-height)]">
+      <h2 class="{{ heading_class }} text-lg mb-6">
+        {{- 'sections.cart.summary' | t -}}
+      </h2>
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            {%- render block -%}
+          {%- when 'loyalty-points' -%}
+            {% render 'loyalty_cart-points',
+              cart: cart,
+              class: 'justify-center py-6 mb-9 border-b border-border-focus',
+              logged_in_link: section.settings.logged_in_link,
+              logged_in_link_text: section.settings.logged_in_link_text,
+              guest_link: section.settings.guest_link,
+              guest_link_text: section.settings.guest_link_text
+            %}
+
+          {%- when 'subtotal' -%}
+            <div class="flex flex-col mb-6 gap-y-2 text-md">
+              <div class="flex flex-wrap justify-between gap-y-1" role="status">
+                <p class="font-semibold">{{ 'sections.cart.subtotal' | t }}</p>
+                <p class="font-semibold">{{ cart.total_price | money }}</p>
+
+                {%- if cart.cart_level_discount_applications.size > 0 -%}
+                  <ul
+                    class="flex flex-col items-end w-full text-sm text-grey-20"
+                    role="list"
+                    aria-label="{{ 'customer.order.discount' | t }}"
+                  >
+                    {%- for discount in cart.cart_level_discount_applications -%}
+                      <li class="flex gap-x-1">
+                        {%- render 'theme-icons' with 'discount' -%}
+                        {{ discount.title }}
+                        (-{{ discount.total_allocated_amount | money }})
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+
+              {%- liquid
+                assign tax = 'sections.cart.taxes_at_checkout' | t
+                assign shipping = 'sections.cart.shipping_at_checkout' | t
+                assign shipping_tooltips = settings.shipping_tooltips
+                assign tax_tooltips = settings.tax_tooltips
+                assign tooltips_container_class = 'group-hover:block hidden absolute border-border-light border bottom-full p-2 bg-white rounded-1 text-sm font-normal w-[120px]'
+                if cart.taxes_included
+                  assign tax = 'sections.cart.taxes_included' | t
+                endif
+              -%}
+
+              <div class="flex justify-between">
+                <div class="flex items-center gap-2 font-semibold">
+                  {{ 'sections.cart.headings.shipping' | t }}
+                  {%- if shipping_tooltips != blank -%}
+                    <button class="relative group">
+                      {%- render 'theme-icons' with 'info-circle', class: 'stroke-current', height: 16, width: 16 -%}
+                      <span class="{{ tooltips_container_class }}">
+                        {{- shipping_tooltips -}}
+                      </span>
+                    </button>
+                  {%- endif -%}
+                </div>
+                <p>{{ shipping }}</p>
+              </div>
+
+              <div class="flex justify-between">
+                <div class="flex items-center gap-2 font-semibold">
+                  {{ 'sections.cart.headings.tax' | t }}
+                  {%- if tax_tooltips != blank -%}
+                    <button class="relative group">
+                      {%- render 'theme-icons' with 'info-circle', class: 'stroke-current', height: 16, width: 16 -%}
+                      <span class="{{ tooltips_container_class }}">
+                        {{- tax_tooltips -}}
+                      </span>
+                    </button>
+                  {%- endif -%}
+                </div>
+                <p>{{ tax }}</p>
+              </div>
+            </div>
+
+            <hr class="mb-6 o-hr o-hr--dark">
+
+            <div class="flex justify-between mb-6 font-semibold tracking-wide uppercase text-md text-grey-10">
+              <p class="font-semibold">{{ 'sections.cart.headings.total' | t }}</p>
+              <p class="font-semibold">{{ cart.total_price | money }}</p>
+            </div>
+
+            <hr class="mb-6 o-hr o-hr--dark">
+
+          {%- when 'buttons' -%}
+            <div class="mb-6">
+              <button
+                type="submit"
+                class="button button--{{ block.settings.checkout_button_style }} w-full md:mb-4"
+                name="checkout"
+                form="Cart-Form"
+              >
+                {{ 'sections.cart.checkout' | t }}
+              </button>
+
+              {%- if additional_checkout_buttons -%}
+                <div class="additional-checkout-buttons">
+                  {{ content_for_additional_checkout_buttons }}
+                </div>
+              {%- endif -%}
+            </div>
+
+            <ul class="flex flex-wrap justify-center gap-2 mb-9 empty:mb-0">
+              {%- for type in shop.enabled_payment_types -%}
+                <li>
+                  {{- type | payment_type_svg_tag: class: 'w-[36px] h-[22px]' -}}
+                </li>
+              {%- endfor -%}
+            </ul>
+
+          {%- when 'free_delivery' -%}
+            {%- if settings.free_delivery_enabled -%}
+              <label class="flex flex-col text-sm mb-9 delivery-progress">
+                {%- liquid
+                  assign remaining = localization.market.metafields.custom.delivery_threshold | minus: cart.total_price
+                  if remaining > 0
+                    assign remaining_money = remaining | money
+                    assign label = 'general.free_delivery.in_progress_html' | t: money: remaining_money
+                  else
+                    assign label = 'general.free_delivery.completed' | t
+                  endif
+                -%}
+
+                <span class="mb-2 text-center">{{ label }}</span>
+                <progress
+                  max="{{ localization.market.metafields.custom.delivery_threshold }}"
+                  value="{{ cart.total_price }}"
+                ></progress>
+              </label>
+            {%- endif -%}
+
+          {%- when 'text' -%}
+            <div class="text-center rte rte--cart text-md">{{- block.settings.text -}}</div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>

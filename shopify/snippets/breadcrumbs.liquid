@@ -1,0 +1,179 @@
+{% comment %}
+  Documentation - http://docs.shopify.com/support/your-website/navigation/creating-a-breadcrumb-navigation
+{% endcomment %}
+
+{%- capture divider_span -%}
+  <span class="text-grey-70" aria-hidden="true">
+    &nbsp;/
+  </span>
+{%- endcapture -%}
+
+<nav
+  class="py-3"
+  role="navigation"
+  aria-label="breadcrumbs"
+  itemscope
+  itemtype="http://schema.org/BreadcrumbList"
+>
+  <ul class="text-xs capitalize text-grey-10">
+    <li
+      class="inline text-grey-70"
+      itemprop="itemListElement"
+      itemscope
+      itemtype="http://schema.org/ListItem"
+    >
+      <meta itemprop="position" content="1">
+      <span itemprop="name">
+        <a itemprop="item" href="/" title="Home">
+          {{- 'general.breadcrumbs.home' | t -}}
+        </a>
+      </span>
+    </li>
+
+    {%- if request.page_type contains 'page' -%}
+      <li
+        class="inline"
+        itemprop="itemListElement"
+        itemscope
+        itemtype="http://schema.org/ListItem"
+      >
+        {{ divider_span }}
+        <meta itemprop="position" content="2">
+        <span itemprop="item">{{ page.title | downcase }}</span>
+      </li>
+    {%- elsif request.page_type contains 'product' -%}
+      {%- if collection.url -%}
+        <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          {{- divider_span -}}
+          <meta itemprop="position" content="2">
+          <span itemprop="name">
+            <a itemprop="item" href="{{ collection.url }}" title="{{ collection.title | downcase }}">
+              {{- collection.title | downcase -}}
+            </a>
+          </span>
+        </li>
+
+        <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          {{- divider_span -}}
+          <meta itemprop="position" content="3">
+          <span itemprop="name">{{- product.title | downcase -}}</span>
+        </li>
+      {%- else -%}
+        <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          {{- divider_span -}}
+          <meta itemprop="position" content="2">
+          <span itemprop="name">{{- product.title | downcase -}}</span>
+        </li>
+      {%- endif -%}
+    {%- elsif request.page_type contains 'collection' and collection.handle -%}
+      {%- if current_tags -%}
+        {%- capture url -%}/collections/{{ collection.handle | downcase }}{%- endcapture -%}
+
+        <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          {{- divider_span -}}
+          <meta itemprop="position" content="2">
+          <span itemprop="name">{{- collection.title | link_to: url | downcase -}}</span>
+        </li>
+
+        <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          {{- divider_span -}}
+          <meta itemprop="position" content="3">
+          <span itemprop="name">
+            {%- liquid
+              assign theseTags = ''
+              for tag in current_tags
+                assign cat = tag | split: '_' | last
+
+                capture theseTags
+                  echo theseTags | downcase
+                  if forloop.first != true
+                    echo '+'
+                  endif
+                  echo cat | downcase
+                endcapture
+              endfor
+            -%}
+
+            {{- theseTags | downcase -}}
+          </span>
+        </li>
+      {%- else -%}
+        <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          {{- divider_span -}}
+          <meta itemprop="position" content="2">
+          <span itemprop="name" class="text-grey-20">{{- collection.title | downcase -}}</span>
+        </li>
+      {%- endif -%}
+    {%- elsif request.page_type contains 'page' -%}
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="2">
+        <span itemprop="name">{{- page.title -}}</span>
+      </li>
+
+    {%- elsif template.suffix == 'help-center' -%}
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="3">
+        <span itemprop="name">{{- blog.title | link_to: blog.url | downcase -}}</span>
+      </li>
+
+    {%- elsif request.page_type == 'blog' -%}
+      {%- if current_tags -%}
+        <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          {{- divider_span -}}
+          <meta itemprop="position" content="3">
+          <span itemprop="name">{{- current_tags | join: ' + ' | downcase -}}</span>
+        </li>
+      {%- else -%}
+        <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          {{- divider_span -}}
+          <meta itemprop="position" content="2">
+          <span itemprop="name">{{- blog.title | link_to: blog.url | downcase -}}</span>
+        </li>
+      {%- endif -%}
+    {%- elsif request.page_type contains 'article' -%}
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="3">
+        <span itemprop="name">{{ blog.title | link_to: blog.url | downcase }}</span>
+      </li>
+
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="4">
+        <span itemprop="name">{{ article.title | downcase }}</span>
+      </li>
+    {%- elsif request.page_type contains 'search' -%}
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="2">
+        <span itemprop="name">{{- 'nosto.serp.breadcrumbs.prompt' | t -}}</span>
+      </li>
+    {%- elsif request.page_type contains 'account' -%}
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="2">
+        <span itemprop="name">Dashboard</span>
+      </li>
+    {%- elsif request.page_type contains 'order' -%}
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="2">
+        <span itemprop="name">Order{{ order.name }}</span>
+      </li>
+    {%- elsif request.page_type contains 'addresses' -%}
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="2">
+        <span itemprop="name">Address Book</span>
+      </li>
+    {%- else -%}
+      <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        {{- divider_span -}}
+        <meta itemprop="position" content="2">
+        <span itemprop="name">{{- page.title | downcase -}}</span>
+      </li>
+    {%- endif -%}
+  </ul>
+</nav>

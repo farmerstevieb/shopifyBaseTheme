@@ -1,0 +1,146 @@
+{%- liquid
+  render 'theme_assets' with 'section-text-media.min.css'
+  render 'section-spacing-and-color', set_bg: false, set_padding: false
+
+  assign has_bg = true
+  if section.settings.background_color == empty or section.settings.background_color == 'rgba(0,0,0,0)'
+    assign has_bg = false
+  endif
+
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+-%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  <div class="text-media text-media--{{ section.settings.padding }} {% if has_bg %} text-media--bg{% endif %} grid lg:grid-cols-6 items-center">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'form' -%}
+          <div
+            class="text-media__text lg:col-span-3 max-lg:row-start-1"
+            {{ block.shopify_attributes }}
+            style="background-color: {{ block.settings.background_color}}"
+          >
+            {% liquid
+              case block.settings.color
+                when 'dark'
+                  assign call_us_color = 'text-primary'
+
+                when 'light'
+                  assign call_us_color = 'text-primaryInverse'
+              endcase
+            %}
+
+            {% if block.settings.gorgias_form_uid != blank %}
+              <div class="h-full w-full [&>*]:text-left [&>*]:self-start">
+                <script defer src="https://contact.gorgias.help/api/contact-forms/loader.js?v=3" data-gorgias-loader-contact-form data-gorgias-contact-form-uid="{{ block.settings.gorgias_form_uid }}"></script>
+              </div>
+            {% else %}
+              <!-- Original Shopify Form -->
+              {% capture text %}
+                {{ block.settings.text }}
+                {%- render 'form-contact', require_phone: true -%}
+              {% endcapture %}
+
+              {%- render 'object-content',
+                block: block.settings,
+                class: 'w-full [&>*]:text-left [&>*]:self-start',
+                text: text,
+                heading_font_weight: 'font-medium'
+              -%}
+            {% endif %}
+          </div>
+
+        {%- when 'find_us' -%}
+          {%- liquid
+            assign subHeadingClass = 'font-semibold text-md tracking-wide leading-base mb-4 uppercase text-grey-10'
+            assign textClass = 'text-md text-grey-10'
+          -%}
+          <div
+            class="text-media__media max-lg:mt-12 lg:col-span-3 max-4xl:px-row 4xl:pl-[48px] 4xl:pr-row"
+            {{ block.shopify_attributes }}
+          >
+            <div
+              class="grid gap-8 lg:grid-cols-6 lg:gap-12 max-w-[504px] mx-auto"
+            >
+              <div class="lg:col-span-6">
+                <h2 class="w-full mb-8 font-medium content__heading leading-1 tracking-0 text-3sm lg:text-4xl text-brand-bramble lg:mb-12">
+                  {{ block.settings.top_heading }}
+                </h2>
+                <div class="{{ subHeadingClass }} mb-2">{{ block.settings.top_subheading }}</div>
+                <div class="{{ textClass }}">
+                  {{ block.settings.top_text }}
+                </div>
+              </div>
+              {% if block.settings.show_call_us %}
+                <div class="lg:col-span-3">
+                  <div class="">
+                    <h4 class="{{ subHeadingClass }}">{{ 'templates.contact.call_us_subtitle' | t }}</h4>
+                    <p class="{{textClass}}">
+                      {% render 'theme-icons' with 'phone-outline', width: 12, height: 12 %}
+                      {{ 'templates.contact.call_us_html' | t }}
+                    </p>
+                  </div>
+                </div>
+              {% endif %}
+              {% if block.settings.show_follow_us %}
+                <div class="lg:col-span-3">
+                  <h4 class="{{ subHeadingClass }}">{{ 'templates.contact.follow_us_subtitle' | t }}</h4>
+
+                  <ul class="flex gap-4">
+                    {%- for social_link in shop.brand.metafields.social_links -%}
+                      <li class="flex h-fit">
+                        <a
+                          href="{{ social_link[1].value }}"
+                          rel="noreferrer"
+                          aria-describedby="a11y-external-message"
+                        >
+                          {%- render 'theme-icons' with social_link[0],
+                            width: 16,
+                            height: 16,
+                            stroke: 'none',
+                            fill: 'currentColor'
+                          -%}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {% endif %}
+
+              {% if block.settings.bottom_heading_1 or block.settings.bottom_heading_2 %}
+                {%- for n in (1..2) -%}
+                  {%- liquid
+                    assign blockHeading = 'bottom_heading_' | append: n
+                    assign blockContent = 'bottom_text_' | append: n
+                  -%}
+                  <div class="lg:col-span-3">
+                    <h4 class="{{ subHeadingClass }}">
+                      {{ block.settings[blockHeading] }}
+                    </h4>
+                    <div class="{{textClass}}">{{ block.settings[blockContent] }}</div>
+                    {%- if forloop.first -%}
+                      <div class="mt-2 {{ textClass }} underline">
+                        {% render 'object-ctas', settings: block.settings %}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endfor -%}
+              {% endif %}
+            </div>
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+{% endif %}

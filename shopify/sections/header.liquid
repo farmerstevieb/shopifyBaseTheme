@@ -1,0 +1,95 @@
+<div class="header__main">
+  <button
+    type="button"
+    class="header__burger js-nav-open"
+  >
+    {%- render 'theme-icons' with 'burger-menu', width: 32, height: 32, stroke: "#222222" -%}
+    <span class="sr-only">{{- 'general.drawers.open' | t -}}</span>
+  </button>
+
+  <div class="header__nav">
+    {%- render 'navigation', section: section -%}
+  </div>
+
+  <div class="header__logo">
+    {%- render 'brand-logo', section: section, class: 'header-logo' -%}
+  </div>
+
+  <div class="header__functions">
+    {% # Trade %}
+    <a
+      class="header__trade button button--{{ section.settings.trade_button_style }}"
+      href="
+        {%- liquid
+          if customer
+            echo routes.account_url
+          else
+            echo routes.account_register_url
+          endif
+        -%}
+      "
+    >
+      {%- render 'theme-icons' with section.settings.trade_button_icon, width: 16, height: 16 -%}
+      {{- 'sections.header.trade' | t -}}
+    </a>
+
+    {% # Search %}
+    <div class="header__search-triggers">
+      <button
+        class="header__search-open js-header-search-open"
+        type="button"
+        aria-hidden="false"
+      >
+        {%- render 'theme-icons' with 'search-dark', width: 28, height: 28 -%}
+        <span class="sr-only">{{ 'sections.header.search_form.open' | t }}</span>
+      </button>
+
+      <button
+        class="opacity-0 pointer-events-none header__search-close js-header-search-close"
+        type="button"
+        aria-hidden="true"
+      >
+        {%- render 'theme-icons' with 'close', classes: 'stroke-primary', width: 28, height: 28 -%}
+        <span class="sr-only">{{ 'sections.header.search_form.close' | t }}</span>
+      </button>
+    </div>
+
+    <div class="header__search js-header-search">
+      <div class="header__search-wrapper">
+        {%- render 'nosto_predictive-search' -%}
+      </div>
+    </div>
+
+    {% # Accounts %}
+    <a
+      class="header__accounts"
+      href="{{ routes.account_url }}"
+      {%- if customer == null %}
+        onclick="return DrawerAccount.show()"
+      {%- endif -%}
+    >
+      {%- render 'theme-icons' with 'user', width: 28, height: 28, stroke: "#222222" -%}
+      <span class="sr-only">
+        {%- liquid
+          if customer
+            echo 'sections.header.accounts.view_account' | t
+          else
+            echo 'sections.header.accounts.log_in' | t
+          endif
+        -%}
+      </span>
+    </a>
+
+    {% # Cart %}
+    {%- if customer -%}
+      <a href="{{ routes.cart_url }}" onclick="return DrawerCart.show();" class="header__cart">
+        {%- render 'theme-icons' with 'shopping-bag', width: 28, height: 28, stroke: "#222" -%}
+        <div class="cart-count">
+          <span class="js-cart-item-count">
+            {{ cart.item_count }}
+          </span>
+        </div>
+      </a>
+    {%- endif -%}
+  </div>
+</div>

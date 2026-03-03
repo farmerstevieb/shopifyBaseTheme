@@ -1,0 +1,625 @@
+{%- liquid
+  render 'theme_assets' with 'section-product.min.css'
+  render 'section-spacing', set_padding: false
+  assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
+
+  assign title_class = 'text-grey-0 text-lg tracking-0'
+-%}
+
+<section
+  id="MainProduct-{{ section.id }}"
+  class="product"
+  data-section="{{ section.id }}"
+>
+  <div class="product__media">
+    {%- if product.metafields.info.badge -%}
+      <div class="product__media-badge">
+        {%- render 'object-image' with product.metafields.info.badge -%}
+      </div>
+    {%- endif -%}
+
+    {% if section.settings.enable_media_sticker_mobile == true %}
+      <div class="absolute top-0 z-1 mb-6 md:hidden max-lg:w-full">
+        {%- render 'product-stickers', block: block, product: product -%}
+      </div>
+    {% endif %}
+
+    {%- render 'product-media-gallery',
+      variant_images: variant_images,
+      media_fit: section.settings.media_fit,
+      image_zoom: section.settings.image_zoom
+    -%}
+  </div>
+
+  <div class="product__details flex flex-col gap-5 {% if section.settings.enable_sticky_info %}md:sticky{% endif %}">
+    {%- assign product_form_id = 'product-form-' | append: section.id -%}
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when '@app' -%}
+          {% render block %}
+
+        {%- when 'box_start' -%}
+          {{
+            '<div class="box-start flex flex-col md:max-w-[500px] md:ml-auto w-full" '
+            | append: block.shopify_attributes
+            | append: '>'
+          }}
+          {%- assign box_close_tag = '</div>' -%}
+
+        {%- when 'box_end' -%}
+          {{ box_close_tag }}
+          {%- assign box_close_tag = null -%}
+
+        {%- when 'header_start' -%}
+          {{
+            '<div class="flex flex-wrap items-center justify-between gap-y-2 gap-x-5" '
+            | append: block.shopify_attributes
+            | append: '>'
+          }}
+          {%- assign header_close_tag = '</div>' -%}
+
+        {%- when 'header_end' -%}
+          {{ header_close_tag }}
+          {%- assign header_close_tag = null -%}
+
+        {%- when 'body_start' -%}
+          {% if customer %}
+            {{ '<sticky-button class="product__details-body" ' | append: block.shopify_attributes | append: '>' }}
+            {%- assign body_close_tag = '</sticky-button>' -%}
+          {% endif %}
+
+        {%- when 'body_end' -%}
+          {% if customer %}
+            {{ body_close_tag }}
+            {%- assign body_close_tag = null -%}
+          {% endif %}
+
+        {%- when 'sticky_button' -%}
+          {% if customer %}
+            <div class="product__details-sitcky-button lg:hidden">
+              {%- render 'product-sticky-button', product: product -%}
+              <button
+                type="button"
+                class="js-show-variants ml-auto flex items-center gap-1 text-sm font-semibold uppercase tracking-standard underline"
+              >
+                {%- render 'theme-icons' with 'pencil', width: 18, height: 18 -%}
+                {{ 'products.product.change' | t }}
+              </button>
+            </div>
+          {% endif %}
+
+        {%- when 'divider' -%}
+          <hr class="o-hr {{ block.settings.hidden}}" role="presentation" {{ block.shopify_attributes }}>
+
+        {%- when 'custom_liquid' -%}
+          {{ block.settings.custom_liquid }}
+
+        {%- when 'stickers' -%}
+          <div class="mb-6 max-md:hidden">
+            {%- render 'product-stickers', block: block, product: product -%}
+          </div>
+
+        {%- when 'title' -%}
+          <h1 class="mb-3 text-2xl font-light tracking-0 text-grey-0 lg:text-4xxl" {{ block.shopify_attributes }}>
+            {{ product.title }}
+          </h1>
+
+        {%- when 'price' -%}
+          {%- if customer -%}
+            {%- liquid
+              assign selVar = product.selected_or_first_available_variant
+              assign rrp_value = null
+
+              if block.settings.show_rrp
+                if localization.market.handle == 'gb' or localization.market.handle == 'gb-retail'
+                  assign rrp_value = selVar.metafields.custom.pdp_rrp_united_kingdom
+                elsif localization.market.handle == 'us'
+                  assign rrp_value = selVar.metafields.custom.pdp_rrp_united_states
+                elsif localization.market.handle == 'eu' or localization.market.handle == 'deliver-duties-unpaid-7857cb13-a9e5-40e6-9303-342aaadada0e' or localization.market.handle == 'b2b-in-europe'
+                  assign rrp_value = selVar.metafields.custom.pdp_rrp_europe
+                elsif localization.market.handle == 'ae' or localization.market.handle == 'b2b-in-gcc'
+                  assign rrp_value = selVar.metafields.custom.pdp_rrp_gcc
+                else
+                  assign rrp_value = selVar.metafields.custom.pdp_rrp_united_kingdom
+                endif
+              endif
+              assign rrp_cents = rrp_value | times: 100
+            -%}
+            <div
+              class="flex gap-1 text-2xl{% if rrp_value == blank %} mb-9{% endif %}"
+              id="price-{{ section.id }}"
+              role="status"
+              {{ block.shopify_attributes }}
+            >
+              {%- render 'product-price',
+                product: product,
+                use_variant: true,
+                class: 'text-lg font-semibold flex flex-row-reverse gap-x-1'
+              -%}
+            </div>
+            {%- if block.settings.show_rrp -%}
+              {% if rrp_value != blank %}
+                <div
+                  class="mb-9 flex gap-1 text-2xl"
+                  id="rrp-{{ section.id }}"
+                  role="status"
+                  {{ block.shopify_attributes }}
+                >
+                  <div class="text-xs font-semibold">
+                    {{ block.settings.rrp_label | default: 'RRP:' }}
+                    {{ rrp_cents | money }}
+                  </div>
+                </div>
+              {% else %}
+                <div id="rrp-{{ section.id }}" class="hidden"></div>
+              {% endif %}
+            {%- endif -%}
+          {%- endif -%}
+        {%- when 'description' -%}
+          {%- if product.description != blank -%}
+            <details
+              id="Details-{{ block.id }}-{{ section.id }}"
+              class="group py-4 {{ block.settings.hidden}}"
+              {{ block.shopify_attributes }}
+            >
+              <summary class="flex cursor-pointer items-center justify-between">
+                <div class="flex items-center gap-x-2">
+                  <h2 class="{{title_class}}">
+                    {{ block.settings.title | default: block.settings.page.title }}
+                  </h2>
+                </div>
+                {%- render 'theme-icons' with block.settings.icon,
+                  width: 18,
+                  height: 18,
+                  classes: 'group-open:rotate-180'
+                -%}
+              </summary>
+
+              <div class="rte pt-3 text-md text-grey-25">
+                {{ product.description }}
+              </div>
+            </details>
+          {%- endif -%}
+
+        {%- when 'variant_picker' -%}
+          {%- liquid
+            assign length_guide_page = settings.length_guide_page
+            assign colour_guide_page = section.settings.colour_guide_page
+          -%}
+
+          {% render 'product-variant-picker',
+            block: block,
+            product: product,
+            length_guide_page: length_guide_page,
+            colour_guide_page: colour_guide_page
+          %}
+
+        {%- when 'estimated_delivery' -%}
+          <delivery-countdown
+            class="flex items-center{% unless box_close_tag %} px-5{% endunless %} mb-9 mt-4 gap-x-3 text-sm"
+            cutoff="{{ settings.estimate_delivery_cutoff }}"
+            excludedDates="{{ settings.estimate_delivery_excluded_dates }}"
+            nextdaylabel="{{ 'general.delivery_estimate.nextday_delivery_html' | t: time: '[time]', date: '[date]' }}"
+            nextweeklabel="{{ 'general.delivery_estimate.weekday_delivery_html' | t: day: '[day]' }}"
+            {{ block.shopify_attributes }}
+            {% unless settings.estimate_delivery_enabled %}
+              hidden
+            {% endunless %}
+          >
+            {%- render 'theme-icons' with 'truck', width: 20, height: 20 -%}
+            <p class="invisible">
+              {{ 'general.delivery_estimate.nextday_delivery_html' | t: time: '[time]', date: '[date]' }}
+            </p>
+          </delivery-countdown>
+
+        {%- when 'buy_buttons' -%}
+          {%- render 'product-buy-buttons',
+            block: block,
+            product: product,
+            product_form_id: product_form_id,
+            section: section
+          -%}
+        {%- when 'quantity_selector' -%}
+          {%- if customer -%}
+            <div class="product__details-quantity mb-2 flex flex-col text-grey-5" {{ block.shopify_attributes }}>
+              {%- assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id -%}
+              <label class="font-bold" for="Quantity-{{ section.id }}">
+                <span class="sr-only{% if cart_qty == 0 %} hidden{% endif %}">
+                  {{- 'products.product.quantity.in_cart_html' | t: quantity: cart_qty -}}
+                </span>
+              </label>
+
+              <quantity-input class="quantity-input js-quantity-input">
+                <button class="button" name="minus">
+                  <span class="sr-only">
+                    {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                  </span>
+                  {%- render 'theme-icons' with 'minus', width: 18, height: 18 -%}
+                </button>
+
+                <input
+                  class="quantity__input text-sm font-normal"
+                  type="number"
+                  name="quantity"
+                  id="Quantity-{{ section.id }}"
+                  data-cart-quantity="{{ cart_qty }}"
+                  data-min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                  min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                  {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+                    data-max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                    max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                  {% endif %}
+                  step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+                  value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                  form="{{ product_form_id }}"
+                >
+
+                <button class="button" name="plus">
+                  <span class="sr-only">
+                    {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                  </span>
+                  {%- render 'theme-icons' with 'plus', width: 18, height: 18 -%}
+                </button>
+              </quantity-input>
+            </div>
+          {%- endif -%}
+
+        {%- when 'share' -%}
+          {%- assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin -%}
+          <div class="flex justify-between" {{ block.shopify_attributes }}>
+            <h2 class="{{title_class}}">{{ block.settings.title }}</h2>
+            {%- render 'share', share_url: share_url -%}
+          </div>
+
+        {%- when 'popup' -%}
+          <h2 class="{{ title_class}} flex py-4 {{ block.settings.hidden}}" {{ block.shopify_attributes }}>
+            <button
+              is="modal-opener"
+              modal="#PopupModal-{{ block.id }}"
+              id="ProductPopup-{{ block.id }}"
+              class="button button--full justify-between"
+              type="button"
+              aria-haspopup="dialog"
+            >
+              <span class="flex items-center gap-x-2">
+                {{ block.settings.title | default: block.settings.page.title }}
+              </span>
+              {%- render 'theme-icons' with block.settings.icon, width: 18, height: 18 -%}
+            </button>
+          </h2>
+
+        {%- when 'collapsible_tab' -%}
+          {% if block.settings.text != blank or block.settings.page.content != blank or product.description != blank %}
+            <details
+              id="Details-{{ block.id }}-{{ section.id }}"
+              class="group py-4 {{ block.settings.hidden}}"
+              {{ block.shopify_attributes }}
+            >
+              <summary class="flex cursor-pointer items-center justify-between">
+                <div class="flex items-center gap-x-2">
+                  <h2 class="{{title_class}}">
+                    {{ block.settings.title | default: block.settings.page.title }}
+                  </h2>
+                </div>
+                {%- render 'theme-icons' with block.settings.icon,
+                  width: 18,
+                  height: 18,
+                  classes: 'group-open:rotate-180'
+                -%}
+              </summary>
+
+              <div class="rte pt-3 text-md text-grey-25">
+                {%- if product.description != blank and block.settings.use_description -%}
+                  {{ product.description }}
+                {%- else -%}
+                  {%- if block.settings.text != blank -%}
+                    {{ block.settings.text }}
+                  {%- endif -%}
+                  {% if block.settings.page.content != blank %}
+                    {{ block.settings.page.content }}
+                  {% endif %}
+                {%- endif -%}
+              </div>
+            </details>
+          {% endif %}
+
+        {%- when 'usps' -%}
+          {%- for n in (1..3) -%}
+            {%- liquid
+              assign usps_html = usps_html | default: ''
+              assign title = 'title_' | append: n
+              assign image_key = 'image_' | append: n
+            -%}
+            {%- if block.settings[image_key] != blank -%}
+              {%- capture usps_html -%}
+                    {{ usps_html }}
+
+                    {%- if usps_html != '' -%}
+                      <li class="o-hr o-hr--vertical" aria-hidden="true"></li>
+                    {%- endif -%}
+
+                    <li class="flex max-w-[148px] flex-grow flex-col items-center gap-y-2 px-2 text-center">
+                      {%- render 'object-image' with block.settings[image_key], width: 56, height: 56, sizes: '56px', widths: '56, 84', class: 'only:my-auto' -%}
+                      {%- if block.settings[title] != blank -%}
+                        <span class="text-xs font-bold" >{{ block.settings[title] }}</span>
+                      {%- endif -%}
+                    </li>
+                  {%- endcapture -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if usps_html != '' -%}
+            <ul class="flex justify-between gap-x-2" {{ block.shopify_attributes }}>
+              {{ usps_html }}
+            </ul>
+          {%- endif -%}
+
+        {%- when 'text' -%}
+          {%- if block.settings.text != blank -%}
+            <div class="py-4" {{ block.shopify_attributes }}>
+              {%- if block.settings.title != blank -%}
+                <h2 class="mb-3 font-heading font-bold">{{ block.settings.title }}</h2>
+              {%- endif -%}
+              <div class="rte rte--check-list text-md">
+                {{ block.settings.text }}
+              </div>
+            </div>
+          {%- endif -%}
+
+        {%- when 'switch_tab' -%}
+          <tab-switching class="product__tab block overflow-hidden pb-4 pt-6 {{ block.settings.hidden}}">
+            <ul class="-mx-2 flex border-b border-grey-105">
+              <li class="product__tab-button js-tab is-active" data-id="1">
+                {{ block.settings.first_tab_title }}
+              </li>
+              <li class="product__tab-button js-tab" data-id="2">
+                {{ block.settings.second_tab_title }}
+              </li>
+            </ul>
+            <div class="mt-4 text-grey-25">
+              <div class="rte rte-sm product__tab-panel js-panel is-open" data-id="1" style="--rte-gap: 16px;">
+                {%- if product.description != blank -%}
+                  {{ product.description }}
+                {%- else -%}
+                  {{ block.settings.first_tab_content }}
+                {%- endif -%}
+              </div>
+              <div class="rte rte-sm product__tab-panel js-panel" data-id="2">
+                {%- if block.settings.second_tab_content != blank -%}
+                  {{ block.settings.second_tab_content }}
+                {%- else -%}
+                  {{ block.settings.page.content }}
+                {%- endif -%}
+              </div>
+            </div>
+          </tab-switching>
+        {%- when 'complementary' -%}
+          {% case block.settings.implementation %}
+            {% when 'api' %}
+              <product-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ block.settings.limit }}&intent=complementary">
+                {%- if recommendations.performed and recommendations.products_count > 0 -%}
+                  <aside aria-label="{{ 'accessibility.complementary_products' | t }}" {{ block.shopify_attributes }}>
+                    <h2 class="mb-3 font-heading font-bold">{{ block.settings.title }}</h2>
+
+                    <ul role="list">
+                      {%- for complementary_product in recommendations.products -%}
+                        <li class="rounded-[6px] bg-[#F7F7F7] p-[20px] {% unless forloop.last %}mb-2{% endunless %}">
+                          <div class="flex items-start justify-between">
+                            <div class="flex flex-col">
+                              <h3 class="font-heading font-bold">{{ complementary_product.title }}</h3>
+                              <p class="mb-2">{{ complementary_product.price | money }}</p>
+
+                              {% form 'product', complementary_product, is: 'product-form' %}
+                                <input
+                                  type="hidden"
+                                  name="id"
+                                  value="{{ complementary_product.selected_or_first_available_variant.id }}"
+                                >
+                                <button
+                                  class="button button--primary"
+                                  name="add"
+                                  type="submit"
+                                >
+                                  Add to bag
+                                </button>
+                              {% endform %}
+                            </div>
+
+                            {% render 'object-image' with complementary_product.featured_image,
+                              width: 100,
+                              height: 100,
+                              aspect: '1 / 1'
+                            %}
+                          </div>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </aside>
+                {%- endif -%}
+              </product-recommendations>
+
+            {% when 'meta' %}
+              {% if block.settings.products.count > 0 %}
+                <aside aria-label="{{ 'accessibility.complementary_products' | t }}" {{ block.shopify_attributes }}>
+                  <h2 class="mb-3 font-heading font-bold">{{ block.settings.title }}</h2>
+
+                  <ul role="list">
+                    {%- for complementary_product in block.settings.products -%}
+                      <li class="rounded-[6px] bg-[#F7F7F7] p-[20px] {% unless forloop.last %}mb-2{% endunless %}">
+                        <div class="flex items-start justify-between">
+                          <div class="flex flex-col">
+                            <h3 class="font-heading font-bold">{{ complementary_product.title }}</h3>
+                            <p class="mb-2">{{ complementary_product.price | money }}</p>
+
+                            {% form 'product', complementary_product, is: 'product-form' %}
+                              <input
+                                type="hidden"
+                                name="id"
+                                value="{{ complementary_product.selected_or_first_available_variant.id }}"
+                              >
+                              <button
+                                class="button button--primary"
+                                name="add"
+                                type="submit"
+                              >
+                                Add to bag
+                              </button>
+                            {% endform %}
+                          </div>
+
+                          {% render 'object-image' with complementary_product.featured_image,
+                            width: 100,
+                            height: 100,
+                            aspect: '1 / 1'
+                          %}
+                        </div>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </aside>
+              {% endif %}
+          {% endcase %}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% if section.settings.image_zoom == 'lightbox' %}
+  {%- render 'product-media-modal', variant_images: variant_images -%}
+{% endif %}
+
+{%- assign popups = section.blocks | where: 'type', 'popup' -%}
+{%- for block in popups -%}
+  {% assign block_title = block.settings.title | default: block.settings.page.title %}
+  <modal-dialog
+    id="PopupModal-{{ block.id }}"
+    modal-mode="mega"
+    hidden
+    aria-labelledby="dialog-{{ block_title | handleize }}"
+    {{ block.shopify_attributes }}
+  >
+    <div data-a11y-dialog-hide></div>
+
+    <div role="document">
+      <header data-dialog-element="header">
+        <h2
+          id="dialog-{{ block_title | handleize }}"
+          class="text-sm font-semibold uppercase leading-normal tracking-standard text-grey-10"
+        >
+          {{ block_title }}
+        </h2>
+
+        <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+          {%- render 'theme-icons' with 'close' -%}
+          <span class="sr-only">Close dialog</span>
+        </button>
+      </header>
+
+      <div data-dialog-element="main">
+        <div class="rte" style="--rte-gap: 16px;">
+          {{ block.settings.page.content }}
+        </div>
+      </div>
+    </div>
+  </modal-dialog>
+{%- endfor -%}
+
+{%- if length_guide_page -%}
+  <modal-dialog
+    id="PopupModal-{{ length_guide_page.handle }}"
+    modal-mode="mega"
+    hidden
+    aria-labelledby="dialog-{{ length_guide_page.title | handleize }}"
+  >
+    <div data-a11y-dialog-hide></div>
+
+    <div role="document">
+      <header data-dialog-element="header">
+        <h2 id="dialog-{{ length_guide_page.title | handleize }}" class="{{title_class}}">
+          {{ length_guide_page.title }}
+        </h2>
+
+        <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+          {%- render 'theme-icons' with 'close' -%}
+          <span class="sr-only">Close dialog</span>
+        </button>
+      </header>
+
+      <div data-dialog-element="main">
+        <div class="rte" style="--rte-gap: 16px;">
+          {{ length_guide_page.content }}
+        </div>
+      </div>
+    </div>
+  </modal-dialog>
+{%- endif -%}
+
+{%- if colour_guide_page -%}
+  <modal-dialog
+    id="PopupModal-{{ colour_guide_page.handle }}"
+    modal-mode="mega"
+    hidden
+    aria-labelledby="dialog-{{ colour_guide_page.title | handleize }}"
+  >
+    <div data-a11y-dialog-hide></div>
+
+    <div role="document">
+      <header data-dialog-element="header">
+        <h2 id="dialog-{{ colour_guide_page.title | handleize }}" class="{{title_class}}">
+          {{ colour_guide_page.title }}
+        </h2>
+
+        <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+          {%- render 'theme-icons' with 'close' -%}
+          <span class="sr-only">Close dialog</span>
+        </button>
+      </header>
+
+      <div data-dialog-element="main">
+        <div class="rte" style="--rte-gap: 16px;">
+          {{ colour_guide_page.content }}
+        </div>
+      </div>
+    </div>
+  </modal-dialog>
+{%- endif -%}
+
+{%- assign switch_tab = section.blocks | where: 'type', 'switch_tab' -%}
+{%- for block in switch_tab -%}
+  {% assign block_title = block.settings.second_tab_title | default: block.settings.page.title %}
+  <modal-dialog
+    id="PopupModal-{{ block.id }}"
+    modal-mode="mega"
+    hidden
+    aria-labelledby="dialog-{{ block_title | handleize }}"
+    {{ block.shopify_attributes }}
+  >
+    <div data-a11y-dialog-hide></div>
+
+    <div role="document">
+      <header data-dialog-element="header">
+        <h2
+          id="dialog-{{ block_title | handleize }}"
+          class="text-sm font-semibold uppercase leading-normal tracking-standard text-grey-10"
+        >
+          {{ block_title }}
+        </h2>
+
+        <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+          {%- render 'theme-icons' with 'close' -%}
+          <span class="sr-only">Close dialog</span>
+        </button>
+      </header>
+
+      <div data-dialog-element="main">
+        <div class="rte" style="--rte-gap: 16px;">
+          {%- if block.settings.second_tab_content != blank -%}
+            {{ block.settings.second_tab_content }}
+          {%- else -%}
+            {{ block.settings.page.content }}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </modal-dialog>
+{%- endfor -%}

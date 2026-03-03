@@ -1,0 +1,38 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-account",
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "rgba(0,0,0,0)",
+        "color_spacing": false,
+        "text_color": "dark",
+        "user_restriction": "",
+        "cta_sizes": "large",
+        "cta_sizes_desktop": "medium",
+        "cta_align": "vertical",
+        "cta_align_desktop": "vertical",
+        "cta_1_text": "Download Your Pricelist",
+        "cta_1_icon": "printer",
+        "cta_1_icon_position": "right",
+        "cta_1_link": "https://cdn.shopify.com/s/files/1/0252/5049/6566/files/RC_TradePriceList_Feb_2025_-_UK.pdf?v=1740646266",
+        "cta_1_link_style": "primary",
+        "cta_1_target": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,137 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Form - Newsletter
+  -------------------------------------------------------------------------------
+  Description
+  A newsletter form
+  -------------------------------------------------------------------------------
+  Accepts
+  - form_id: {String}
+  - title: {String}
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'newsletter-form',
+    form_id: form_id,
+    title: title
+  -%}
+  -------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- liquid
+  capture classes
+    unless form.errors
+      echo classes | append: ' form form--newsletter'
+    else
+      echo classes | append: ' form form--newsletter form--error'
+    endunless
+  endcapture
+-%}
+
+{% if use_klaviyo == 'yes' and klaviyo_form != blank %}
+  <div class="form__header">
+    {%- if title != blank -%}
+      <h3 class="mb-2 text-sm font-semibold pointer-events-none leading-base tracking-standard form__header-title">
+        {{- title -}}
+      </h3>
+    {%- endif -%}
+
+    {%- if text != blank -%}
+      <p class="pb-6 form__header-text text-smd leading-base">
+        {{- text -}}
+      </p>
+    {%- endif -%}
+  </div>
+  {{ klaviyo_form }}
+
+{% else %}
+  {%- form 'customer', class: classes, id: form_id -%}
+    <div class="form__header">
+      {%- if title != blank -%}
+        <h3 class="mb-2 text-sm font-semibold pointer-events-none leading-base tracking-standard form__header-title">
+          {{- title -}}
+        </h3>
+      {%- endif -%}
+
+      {%- if text != blank -%}
+        <p class="pb-6 form__header-text text-smd leading-base">
+          {{- text -}}
+        </p>
+      {%- endif -%}
+    </div>
+
+    {{- form.errors | default_errors -}}
+
+    {% comment %}theme-check-disable ContentForHeaderModification{% endcomment %}
+    {%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+    {% comment %}theme-check-enable ContentForHeaderModification{% endcomment %}
+
+    {%- assign queryString = contentForQuerystring
+      | split: '"pageurl":"'
+      | last
+      | split: '"'
+      | first
+      | replace: '\/', '/'
+      | replace: '%20', ' '
+      | replace: '\u0026', '&'
+    -%}
+    {% if queryString contains '?contact' %}
+      <div class="form__state form__state--success">{{- 'customer.newsletter_form.already_subscribed' | t -}}</div>
+    {% endif %}
+
+    <div class="form__fields gap-y-4">
+      {%- if form.posted_successfully? -%}
+        <p class="form__state form__state--success">
+          {{- 'customer.newsletter_form.success' | t -}}
+        </p>
+      {%- else -%}
+        <input name="contact[tags]" type="hidden" value="newsletter">
+
+        <label class="o-input" data-field="input">
+          <input
+            class="o-input__field o-input__field--newsletter"
+            required
+            type="email"
+            name="contact[email]"
+            id="newsletter-email"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+            aria-label="{{ 'customer.newsletter_form.email' | t }}"
+            placeholder="{{ 'customer.newsletter_form.email' | t }} *"
+            value="{% if customer %}{{ customer.email }}{% endif %}"
+            {% if form.errors %}
+              autofocus
+              aria-invalid="true"
+              aria-describedby="Newsletter-error--{{ section.id }}"
+            {% elsif form.posted_successfully? %}
+              aria-describedby="Newsletter-success--{{ section.id }}"
+            {% endif %}
+          >
+        </label>
+      {%- endif -%}
+
+      {%- unless form.posted_successfully? -%}
+        <button
+          class="button button--{{ button_style }} button--full button--tall"
+          type="submit"
+          id="subscribe"
+          name="subscribe"
+        >
+          {{- 'customer.newsletter_form.submit' | t -}}
+        </button>
+      {%- endunless -%}
+    </div>
+
+    {%- if form.errors -%}
+      <div class="form__errors">
+        <p
+          class="form__state form__state--error"
+          id="Newsletter-error--{{ section.id }}"
+        >
+          {{- form.errors.translated_fields.email | capitalize }}
+          {{ form.errors.messages.email -}}
+        </p>
+      </div>
+    {%- endif -%}
+  {%- endform -%}
+{% endif %}

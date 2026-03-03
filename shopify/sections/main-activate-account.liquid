@@ -1,0 +1,38 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+      --row-spacing: {{ section.settings.spacing }};
+      --bg: {{ section.settings.background_color }};
+      --section-padding: {{ section.settings.padding }};
+  }
+{% endstyle %}
+
+<div class="grid lg:grid-cols-2 gap-y-9 max-lg:mt-6">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'media' -%}
+        <div class="{%- if block.settings.mobile_hidden -%}hidden lg:flex{%- endif -%}">
+          {%-
+            render 'object-image' with block.settings.image,
+            mobile_image: block.settings.image_mobile,
+            class: 'o-picture--fill',
+            aspect: '840 / 745',
+            aspect_mobile: '1 / 1',
+            preload: true,
+          -%}
+        </div>
+    {%- endcase -%}
+  {%- endfor -%}
+
+  <div class="flex justify-center px-5 py-9 md:px-13 md:py-13 only:col-span-2">
+    <div class="o-content o-content--narrow max-md:items-center self-center text-grey-0">
+      <h1 class="text-5xl font-bold mb-9 font-heading">
+        {{ 'customer.activate.title' | t }}
+      </h1>
+
+      {%- render 'form-activate_account',
+        title: 'customer.activate.subtitle | t',
+        text: 'customer.activate.subtext | t'
+      -%}
+    </div>
+  </div>
+</div>

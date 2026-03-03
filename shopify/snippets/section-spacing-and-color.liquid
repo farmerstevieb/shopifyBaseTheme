@@ -1,0 +1,125 @@
+{%- liquid
+  assign color_spacing = color_spacing | default: section.settings.color_spacing
+  assign set_padding = set_padding
+  assign set_bg = set_bg
+
+  # Set Width
+  assign width = width | default: 'var(--page-width)'
+
+  # The user is able to change the max width of a section inside of the section settings. Refrain
+  # from using the 'width' variable when you render this snippet, and feed the default max width
+  # for the section into the schema file instead using default_max_width inside of ...section_settings()
+  if section.settings.width != 0 and section.settings.width != blank and width == 'var(--page-width)'
+    assign width = section.settings.width
+  endif
+
+  # Set Padding
+  assign padding_setting = section.settings.padding | default: set_padding
+
+  case padding_setting
+    when 'full'
+      assign padding = '0px'
+    when 'contained'
+      assign padding = '0px var(--row-space)'
+    when 'padded'
+      assign padding = 'var(--block-padding) var(--row-space)'
+  endcase
+
+  # Set Bottom Margin Spacing
+  case section.settings.spacing
+    when '0'
+      assign spacing = '0px'
+    when 'sm'
+      assign spacing = '24px'
+    when 'md'
+      assign spacing = '32px'
+    when 'lg'
+      assign spacing = '48px'
+  endcase
+
+  # Set Bottom Margin Spacing
+  case section.settings.spacing_dsk
+    when '0'
+      assign spacing_dsk = '0px'
+    when 'sm'
+      assign spacing_dsk = '32px'
+    when 'md'
+      assign spacing_dsk = '48px'
+    when 'lg'
+      assign spacing_dsk = '64px'
+  endcase
+
+  # Text Classes
+  capture primary_text_color
+    case section.settings.text_color
+      when 'dark'
+        echo 'var(--c-primary)'
+      when 'light'
+        echo 'var(--c-primary-inverse)'
+    endcase
+  endcapture
+
+  capture secondary_text_color
+    case section.settings.text_color
+      when 'dark'
+        echo 'var(--c-secondary)'
+      when 'light'
+        echo 'var(--c-secondary-inverse)'
+    endcase
+  endcapture
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --section-padding: {{ padding }};
+    --block-padding: 48px;
+    --row-width: {{ width }};
+    --row-spacing: {{ spacing }};
+    --row-spacing-dsk: {{ spacing_dsk }};
+    {% if section.settings.background_color != blank and section.settings.background_color != 'rgba(0,0,0,0)' %}
+      --bg: {{ section.settings.background_color }};
+    {% elsif section.settings.background_color != blank %}
+      --bg: #fff;
+    {% endif %}
+    {% if section.settings.text_color != blank %}
+      --section-text-primary: {{ primary_text_color }};
+      --section-text-secondary: {{ secondary_text_color }};
+      color: {{ primary_text_color }};
+    {% endif %}
+    {% if set_padding != false %}
+      padding: {{ padding }};
+    {% endif %}
+    {% if set_bg != false %}
+      background: var(--bg);
+    {% endif %}
+    {%- if color_spacing -%}
+      position: relative;
+    {%- endif -%}
+  }
+
+  @media (min-width: 640px) {
+    #shopify-section-{{ section.id }} {
+      --block-padding: 64px;
+    }
+  }
+
+  /* Background Color Application to var(--row-spacing) without using padding. */
+  {% if spacing != '0px' and color_spacing %}
+    #shopify-section-{{ section.id }}::after {
+      content: "";
+      height: var(--row-spacing, 0);
+      position: absolute;
+      left: 0;
+      bottom: calc(var(--row-spacing, 0) * -1);
+      background: var(--bg);
+      width: 100%;
+    }
+
+    @media (min-width: 1024px) {
+      #shopify-section-{{ section.id }}::after {
+        height: var(--row-spacing-dsk, var(--row-spacing));
+        bottom: calc(var(--row-spacing-dsk, var(--row-spacing)) * -1);
+      }
+    }
+  {% endif %}
+{% endstyle %}

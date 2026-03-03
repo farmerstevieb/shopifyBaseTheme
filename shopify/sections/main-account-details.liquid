@@ -1,0 +1,27 @@
+{% if customer %}
+  {% render 'theme_assets' with 'section-customer.min.css' %}
+
+  {% render 'section-spacing' %}
+
+  <div class="c-customer">
+    {%- render 'customer-menu' -%}
+
+    <div class="c-customer__main js-spacing-content">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {%- when '@app' -%}
+            {% render block %}
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+  {% if section.settings.apply_content == true %}
+    <script>
+      document.querySelector('.js-spacing-content').classList.add('o-row--content');
+    </script>
+  {% endif %}
+{% else %}
+  <script>
+    window.location = '/account/login';
+  </script>
+{% endif %}

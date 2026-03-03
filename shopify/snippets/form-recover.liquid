@@ -1,0 +1,90 @@
+{%- liquid
+  assign class = class | prepend: 'form ' | strip
+
+  if title contains ' | t'
+    assign title = title | replace: ' | t' | t
+  endif
+
+  if text contains ' | t'
+    assign text = text | replace: ' | t' | t
+  endif
+
+  if hidden == null
+    assign hidden = true
+  endif
+-%}
+
+{% form 'recover_customer_password', class: class, id: 'RecoverPasswordForm', hidden: hidden %}
+  {%- if title or text -%}
+    <header class="form__header">
+      {%- if title -%}
+        <h2 class="{% if request.page_type contains 'customers' %}text-2xl {% endif %} font-semibold text-primary tracking-standard">
+          {{ title }}
+        </h2>
+      {%- endif -%}
+
+      {%- if text -%}
+        <p class="text-grey-25 {% unless request.page_type contains 'customers' %} text-md text-secondary{% endunless %}">
+          {{ text }}
+        </p>
+      {%- endif -%}
+    </header>
+  {%- endif -%}
+
+  <div class="form__fields">
+    {%- if form.posted_successfully? == true -%}
+      <h3 class="flex gap-1 mb-4 text-[#33691E]" tabindex="-1" autofocus>
+        {%- render 'theme-icons' with 'check-circle', width: 16, height: 16 -%}
+        {{ 'customer.recover.success' | t }}
+      </h3>
+      <script type="module">
+        Shopify.theme.showRecoverForm();
+      </script>
+    {%- endif -%}
+
+    <label class="o-input{%- if form.errors %} has-error{%- endif -%}" data-field="input">
+      <span class="{% unless request.page_type contains 'customers' %}sr-only{% endunless %} text-md font-semibold mb-2 text-left">
+        {{ 'customer.recover.form.email' | t -}}
+        *
+      </span>
+
+      <input
+        id="RecoverEmail"
+        class="o-input__field"
+        name="email"
+        type="email"
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="email"
+        required
+        aria-required="true"
+        placeholder="{{ 'customer.recover.form.email_placeholder' | t }}"
+        {% if form.errors %}
+          aria-invalid="true"
+          aria-describedby="RecoverEmail-email-error"
+          autofocus
+        {% endif %}
+      >
+
+      {%- if form.errors -%}
+        <small id="RecoverEmail-email-error" class="o-input__error">
+          {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+          {{ form.errors.messages.form }}
+        </small>
+      {%- endif -%}
+    </label>
+  </div>
+
+  <div class="form__footer">
+    <button class="button button--primary button--full" type="submit">
+      {{ 'customer.recover.form.submit' | t }}
+    </button>
+    <a
+      class="button button--secondary button--full"
+      href="#login"
+      onclick="return Shopify.theme.showLoginForm();"
+    >
+      {{ 'customer.recover.form.cancel' | t }}
+    </a>
+  </div>
+{% endform %}

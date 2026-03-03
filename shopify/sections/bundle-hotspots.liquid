@@ -1,0 +1,68 @@
+{% liquid
+  render 'theme_assets' with 'section-bundle-hotspots.min.css'
+  render 'section-spacing-and-color'
+
+  case section.settings.layout
+    when 'auto'
+      assign media_class = ''
+    when 'reversed'
+      assign media_class = 'lg:col-start-2'
+  endcase
+
+  assign mediaBlock = section.blocks | where: 'type', 'media' | first
+  assign productBlocks = section.blocks | where: 'type', 'product'
+
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+-%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {%- assign section_header = section.blocks | where: 'type', 'section_header' | first -%}
+  {%- if section_header -%}
+    {%- render 'object-content',
+      block: section_header.settings,
+      attributes: section_header.shopify_attributes,
+      class: 'section-header mb-12',
+      heading_font_weight: 'font-medium'
+    -%}
+  {%- endif -%}
+
+  <div class="grid c-bundle-hotspots md:grid-cols-2 md:grid-flow-dense gap-auto">
+    <div class="relative {{ media_class }}">
+      {% if mediaBlock.settings.image %}
+        {%- render 'object-image' with mediaBlock.settings.image,
+          mobile_image: mediaBlock.settings.image_mobile,
+          aspect: '692 / 932',
+          class: 'o-picture--fill'
+        -%}
+      {% else %}
+        {{ 'image' | placeholder_svg_tag: 'bg-grey-80" style="aspect-ratio:692/932' }}
+      {% endif %}
+
+      {%- for block in productBlocks -%}
+        {% if block.settings.show_marker %}
+          {%- render 'product-tooltip', product: block.settings.product, block: block -%}
+        {% endif %}
+      {%- endfor -%}
+    </div>
+
+    <ul class="grid grid-cols-2 gap-auto place-self-center">
+      {%- for block in productBlocks -%}
+        <li class="" id="tooltip-{{ block.id }}-card">
+          {%- render 'card-product', product: block.settings.product, collection_style: true -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+{% endif %}

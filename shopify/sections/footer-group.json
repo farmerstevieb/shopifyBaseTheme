@@ -1,0 +1,41 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "background_color": "#222222",
+        "text_color": "light",
+        "brand_logo": "remi-cachet-logo",
+        "logo_colour": "#f8ede9",
+        "word_one_colour": "#E6427A",
+        "word_two_colour": "#EB80A8",
+        "brand_logo_max_height_mobile": 32,
+        "brand_logo_max_height_desktop": 20,
+        "footer_menu": "footer-menu",
+        "show_social": true,
+        "footer_link_bottom": "footer-bottom",
+        "footer_bottom_text": "Remi Cachet is a trading name of Additional Lengths Ltd. Registered in England. No. 06069925 - VAT No. 804146851",
+        "show_newsletter": true,
+        "use_klaviyo_form": "no",
+        "klaviyo_form_embed": "",
+        "heading_newsletter": "Stay up to date with Remi Cachet",
+        "text_newsletter": "Sign up to our newsletter to stay up to date on the latest news, events and promotions at Remi Cachet.",
+        "button_style": "tertiary"
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

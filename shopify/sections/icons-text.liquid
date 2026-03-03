@@ -1,0 +1,99 @@
+{% render 'section-spacing-and-color' %}
+
+{%- liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+
+  capture title_class
+    case section.settings.text_color
+      when 'dark'
+        echo ' text-primary'
+      when 'light'
+        echo ' text-white'
+    endcase
+  endcapture
+
+  capture text_class
+    case section.settings.text_color
+      when 'dark'
+        echo ' text-secondary'
+      when 'light'
+        echo ' text-white'
+    endcase
+  endcapture
+-%}
+
+{%- assign section_header = section.blocks | where: 'type', 'section_header' | first -%}
+{%- if section_header -%}
+  {%- render 'object-content',
+    block: section_header.settings,
+    attributes: section_header.shopify_attributes,
+    class: 'section-header mb-9'
+  -%}
+{%- endif -%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  <ul class="flex flex-wrap gap-12 lg:gap-4">
+    {%- assign blocks = section.blocks | where: 'type', 'logo' -%}
+    {%- for block in blocks -%}
+      <li class="flex-auto sm:basis-1/3 lg:flex-1" {{ block.shopify_attributes }}>
+        <div class="text-center card">
+          {% if block.settings.image %}
+            <div class="justify-center mb-2 card__media lg:mb-4">
+              {%- render 'object-image' with block.settings.image,
+                class: 'rounded-2 overflow-hidden',
+                img_class: 'o-img--contain'
+              -%}
+            </div>
+          {% endif %}
+
+          <div class="card__content text-md flex flex-col gap-4 {{ text_class }}">
+            {% if block.settings.title != blank %}
+              <p class="{{ title_class }} text-2xl font-extrabold">{{ block.settings.title }}</p>
+            {% endif %}
+
+            {{ block.settings.text }}
+
+            {%- if block.settings.cta_label != blank -%}
+              <p class="text-primary">
+                <a
+                  class="button button--{{ block.settings.cta_type | default: 'primary' }} inline-flex gap-1 font-semibold"
+                  {% if block.settings.cta_link == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ block.settings.cta_link }}"
+                  {% endif %}
+                  {%- if block.settings.cta_target -%}
+                    target="_blank" rel="noreferrer"
+                  {%- endif -%}
+                >
+                  {{ block.settings.cta_label }}
+                  <span
+                    class="min-w-[18px] rounded-full flex items-center justify-center min-h-[18px] aspect-square o-ctas__cta-icon"
+                  >
+                    {%- liquid
+                      if block.settings.icon != 'none'
+                        render 'theme-icons' with block.settings.icon, width: '1.5em', height: '1.5em'
+                      endif
+                    -%}
+                  </span>
+                </a>
+              </p>
+            {%- endif -%}
+          </div>
+        </div>
+      </li>
+    {%- endfor -%}
+  </ul>
+{% endif %}

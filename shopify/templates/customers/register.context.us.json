@@ -1,0 +1,55 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "customers/register.json",
+  "context": {
+    "market": "us"
+  },
+  "sections": {
+    "main": {
+      "disabled": false,
+      "custom_css": [
+        "ul.bg-brand-8.list-disc.list-inside.p-4 {text-align: center; background-color: #fff; margin-bottom:-60px;}"
+      ],
+      "settings": {
+        "color_spacing": false
+      },
+      "blocks": {
+        "section_header_aUPEk9": {
+          "settings": {
+            "heading_spacing": 0,
+            "heading_spacing_desktop": 0
+          }
+        },
+        "section_bullets_VE88Ri": {
+          "disabled": true,
+          "settings": {
+            "bullet_header": "<p><strong>Europe's most loved premium hair extension brand. </strong>We are the number one choice for trade professionals looking for hair extensions that last. The highest quality, ethically sourced human hair, with the largest range of application methods, lengths, and colors.</p>",
+            "bullet_list": ""
+          }
+        }
+      }
+    },
+    "1714553610866f1bc3": {
+      "settings": {},
+      "blocks": {
+        "helium_customer_fields_app_block_6xWPWE": {
+          "settings": {
+            "form_id": "Rxt823"
+          }
+        }
+      }
+    }
+  },
+  "order": [
+    "main",
+    "1714553610866f1bc3"
+  ]
+}

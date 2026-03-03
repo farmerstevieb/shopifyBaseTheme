@@ -1,0 +1,6 @@
+.cart-count {
+  width: 17px;
+  height: 17px;
+
+  @apply bg-brand-claret font-bold leading-zero text-center rounded-full flex items-center justify-center text-2xs absolute -right-2 -top-1;
+}

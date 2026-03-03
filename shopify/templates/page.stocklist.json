@@ -1,0 +1,123 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-stocklist",
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "width": 0,
+        "background_color": "rgba(0,0,0,0)",
+        "color_spacing": false,
+        "text_color": "dark",
+        "user_restriction": ""
+      }
+    },
+    "492c8c11-15e4-46ba-978e-b20e03e6f3a1": {
+      "type": "journal-feed",
+      "blocks": {
+        "template--16807321862392__492c8c11-15e4-46ba-978e-b20e03e6f3a1-section_header-1": {
+          "type": "section_header",
+          "settings": {
+            "content_width": 0,
+            "offset_heading": 0,
+            "subheading_spacing": 16,
+            "heading_spacing": 16,
+            "overline_spacing": 16,
+            "description_spacing": 16,
+            "subheading_spacing_desktop": 16,
+            "heading_spacing_desktop": 16,
+            "overline_spacing_desktop": 16,
+            "description_spacing_desktop": 16,
+            "cta_sizes": "full",
+            "cta_sizes_dsk": "standard",
+            "cta_align": "horizontal",
+            "cta_align_desktop": "horizontal",
+            "content_align": "1",
+            "position": "center",
+            "vertical_position": "center",
+            "color": "dark",
+            "subheading_size": "md",
+            "heading_size": "4xl",
+            "heading_font_weight_mobile": "",
+            "overline_size": "md",
+            "text_size": "base",
+            "position_desktop": "",
+            "vertical_position_desktop": "center",
+            "subheading_size_desktop": "md",
+            "heading_size_desktop": "",
+            "overline_size_desktop": "md",
+            "text_size_desktop": "",
+            "heading_font_weight": "",
+            "subheading": "",
+            "heading": "<p>Tips & Advice<\/p>",
+            "overline": "",
+            "text": "<p>Discover industry trends, Remi Cachet news and advice to support the growth of your business.<\/p>",
+            "text_tranform": "",
+            "text_weight": "",
+            "text_undeline": false,
+            "cta_1_text": "",
+            "cta_1_icon": "none",
+            "cta_1_icon_position": "right",
+            "cta_1_link": "shopify:\/\/blogs\/news",
+            "cta_1_link_style": "primary",
+            "cta_1_target": false,
+            "cta_margin_end": false
+          }
+        },
+        "template--16807321862392__492c8c11-15e4-46ba-978e-b20e03e6f3a1-blog-1": {
+          "type": "blog",
+          "settings": {
+            "blog": "news",
+            "limit": 6
+          }
+        }
+      },
+      "block_order": [
+        "template--16807321862392__492c8c11-15e4-46ba-978e-b20e03e6f3a1-section_header-1",
+        "template--16807321862392__492c8c11-15e4-46ba-978e-b20e03e6f3a1-blog-1"
+      ],
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "",
+        "color_spacing": false,
+        "text_color": "dark",
+        "user_restriction": "",
+        "slider_enabled": "false",
+        "total_column": 3,
+        "subheading_spacing": 16,
+        "heading_spacing": 16,
+        "overline_spacing": 16,
+        "description_spacing": 16,
+        "subheading_spacing_desktop": 16,
+        "heading_spacing_desktop": 16,
+        "overline_spacing_desktop": 16,
+        "description_spacing_desktop": 16,
+        "position": "center",
+        "position_desktop": "start",
+        "cta_sizes": "max-w",
+        "cta_sizes_dsk": "standard",
+        "cta_1_text": "Read more",
+        "cta_1_icon": "none",
+        "cta_1_icon_position": "right",
+        "cta_1_link_style": "primary",
+        "cta_1_target": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "492c8c11-15e4-46ba-978e-b20e03e6f3a1"
+  ]
+}

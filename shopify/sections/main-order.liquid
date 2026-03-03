@@ -1,0 +1,286 @@
+{% render 'theme_assets' with 'section-order.min.css' %}
+
+{% render 'section-spacing' %}
+
+<div class="c-customer">
+  {%- render 'customer-menu' -%}
+
+  <div class="c-customer__main">
+    <div class="c-customer-order">
+      <div class="c-customer-order__content js-spacing-content">
+        {% capture text_header %}text-md font-semibold leading-[1.5] tracking-[2.1px] uppercase{% endcapture %}
+        <div class="flex justify-between w-full pb-8 mb-6 border-b border-grey-80">
+          <h6 class="{{ text_header }}">Order {{ order.name }}</h6>
+          <a class="flex items-center gap-1" href="/account">
+            {%- render 'theme-icons' with 'arrow-left' -%}
+            <span class="text-sm trancking-[1.44px] uppercase font-semibold">Back</span>
+          </a>
+        </div>
+        <div class="flex flex-col w-full gap-6">
+          <div class="flex justify-between w-full">
+            <div class="flex flex-col gap-1">
+              <span class="{{ text_header }}">{{ 'customer.orders.date' | t }}</span>
+              <span class="c-customer-order__content-summary-field--value">
+                {{- order.created_at | date: '%B %d, %Y' -}}
+              </span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="{{ text_header }}">
+                {{- 'customer.order.fulfillment_status' | t -}}
+              </span>
+              <span class="c-customer-order__content-summary-field--value">
+                {{- order.fulfillment_status | capitalize -}}
+              </span>
+            </div>
+          </div>
+          <div class="flex justify-between w-full">
+            <div class="flex flex-col w-1/2 gap-1">
+              <span class="{{ text_header }}">{{ 'customer.order.billing_address' | t }}</span>
+              <span class="c-customer-order__content-summary-field--value">
+                {{ order.billing_address | format_address }}
+              </span>
+            </div>
+            <div class="flex flex-col w-1/2 gap-1">
+              <span class="{{ text_header }}">{{ 'customer.order.shipping_address' | t }}</span>
+              <span class="c-customer-order__content-summary-field--value">
+                {{ order.shipping_address | format_address }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex justify-between w-full">
+            {%- # Payment Method -%}
+            {%- if order.transactions != empty -%}
+              {%- assign last_transaction = order.transactions | last -%}
+              <div class="flex flex-col w-1/2 gap-1">
+                <span class="{{ text_header }}">{{ 'customer.order.payment_method' | t }}</span>
+                <span class="c-customer-order__content-summary-field--value">
+                  {%- if last_transaction.payment_details.credit_card_company -%}
+                    {{ last_transaction.payment_details.credit_card_company | capitalize }} ending in
+                    {{ last_transaction.payment_details.credit_card_last_four_digits }}
+                  {%- elsif last_transaction.payment_details.gift_card -%}
+                    Gift Card
+                  {%- else -%}
+                    {{ last_transaction.gateway | capitalize }}
+                  {%- endif -%}
+                </span>
+              </div>
+            {%- endif -%}
+
+            {%- # Tracking Number -%}
+            {%- liquid
+              assign tracking_number = ''
+              assign tracking_link = ''
+
+              for line_item in order.line_items
+                if forloop.first
+                  if line_item.fulfillment.tracking_number
+                    assign tracking_number = line_item.fulfillment.tracking_number
+                    assign tracking_link = line_item.fulfillment.tracking_number
+                  endif
+                endif
+              endfor
+            -%}
+            {%- if tracking_number != blank -%}
+              <div class="flex flex-col w-1/2 gap-1">
+                <span class="{{ text_header }}">{{ 'customer.order.order_tracking' | t }}</span>
+                <span class="c-customer-order__content-summary-field--value">
+                  <a href="{{ tracking_link }}">
+                    <div class="flex items-center gap-1 text-grey-10">
+                      {{- tracking_number -}}
+                      {%- render 'theme-icons' with 'link-external', width: 14, height: 14 -%}
+                    </div>
+                  </a>
+                </span>
+              </div>
+            {%- endif -%}
+          </div>
+          <div class="flex flex-col w-1/2 gap-1">
+            <span class="{{ text_header }}">{{ 'customer.order.invoice' | t }}</span>
+            <span class="c-customer-order__content-summary-field--value">
+              <a
+                class="underline"
+                target="_blank"
+                href="{{ shop.url }}/apps/sufio/invoice/download/?id={{ order.id }}&number={{ order.order_number }}"
+              >
+                <div class="flex items-center gap-1 text-grey-10">
+                  {{ 'customer.order.download_invoice' | t }}
+                  {%- render 'theme-icons' with 'link-external', width: 14, height: 14 -%}
+                </div>
+              </a>
+            </span>
+          </div>
+        </div>
+
+        <hr class="mt-6 mb-2 o-hr" role="presentation">
+        {%- assign total_items = 0 -%}
+        {%- for line_item in order.line_items -%}
+          {%- assign total_items = total_items | plus: line_item.quantity -%}
+        {%- endfor -%}
+        <div class="c-customer-order__content-item--order c-customer-order__content-item--order-title">
+          <span class="{{ text_header }}"
+            >Order summary ({{ total_items }}
+            {%- if total_items == 1 -%}
+              ITEM
+            {%- else -%}
+              ITEMS
+            {%- endif -%}
+            )
+          </span>
+        </div>
+        <div class="c-customer-order__content-header  hidden lg:flex font-semibold text-md">
+          <div class="c-customer-order__content-header__product-details flex w-full">
+            <div class="c-customer-order__content-header__product-details--col c-customer-order__content-header__product-details--col-hidden col-left flex-1">
+              <span>PRODUCT</span>
+            </div>
+            <div class="flex flex-1 pr-[2rem]">
+              <div class="c-customer-order__content-header__product-details--col-hidden flex flex-col items-center text-center flex-1">
+                <span>PRICE</span>
+              </div>
+              <div class="flex flex-1">
+                <div class="c-customer-order__content-header__product-details--col-hidden flex flex-col items-center text-center flex-1">
+                  <span>QTY</span>
+                </div>
+                <div class="c-customer-order__content-header__product-details--col c-customer-order__content-header__product-details--col-hidden col-right flex-1 text-right">
+                  <span>SUBTOTAL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {%- for line_item in order.line_items -%}
+          <div class="c-customer-order__content-item c-customer-order__content-item--order{%- if forloop.last -%}-last{%- endif -%}">
+            <div class="c-customer-order__content-item__product">
+              <div class="c-customer-order__content-item__product-details">
+                <div class="c-customer-order__content-item__product-details--left-col col-left flex-1">
+                  <div class="c-customer-order__content-item__product-image mr-[1.6rem] ">
+                    <a class="flex items-start" href="{{ line_item.product.url }}">
+                      {%- if line_item.image != blank -%}
+                        {% render 'object-image' with line_item.image,
+                          width: 72,
+                          height: 72,
+                          fit: 'contain',
+                          class: 'c-customer-order__content-item__product-image',
+                          aspect: '1 / 1'
+                        %}
+                      {%- else -%}
+                        <img
+                          class="c-customer-order__content-item__product-image"
+                          src="{{ 'default_img.png' | asset_url }}"
+                          loading="lazy"
+                          width="64"
+                          height="64"
+                        >
+                      {%- endif -%}
+                    </a>
+                  </div>
+                  <div>
+                    <a class="{{ text_header }}" href="{{ line_item.product.url }}">
+                      {{- line_item.product.title -}}
+                    </a>
+                    <div>
+                      {%- if line_item.product.has_only_default_variant == false or line_item.properties.size != 0 -%}
+                        <dl class="mt-1 text-secondary text-smd">
+                          {%- if line_item.product.has_only_default_variant == false -%}
+                            {%- for option in line_item.options_with_values -%}
+                              <dt class="sr-only">{{ option.name }}:</dt>
+                              <dd class="inline">
+                                {{ option.value -}}
+                                {%- unless forloop.last %}
+                                  <span aria-hidden="true">/</span>
+                                {% endunless %}
+                              </dd>
+                            {%- endfor -%}
+                          {%- endif -%}
+
+                          {%- for property in line_item.properties -%}
+                            {%- assign property_first_char = property.first | slice: 0 -%}
+                            {%- if property.last != blank and property_first_char != '_' -%}
+                              <div>
+                                <dt class="inline">{{ property.first }}:</dt>
+                                <dd class="inline">{{ property.last }}</dd>
+                              </div>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        </dl>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-1">
+                  <div class="items-center flex-col flex-1 flex">
+                    <span class="c-customer-order__content-header__product-details--col-hide font-semibold mb-1 text-md"
+                      >PRICE</span
+                    >
+                    <span class="c-customer-order__item-price ">
+                      {{ line_item.price | money }}
+                    </span>
+                  </div>
+                  <div class="flex flex-1">
+                    <div class="flex flex-col items-center text-center flex-1">
+                      <span class="c-customer-order__content-header__product-details--col-hide font-semibold mb-1 text-md"
+                        >QTY</span
+                      >
+                      {{ line_item.quantity }}
+                    </div>
+                    <div class="c-customer-order__content-item__product-details--col col-right flex-1">
+                      <span class="c-customer-order__content-header__product-details--col-hide font-semibold mb-1 text-md"
+                        >SUBTOTAL</span
+                      >
+                      <span class="c-customer-order__item-price">
+                        {{- line_item.quantity | times: line_item.price | money -}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+
+        <div class="c-customer-order__content-prices">
+          <div class="c-customer-order__content-prices-breakdown">
+            <div class="c-customer-order__content-prices-breakdown-title">{{ 'customer.order.subtotal' | t }}</div>
+            <div class="c-customer-order__content-prices-breakdown-value">{{ order.subtotal_price | money }}</div>
+          </div>
+          {%- for discount in order.discounts -%}
+            <div class="c-customer-order__content-prices-breakdown">
+              <div class="c-customer-order__content-prices-breakdown-title">
+                {{ discount.code }}
+                {{ 'customer.order.discount' | t }}
+              </div>
+              <div class="c-customer-order__content-prices-breakdown-value">{{ discount.savings | money }}</div>
+            </div>
+          {%- endfor -%}
+          {%- for shipping_method in order.shipping_methods -%}
+            <div class="c-customer-order__content-prices-breakdown">
+              <div class="c-customer-order__content-prices-breakdown-title">
+                {{ 'customer.order.shipping' | t }} ({{ shipping_method.title }})
+              </div>
+              <div class="c-customer-order__content-prices-breakdown-value">{{ shipping_method.price | money }}</div>
+            </div>
+          {%- endfor -%}
+          {%- for tax_line in order.tax_lines -%}
+            <div class="c-customer-order__content-prices-breakdown">
+              <div class="c-customer-order__content-prices-breakdown-title">
+                {{ 'customer.order.tax' | t }} ({{ tax_line.title }}
+                {{ tax_line.rate | times: 100 }}%)
+              </div>
+              <div class="c-customer-order__content-prices-breakdown-value">{{ tax_line.price | money }}</div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="c-customer-order__total">
+          <div class="c-customer-order__total-values">{{ 'customer.order.total' | t }}</div>
+          <div class="c-customer-order__total-values">{{ order.total_price | money }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% if section.settings.apply_content == true %}
+  <script>
+    document.querySelector('.js-spacing-content').classList.add('o-row--content');
+  </script>
+{% endif %}

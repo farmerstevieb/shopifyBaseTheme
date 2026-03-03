@@ -1,0 +1,643 @@
+{%- unless request.page_type contains 'cart' -%}
+  <drawer-cart
+    class="dialog dialog--drawer dialog--drawer-cart dialog--drawer-right js-drawer-cart"
+    style="--max-width: 480px"
+    id="DrawerCart"
+    data-id="{{- section.id -}}"
+    hidden
+    {% if section.settings.testing %}
+      data-testing
+    {% endif %}
+  >
+    <div
+      class="dialog-overlay"
+      data-a11y-dialog-hide
+    ></div>
+
+    <div role="document">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'header-open' -%}
+            <header data-dialog-element="header">
+          {%- when 'header-controls' -%}
+            <div class="mb-1 flex w-full items-center justify-between">
+              <div class="flex items-center gap-x-2">
+                <h2 class="text-base font-semibold">
+                  {{- block.settings.title -}}
+                </h2>
+                <p class="text-xs font-normal text-grey-25">
+                  <span class="js-cart-item-count">
+                    {{- cart.item_count -}}
+                  </span>
+
+                  {%- liquid
+                    capture count_text
+                      case cart.item_count
+                        when 1
+                          echo block.settings.count_one_item_text
+                        else
+                          echo block.settings.count_multi_item_text
+                      endcase
+                    endcapture
+
+                    echo count
+                    echo count_text | prepend: ' '
+                  -%}
+                </p>
+              </div>
+
+              <button
+                data-dialog-element="close"
+                type="button"
+                tabindex="-1"
+                data-a11y-dialog-hide
+              >
+                {%- render 'theme-icons' with 'close' -%}
+                <span class="sr-only">{{- 'dialogs.actions.close' | t: dialog: 'cart' -}}</span>
+              </button>
+            </div>
+
+          {%- when 'header-close' -%}
+            </header>
+
+          {%- when 'main-open' -%}
+            <div id="main-drawer-cart" data-dialog-element="main">
+          {%- when 'free-delivery' -%}
+            <label class="delivery-progress js-delivery-progress flex flex-col text-sm">
+              {%- liquid
+                assign remaining = localization.market.metafields.custom.delivery_threshold | minus: cart.total_price
+                if remaining > 0
+                  assign remaining_money = remaining | money
+                  assign label = 'general.free_delivery.in_progress_html' | t: money: remaining_money
+                else
+                  assign label = 'general.free_delivery.completed' | t
+                endif
+              -%}
+              <span class="mb-2 text-smd">{{- label -}}</span>
+              <progress
+                max="{{- localization.market.metafields.custom.delivery_threshold -}}"
+                value="{{- cart.total_price -}}"
+              ></progress>
+            </label>
+
+          {%- when 'cart-items' -%}
+            {%- if cart == empty -%}
+              <div class="grid h-full place-content-center text-center">
+                <h2 class="mb-6 text-sm font-semibold tracking-standard">{{- 'sections.cart.empty' | t -}}</h2>
+
+                <button
+                  class="button button--primary w-full"
+                  type="button"
+                  tabindex="-1"
+                  data-a11y-dialog-hide
+                >
+                  {{- 'general.continue_shopping' | t -}}
+                </button>
+
+                {%- if shop.customer_accounts_enabled and customer == null -%}
+                  <p class="mt-8 font-semibold">{{- 'sections.cart.login.title' | t -}}</p>
+                  <p class="rte text-md">
+                    {{- 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url -}}
+                  </p>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            <drawer-cart-items
+              {%- if cart == empty %}
+                hidden
+              {%- endif -%}
+            >
+              <form
+                action="{{- routes.cart_url -}}"
+                id="DrawerCart-Form"
+                method="post"
+              >
+                <div id="DrawerCart-CartItems">
+                  {%- if cart != empty -%}
+                    <table role="table" class="w-full">
+                      <thead role="rowgroup">
+                        <tr role="row">
+                          <th id="DrawerCart-ColumnProductImage" role="columnheader">
+                            <span class="sr-only">{{- 'sections.cart.headings.image' | t -}}</span>
+                          </th>
+                          <th id="DrawerCart-ColumnProduct" scope="col" role="columnheader">
+                            <span class="sr-only">{{- 'sections.cart.headings.product' | t -}}</span>
+                          </th>
+                          <th id="DrawerCart-ColumnTotal" scope="col" role="columnheader">
+                            <span class="sr-only">{{- 'sections.cart.headings.total' | t -}}</span>
+                          </th>
+                          <th id="DrawerCart-ColumnQuantity" role="columnheader">
+                            <span class="sr-only">{{- 'sections.cart.headings.quantity' | t -}}</span>
+                          </th>
+                          <th id="DrawerCart-ColumnRemove" role="columnheader">
+                            <span class="sr-only">{{- 'sections.cart.headings.remove' | t -}}</span>
+                          </th>
+                        </tr>
+                      </thead>
+
+                      <tbody role="rowgroup">
+                        {%- for item in cart.items -%}
+                          <tr id="DrawerCart-Item-{{- item.index | plus: 1 -}}" class="cart-item mb-6 pb-6" role="row">
+                            <td class="cart-item__media relative" role="cell" headers="DrawerCart-ColumnProductImage">
+                              {%- if item.image -%}
+                                <a
+                                  class="rounded-3 overflow-hidden"
+                                  href="{{- item.url -}}"
+                                  tabindex="-1"
+                                  aria-hidden="true"
+                                >
+                                  <img
+                                    class="aspect-square object-cover"
+                                    src="{{- item.image | image_url: width: 128 -}}"
+                                    alt="{{- item.image.alt | escape -}}"
+                                    loading="lazy"
+                                    width="64"
+                                    height="64"
+                                  >
+                                </a>
+                              {%- endif -%}
+                            </td>
+
+                            <td class="cart-item__details text-md" role="cell" headers="DrawerCart-ColumnProduct">
+                              <a href="{{- item.url -}}" class="cart-item__name font-semibold">
+                                {{- item.product.title | escape -}}
+                              </a>
+
+                              {% # Check if item is pre-order and show label %}
+                              {%- liquid
+                                assign is_preorder = false
+                                assign variant = item.product.selected_or_first_available_variant
+
+                                # Check Stoq metafields for pre-order setup
+                                # Primary check: selling_plan_ids indicates pre-order is configured
+                                if variant.metafields.restockrocket_production.selling_plan_ids != blank
+                                  assign is_preorder = true
+                                endif
+
+                                # Secondary check: preorder_enabled metafield (if available)
+                                if variant.metafields.restockrocket_production.preorder_enabled.value == true
+                                  assign is_preorder = true
+                                endif
+
+
+
+                                # Check if pre-order is full
+                                assign is_preorder_full = false
+                                assign preorder_count = variant.metafields.restockrocket_production.preorder_count.value | default: 0
+                                assign preorder_max = variant.metafields.restockrocket_production.preorder_max_count.value
+                                if preorder_max
+                                  assign spots_remaining = preorder_max | minus: preorder_count
+                                  if spots_remaining <= 0
+                                    assign is_preorder_full = true
+                                  endif
+                                endif
+                              -%}
+
+
+
+                              {%- if item.product.has_only_default_variant == false or item.properties != blank -%}
+                                <dl class="text-secondary">
+                                  {%- if item.product.has_only_default_variant == false -%}
+                                    {%- for option in item.options_with_values -%}
+                                      <dt class="sr-only">
+                                        {{- option.name -}}
+                                        :
+                                      </dt>
+                                      <dd class="inline">
+                                        {{- option.value -}}
+                                        {%- unless forloop.last %}
+                                          <span aria-hidden="true">/</span>
+                                        {% endunless %}
+                                      </dd>
+                                    {%- endfor -%}
+                                  {%- endif -%}
+
+                                  {%- for property in item.properties -%}
+                                    {%- assign property_first_char = property.first | slice: 0 -%}
+                                    {%- if property.last != blank and property_first_char != '_' -%}
+                                      <div>
+                                        <dt class="inline">
+                                          {{- property.first -}}
+                                          :
+                                        </dt>
+                                        <dd class="inline">{{- property.last -}}</dd>
+                                      </div>
+                                    {%- endif -%}
+                                  {%- endfor -%}
+                                </dl>
+                              {%- endif -%}
+
+                              {%- if item.selling_plan_allocation != null -%}
+                                <p>{{- item.selling_plan_allocation.selling_plan.name -}}</p>
+                              {%- endif -%}
+
+                              {%- if item.discounts.size != blank and item.discounts.size != 0 -%}
+                                <ul
+                                  class="text-secondary"
+                                  role="list"
+                                  aria-label="{{- 'customer.order.discount' | t -}}"
+                                >
+                                  {%- for discount in item.discounts -%}
+                                    <li class="flex items-center gap-x-1">
+                                      {%- render 'theme-icons' with 'discount' -%}
+                                      {{- discount.title -}}
+                                    </li>
+                                  {%- endfor -%}
+                                </ul>
+                              {%- endif -%}
+
+                              <div
+                                class="hidden gap-x-1 text-2xs text-validation-error"
+                                id="DrawerCart-LineItemError-{{- item.index | plus: 1 -}}"
+                                role="alert"
+                              >
+                                <span class="peer order-1"></span>
+                                <span class="inline-flex flex-shrink-0 pt-[2px] peer-empty:hidden">
+                                  {%- render 'theme-icons' with 'error',
+                                    width: 12,
+                                    height: 12,
+                                    class: 'stroke-validation-error'
+                                  -%}
+                                </span>
+                              </div>
+                            </td>
+
+                            <td
+                              class="cart-item__totals relative flex justify-end"
+                              role="cell"
+                              headers="DrawerCart-ColumnTotal"
+                            >
+                              <div class="animate-fade-in loading-overlay hidden h-full w-full justify-end">
+                                <div class="loading-overlay__spinner">
+                                  {%- render 'theme-icons' with 'loading' -%}
+                                </div>
+                              </div>
+
+                              <div class="flex flex-col gap-y-1 pt-1 text-md leading-none">
+                                {%- if item.original_line_price != item.final_line_price -%}
+                                  <span class="sr-only">{{- 'products.product.price.regular_price' | t -}}</span>
+                                  <s class="text-secondary">{{- item.original_line_price | money -}}</s>
+                                  <span class="sr-only">{{- 'products.product.price.sale_price' | t -}}</span>
+                                  <span class="font-semibold">{{- item.final_line_price | money -}}</span>
+                                {%- else -%}
+                                  <span class="font-semibold">{{- item.original_line_price | money -}}</span>
+                                {%- endif -%}
+                              </div>
+                            </td>
+
+                            <td
+                              class="cart-item__quantity flex items-center justify-center"
+                              role="cell"
+                              headers="DrawerCart-ColumnQuantity"
+                            >
+                              <quantity-input class="quantity-input quantity-input--small">
+                                <button class="button" name="minus">
+                                  <span class="sr-only">
+                                    {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                                  </span>
+                                  {%- render 'theme-icons' with 'minus', width: 16, height: 16 -%}
+                                </button>
+                                <input
+                                  id="Drawer-quantity-{{- item.index | plus: 1 -}}"
+                                  type="number"
+                                  data-quantity-variant-id="{{- item.variant.id -}}"
+                                  name="updates[]"
+                                  value="{{- item.quantity -}}"
+                                  data-cart-quantity="{{- cart | item_count_for_variant: item.variant.id -}}"
+                                  min="{{- item.variant.quantity_rule.min -}}"
+                                  {% if item.variant.quantity_rule.max != null %}
+                                    max="{{- item.variant.quantity_rule.max -}}"
+                                  {% endif %}
+                                  step="{{- item.variant.quantity_rule.increment -}}"
+                                  aria-label="{{- 'products.product.quantity.input_label' | t: product: item.product.title | escape -}}"
+                                  data-index="{{- item.index | plus: 1 -}}"
+                                >
+                                <button class="button" name="plus">
+                                  <span class="sr-only">
+                                    {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                                  </span>
+                                  {%- render 'theme-icons' with 'plus', width: 16, height: 16 -%}
+                                </button>
+                              </quantity-input>
+                            </td>
+
+                            <td
+                              class="cart-item__remove inline-flex justify-end"
+                              role="cell"
+                              headers="DrawerCart-ColumnRemove"
+                            >
+                              <button
+                                is="remove-cart-item"
+                                type="button"
+                                id="DrawerCart-Remove-{{- item.index | plus: 1 -}}"
+                                data-index="{{- item.index | plus: 1 -}}"
+                                class="button button--underline text-sm"
+                                aria-label="{{- 'sections.cart.remove_title' | t: title: item.title -}}"
+                              >
+                                Remove
+                              </button>
+                            </td>
+                          </tr>
+                        {%- endfor -%}
+                      </tbody>
+                    </table>
+                  {%- endif -%}
+
+                  <p id="DrawerCart-LiveRegionText" class="sr-only" role="status"></p>
+                  <p id="DrawerCart-LineItemStatus" class="sr-only" aria-hidden="true" role="status">
+                    {{- 'accessibility.loading' | t -}}
+                  </p>
+                </div>
+                <div
+                  class="mb-6 text-md text-validation-error empty:hidden"
+                  id="DrawerCart-CartErrors"
+                  role="alert"
+                ></div>
+              </form>
+            </drawer-cart-items>
+
+          {%- when 'recommendations' -%}
+            {%- if cart != empty -%}
+              {%- liquid
+                assign text_color = block.settings.text_color
+                assign hover_color = block.settings.quick_add_color
+                assign override_products = block.settings.list
+              -%}
+              {%- if override_products == blank -%}
+                <div class="js-drawer-cart-recommendations mt-auto {{ text_color }}">
+                  <product-recommendations
+                    id="DrawerCart-Recomendations"
+                    data-url="{{- routes.product_recommendations_url -}}?section_id={{ section.id }}&product_id={{- cart.items.first.product_id -}}&limit={{- 3 | plus: cart.items.size | at_most: 10 -}}&intent=related"
+                  >
+                    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+                      <aside
+                        class="p-6"
+                        style="background-color: {{- block.settings.container_background -}};"
+                      >
+                        <h2 class="mb-6 text-base font-semibold tracking-standard {{ text_color }}">
+                          {{- 'sections.cart.also_like' | t -}}
+                        </h2>
+
+                        <ul role="list" class="space-y-4">
+                          {%- liquid
+                            assign cart_items = cart.items | map: 'product_id'
+                            assign count = 0
+                          -%}
+                          {%- for product in recommendations.products -%}
+                            {%- liquid
+                              if count == 3
+                                break
+                              endif
+
+                              # Skip over products that are alread in basket
+                              if cart_items contains product.id
+                                continue
+                              endif
+
+                              assign count = count | plus: 1
+                              assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: forloop.index
+                            -%}
+
+                            <li
+                              class="rounded-[3px] p-3"
+                              style="background-color: {{- block.settings.card_background -}};"
+                            >
+                              <div class="flex flex-wrap items-start justify-between gap-4">
+                                {%- render 'object-image' with product.featured_image,
+                                  width: 64,
+                                  height: 64,
+                                  aspect: '1 / 1'
+                                -%}
+
+                                <div class="flex flex-1 flex-col">
+                                  <p class="text-sm font-semibold uppercase tracking-standard">{{- product.title -}}</p>
+                                  <p class="text-sm font-semibold">{{- product.price | money -}}</p>
+                                </div>
+
+                                <hr class="o-hr w-full">
+
+                                {%- form 'product', product, is: 'product-form', class: 'w-full text-center' -%}
+                                  <input
+                                    type="hidden"
+                                    name="id"
+                                    value="{{ product.selected_or_first_available_variant.id }}"
+                                  >
+                                  <button
+                                    class="button dialog--quick-add"
+                                    name="add"
+                                    type="submit"
+                                    data-index="{{ product_form_id }}"
+                                    {% if hover_color != blank or hover_color != 'rgba(0,0,0,0)' %}
+                                      style="--hover-color:{{ hover_color }}"
+                                    {% endif %}
+                                  >
+                                    {{- 'sections.cart_drawer.quick_add.add_text' | t -}}
+                                  </button>
+                                {%- endform -%}
+                                <div
+                                  class="flex items-center js-product-form-error-{{ product_form_id }} js-product-form-error mt-2 gap-x-2 text-sm"
+                                  role="alert"
+                                  hidden
+                                >
+                                  {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+                                  <span class="js-product-form-error-message-{{ product_form_id }}"></span>
+                                </div>
+                              </div>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </aside>
+                    {%- endif -%}
+                  </product-recommendations>
+                </div>
+              {%- else -%}
+                <div class="mt-6 {{ text_color }}">
+                  <aside
+                    class="p-6"
+                    style="background-color: {{- block.settings.container_background -}};"
+                  >
+                    <h2 class="mb-6 text-sm font-semibold tracking-standard {{ text_color }}">
+                      {{- 'sections.cart.also_like' | t -}}
+                    </h2>
+
+                    <ul role="list" class="space-y-4">
+                      {%- liquid
+                        assign cart_items = cart.items | map: 'product_id'
+                        assign count = 0
+                      -%}
+                      {%- for product in override_products -%}
+                        {%- liquid
+                          if count == 3
+                            break
+                          endif
+
+                          # Skip over products that are alread in basket
+                          if cart_items contains product.id
+                            continue
+                          endif
+
+                          assign count = count | plus: 1
+                          assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: forloop.index
+                        -%}
+                        <li
+                          class="rounded-[3px] p-3"
+                          style="background-color: {{- block.settings.card_background -}};"
+                        >
+                          <div class="flex flex-wrap items-start justify-between gap-4">
+                            {%- render 'object-image' with product.featured_image,
+                              width: 64,
+                              height: 64,
+                              aspect: '1 / 1'
+                            -%}
+
+                            <div class="flex flex-1 flex-col">
+                              <p class="text-sm font-semibold uppercase tracking-standard">{{- product.title -}}</p>
+                              <p class="text-sm font-semibold">{{- product.price | money -}}</p>
+                            </div>
+
+                            <hr class="o-hr w-full">
+
+                            {%- form 'product', product, is: 'product-form', class: 'w-full text-center' -%}
+                              <input
+                                type="hidden"
+                                name="id"
+                                value="{{ product.selected_or_first_available_variant.id }}"
+                              >
+                              <button
+                                class="button dialog--quick-add"
+                                name="add"
+                                type="submit"
+                                data-index="{{ product_form_id }}"
+                                {% if hover_color != blank or hover_color != 'rgba(0,0,0,0)' %}
+                                  style="--hover-color:{{ hover_color }}"
+                                {% endif %}
+                              >
+                                {{- 'sections.cart_drawer.quick_add.add_text' | t -}}
+                              </button>
+                            {%- endform -%}
+                            <div
+                              class="flex items-center js-product-form-error-{{ product_form_id }} js-product-form-error mt-2 gap-x-2 text-sm"
+                              role="alert"
+                              hidden
+                            >
+                              {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+                              <span class="js-product-form-error-message-{{ product_form_id }}"></span>
+                            </div>
+                          </div>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </aside>
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+
+          {%- when 'main-close' -%}
+            </div>
+
+          {%- when 'footer-open' -%}
+            <footer
+              data-dialog-element="footer"
+              {% if cart == empty %}
+                hidden
+              {% endif %}
+            >
+          {%- when 'loyalty-points' -%}
+            {% render 'loyalty_cart-points',
+              cart: cart,
+              class: 'pt-3',
+              logged_in_link: section.settings.logged_in_link,
+              logged_in_link_text: section.settings.logged_in_link_text,
+              guest_link: section.settings.guest_link,
+              guest_link_text: section.settings.guest_link_text
+            %}
+          {%- when 'cart-totals' -%}
+            {%- if cart != empty -%}
+              {%- assign header_class = 'capitalize text-smd text-grey-0' -%}
+              <div class="my-6 flex flex-col gap-y-2 text-smd">
+                <div class="flex flex-wrap justify-between gap-y-1" role="status">
+                  <h2 class="{{ header_class }}">{{- 'sections.cart.subtotal' | t -}}</h2>
+                  <p class="font-semibold">{{- cart.total_price | money -}}</p>
+
+                  {%- if cart.cart_level_discount_applications.size > 0 -%}
+                    <ul
+                      class="flex w-full flex-col items-end text-sm text-grey-20"
+                      role="list"
+                      aria-label="{{- 'customer.order.discount' | t -}}"
+                    >
+                      {%- for discount in cart.cart_level_discount_applications -%}
+                        <li class="flex gap-x-1">
+                          {%- render 'theme-icons' with 'discount' -%}
+                          {{- discount.title -}}
+                          (-
+                          {{- discount.total_allocated_amount | money -}}
+                          )
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+
+                {%- liquid
+                  assign tax = 'Calculated at checkout'
+                  assign shipping = 'Calculated at checkout'
+
+                  if cart.taxes_included
+                    assign tax = 'Included'
+                  endif
+                -%}
+
+                <div class="flex justify-between">
+                  <h2 class="{{ header_class }}">{{- 'sections.cart.headings.shipping' | t -}}</h2>
+                  <p>{{- shipping -}}</p>
+                </div>
+
+                <div class="flex justify-between">
+                  <h2 class="{{ header_class }}">{{- 'sections.cart.headings.tax' | t -}}</h2>
+                  <p>{{- tax -}}</p>
+                </div>
+              </div>
+            {%- endif -%}
+
+          {%- when 'delivery-countdown' -%}
+            {%- if cart != empty -%}
+              <delivery-countdown
+                class="flex justify-center gap-x-3 border-t border-border-light pt-6 text-smd"
+                cutoff="{{- settings.estimate_delivery_cutoff -}}"
+                excludedDates="{{- settings.estimate_delivery_excluded_dates -}}"
+                nextdaylabel="{{- 'general.delivery_estimate.nextday_delivery_html' | t: time: '[time]', date: '[date]' -}}"
+                nextweeklabel="{{- 'general.delivery_estimate.weekday_delivery_html' | t: day: '[day]' -}}"
+              >
+                <svg width="20" height="20" fill="currentcolor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M10 1.667c-4.596 0-8.334 3.738-8.334 8.333 0 4.595 3.738 8.333 8.333 8.333 4.595 0 8.334-3.738 8.334-8.333 0-4.595-3.739-8.333-8.334-8.333Zm0 15A6.674 6.674 0 0 1 3.332 10a6.674 6.674 0 0 1 6.666-6.667A6.674 6.674 0 0 1 16.666 10a6.674 6.674 0 0 1-6.667 6.667Z" />
+                  <path d="M10.833 5.833H9.166v4.512l2.744 2.744 1.178-1.178-2.255-2.256V5.833Z" />
+                </svg>
+                <p class="invisible">
+                  {{- 'general.delivery_estimate.nextday_delivery_html' | t: time: '[time]', date: '[date]' -}}
+                </p>
+              </delivery-countdown>
+            {%- endif -%}
+
+          {%- when 'submit-buttons' -%}
+            {%- if cart != empty -%}
+              <button
+                type="submit"
+                id="DrawerCart-Checkout"
+                class="button button--primary button--full mt-6"
+                form="DrawerCart-Form"
+                {% if cart == empty %}
+                  disabled
+                {% endif %}
+              >
+                {{- 'sections.cart.checkout' | t -}}
+              </button>
+            {%- endif -%}
+
+          {%- when 'footer-close' -%}
+            </footer>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </drawer-cart>
+{%- endunless -%}

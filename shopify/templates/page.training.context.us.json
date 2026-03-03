@@ -1,0 +1,47 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "page.training.json",
+  "context": {
+    "market": "us"
+  },
+  "sections": {
+    "rich_text_jrAmtX": {
+      "settings": {},
+      "blocks": {
+        "text_wUjgED": {
+          "settings": {
+            "text": "<p>As an industry leader in the world of hair extensions, Remi Cachet provides innovative hair solutions to professional salons and stylists worldwide. We place high importance on the development of stylists and extensionists so that they can build on their skills and deliver the best results to their clients. Our classes are limited in size so each attendee is given the attention required to develop their skills.<\/p><p><\/p><p>Each course covers in-depth knowledge and guidance on:<\/p><ul><li>Consultation & Preparation<\/li><li>Color Matching<\/li><li>Health & Safety<\/li><li>Application & Styling<\/li><li>Post-Application Care <\/li><li>Maintenance<\/li><\/ul><p><\/p><p>Included in the cost of your training:<\/p><ul><li>Professional Kit including a standard color ring and application tools<\/li><li>Trade Account <\/li><li>Stylist listing on our locator<\/li><li>Exclusive promotions<\/li><li>Certificate on successful completion<\/li><li>After Course support<\/li><\/ul>"
+          }
+        }
+      }
+    },
+    "rich_text_fLGqGW": {
+      "settings": {},
+      "blocks": {
+        "heading_WTR4FM": {
+          "settings": {
+            "heading_tracking_font": "tracking-0"
+          }
+        },
+        "heading_6fJUQK": {
+          "settings": {
+            "heading_tracking_font": "tracking-0"
+          }
+        },
+        "heading_7DhBpE": {
+          "settings": {
+            "heading_tracking_font": "tracking-0"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+      --row-spacing: {{ section.settings.spacing }};
+      --bg: {{ section.settings.background_color }};
+      --section-padding: {{ section.settings.padding }};
+  }
+{% endstyle %}
+
+<div class="grid md:grid-cols-2 gap-y-9">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'media' -%}
+        <div class="max-md:row-start-1{%- if block.settings.mobile_hidden %} hidden md:flex{%- endif -%}">
+          {%- render 'object-image' with block.settings.image,
+            mobile_image: block.settings.image_mobile,
+            class: 'o-picture--fill',
+            aspect: '840 / 745',
+            aspect_mobile: '1 / 1'
+          -%}
+        </div>
+    {%- endcase -%}
+  {%- endfor -%}
+
+  <div class="flex justify-center px-5 py-9 md:px-13 md:py-13 only:col-span-2">
+    <div class="self-center w-full max-w-6xl o-content max-md:items-center text-grey-0">
+      {%- assign section_header = section.blocks | where: 'type', 'section_header' | first -%}
+      {%- if section_header -%}
+        {%- render 'object-content',
+          block: section_header.settings,
+          attributes: section_header.shopify_attributes,
+          class: 'section-header pb-6'
+        -%}
+      {%- endif -%}
+      {%- assign section_bullets = section.blocks | where: 'type', 'section_bullets' | first -%}
+      <ul class="p-4 list-disc list-inside bg-brand-8">
+        {% capture span_class %} relative right-[7px] {% endcapture %}
+        {{ section_bullets.settings.bullet_header }}
+
+        {% assign bullet_array = section_bullets.settings.bullet_list | strip_html %}
+        {% assign bullet_array_san = bullet_array | split: ';' %}
+
+        {%- for b in bullet_array_san -%}
+          {% assign b = b | strip_html %}
+          <li>
+            <span class="{{ span_class }}">{{ b }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {% unless section.settings.disable_register %}
+        {%- render 'form-trade',
+          class: 'gap-y-6 pt-4',
+          title: '',
+          requirements: true,
+          text: 'customer.register.subtext | t'
+        -%}
+      {% endunless %}
+    </div>
+  </div>
+</div>

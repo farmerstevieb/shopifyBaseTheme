@@ -1,0 +1,54 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 3.2rem;
+
+  &--newsletter {
+    gap: 0;
+  }
+
+  &__header {
+    &-title {
+      @apply text-inherit;
+    }
+
+    &-text {
+      @apply text-inherit;
+    }
+  }
+
+  &__state {
+    .form--newsletter & {
+      @apply text-smd w-full;
+    }
+
+    &--success {
+      @apply text-validation-success;
+    }
+
+    &--error {
+      @apply text-validation-error;
+    }
+  }
+
+  &__recover {
+    &-inner {
+      width: 100%;
+    }
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    width: 100%;
+  }
+}

@@ -1,0 +1,182 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Section - Slider
+  -------------------------------------------------------------------------------
+  Accepts
+  - target: {Object} the section or block object we inherit
+    the settings from (required)
+  - name: {String} the name of the section, this will apply a unique
+    class to the slider_classes output. (optional)
+  - breakpoint: {MediaQuery} relay a media query to set on what breakpoint
+    the slideshow is actually active (optional)
+  - full_width: {Boolean} Ignores the slider's container's inline padding
+    values and overflow-hidden declaration, allowing it to extend outside
+    of the global container (optional)
+  - viewport_classes: {String} applies classes directly to the viewport element
+    (optional)
+  - thumbnails: {Boolean} displays slider thumbnails (optional).
+  - align: {String: 'start' | 'center' | 'end'} slider alignment (optional).
+  - loop: {Boolean} enable slider looping (optional)
+  - arrows: {Boolean} display slider arrows (optional)
+  - dots: {Boolean} display slider dots (optional)
+  -------------------------------------------------------------------------------
+  Usage
+  {- liquid*
+    # Slider
+    # - [Start]
+    capture slider_snippet
+      render 'section-slider', target: section, name: 'main-account-menu', breakpoint: 'max-lg', viewport_classes: 'banner-grid', full_width: true, thumbnails: false
+    endcapture
+
+    assign slider_snippet = slider_snippet | split: ' ** '
+
+    assign slider_settings = slider_snippet[0]
+    assign slider_classes = slider_snippet[1]
+    assign slider_styling = slider_snippet[2]
+    assign slider_components = slider_snippet[3] | split: '::'
+
+    assign slider_viewport = slider_components[0]
+    assign slider_track_class = slider_components[1]
+    assign slider_item_class = slider_components[2]
+    # - [End]
+  -}
+
+  {{ slider_styling }}
+
+  <juno-slider
+    class="{{ slider_classes }}"
+    {{ slider_settings }}
+  >
+    <div {{ slider_viewport }}>
+      <ul class="{{ slider_track_class }}">
+        <li class="{{ slider_item_class }}">
+        </li>
+      </ul>
+    </div>
+  </juno-slider>
+  -------------------------------------------------------------------------------
+  Description
+  The global site slider settings used on multiple sections.
+{%- endcomment -%}
+
+{%- liquid
+  assign section = section
+  assign name = name
+  assign target = target | default: section
+  assign breakpoint = breakpoint | default: 'true'
+  assign full_width = full_width | default: target.settings.full_width
+  assign thumbnails = thumbnails | default: false
+  assign align = align | default: 'start'
+  assign loop = loop | default: target.settings.slider_loop
+  assign arrows = arrows | default: target.settings.slider_arrows
+  assign dots = dots | default: target.settings.slider_dots
+
+  capture breakpoints
+    case breakpoint
+      when 'max-xs'
+        echo '(max-width: 413px)'
+      when 'xs'
+        echo '(min-width: 414px)'
+      when 'max-sm'
+        echo '(max-width: 639px)'
+      when 'sm'
+        echo '(min-width: 640px)'
+      when 'max-md'
+        echo '(max-width: 767px)'
+      when 'md'
+        echo '(min-width: 768px)'
+      when 'max-xmd'
+        echo '(max-width: 819px)'
+      when 'xmd'
+        echo '(min-width: 820px)'
+      when 'max-lg'
+        echo '(max-width: 1023px)'
+      when 'lg'
+        echo '(min-width: 1024px)'
+      when 'max-xl'
+        echo '(max-width: 1279px)'
+      when 'xl'
+        echo '(min-width: 1280px)'
+      when 'max-2xl'
+        echo '(max-width: 1439px)'
+      when '2xl'
+        echo '(min-width: 1440px)'
+      when 'max-3xl'
+        echo '(max-width: 1535px)'
+      when '3xl'
+        echo '(min-width: 1536px)'
+      when 'max-4xl'
+        echo '(max-width: 1679px)'
+      when '4xl'
+        echo '(min-width: 1680px)'
+      else
+        echo breakpoint
+    endcase
+  endcapture
+
+  capture settings
+    if target.blocks.size >= 1 or target.blocks == blank
+      assign autoplay = target.settings.slider_autoplay | times: 1000
+
+      echo 'enabled="' | append: breakpoints | append: '"'
+      echo 'wheelGestures '
+      echo 'autoPlay="#" ' | replace: '#', autoplay
+      echo 'align="#"' | replace: '#', align
+      if thumbnails
+        echo 'thumbnails="#"' | replace: '#', thumbnails
+      endif
+      if loop == true
+        echo ' loop '
+      endif
+      if arrows == true
+        echo ' showArrows '
+      endif
+      if dots == true
+        echo ' showDots '
+      endif
+    endif
+  endcapture
+
+  capture classes
+    # Main Classes
+    echo 'slider'
+
+    # Unique Class
+    if name != blank
+      echo ' slider--' | append: name
+    endif
+
+    # Full Class
+    if full_width
+      echo ' slider--full-width'
+    endif
+
+    # Arrows Class
+    if target.settings.slider_arrows != empty
+      echo ' slider--arrows'
+    endif
+  endcapture
+
+  capture components
+    # Viewport Class and Attributes
+    echo 'class="slider__viewport ' | append: viewport_classes | append: '" data-slider="viewport"'
+
+    # Track Class
+    echo '::slider__track'
+
+    # Item Class
+    echo '::slider__item'
+  endcapture
+-%}
+
+{%- # Arrow/Dots Styling -%}
+{%- capture styling -%}
+  {%- style -%}
+    #shopify-section-{{ section.id }} {
+      --dot-color: {{ target.settings.slider_dots_color | default: '#000' }};
+      --arrow-color: {{ target.settings.slider_arrows_color | default: '#000' }};
+    }
+  {%- endstyle -%}
+{%- endcapture -%}
+
+{{ settings }} ** {{ classes }} ** {{ styling }} ** {{ components }}

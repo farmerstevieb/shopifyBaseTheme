@@ -1,0 +1,25 @@
+# IMA Base Theme — Shopify Theme Configuration
+#
+# SETUP: Fill in your store details below.
+# This file is gitignored when populated — use as a template.
+# Reference: shopify.theme.toml.example
+
+[environments.local]
+# CLIENT: Replace with the client's myshopify.com subdomain (without .myshopify.com)
+store = "your-store-name"
+path = "./dist"
+host = "localhost"
+port = 3000
+theme-editor-sync = true
+
+# Optional: separate staging environment
+# [environments.staging]
+# store = "your-store-name"
+# theme = "STAGING_THEME_ID"
+# path = "./dist"
+
+# Optional: production push (use with caution)
+# [environments.production]
+# store = "your-store-name"
+# theme = "PRODUCTION_THEME_ID"
+# path = "./dist"

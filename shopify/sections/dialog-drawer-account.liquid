@@ -1,0 +1,127 @@
+{%- unless request.page_type contains 'customers' -%}
+  <drawer-account
+    class="dialog dialog--drawer dialog--drawer-right"
+    id="DrawerAccount"
+    hidden
+    {% if section.settings.testing %}
+      data-testing
+    {% endif %}
+  >
+    <div
+      class="dialog-overlay"
+      data-a11y-dialog-hide
+    ></div>
+
+    <footer role="document" class="js-account-tabs">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'header-open' -%}
+            <header data-dialog-element="header">
+          {%- when 'header-controls' -%}
+            <div class="flex w-full items-center justify-between">
+              <div class="flex gap-4 text-sm font-semibold uppercase tracking-standard">
+                <button
+                  class="account-drawer__tab-trigger"
+                  aria-controls="account-panel-1"
+                  aria-selected="true"
+                  tabindex="-1"
+                  onclick="DrawerAccount.changeTab(event)"
+                >
+                  {{- block.settings.tab_one_title -}}
+                </button>
+                <a
+                  class="account-drawer__tab-trigger"
+                  href="{{ shop.url }}/account/register"
+                >
+                  {{- block.settings.tab_two_title -}}
+                </a>
+              </div>
+
+              <button
+                data-dialog-element="close"
+                type="button"
+                tabindex="-1"
+                data-a11y-dialog-hide
+              >
+                {%- render 'theme-icons' with 'close' -%}
+                <span class="sr-only">{{- 'dialogs.actions.close' | t: dialog: 'account' -}}</span>
+              </button>
+            </div>
+
+          {%- when 'header-close' -%}
+            </header>
+
+          {%- when 'main-open' -%}
+            <div data-dialog-element="main">
+          {%- when 'account-tabs' -%}
+            <div class="account-drawer__main">
+              <div
+                id="account-panel-1"
+                class="js-account-tab"
+                aria-expanded="true"
+              >
+                <div>
+                  {%- render 'form-recover', title: block.settings.forgot_title, text: block.settings.forgot_text -%}
+                  <div class="mb-6">
+                    {%- render 'form-login',
+                      title: block.settings.login_title,
+                      text: block.settings.login_text,
+                      text_link: block.settings.login_text_link,
+                      no-redirect: section.settings.no_redirect
+                    -%}
+                  </div>
+                  <hr class="o-hr mb-6" role="presentation">
+                  <p class="mb-4 text-center text-md">
+                    {{- block.settings.register_prompt_text -}}
+                  </p>
+                  <a
+                    type="button"
+                    class="button button--secondary button--full"
+                    href="{{ shop.url }}/account/register"
+                  >
+                    {{- block.settings.register_prompt_button_text -}}
+                  </a>
+                </div>
+              </div>
+
+              <div
+                id="account-panel-2"
+                class="js-account-tab"
+                aria-expanded="true"
+              >
+                <div>
+                  <div class="mb-6">
+                    {%- render 'form-register',
+                      title: block.settings.register_title,
+                      text: block.settings.register_text,
+                      show_placeholder: true
+                    -%}
+                  </div>
+                  <hr class="o-hr mb-6" role="presentation">
+                  <p class="mb-4 text-center text-md">
+                    {{- block.settings.login_prompt_text -}}
+                  </p>
+                  <button
+                    type="button"
+                    class="button button--secondary button--full"
+                    aria-controls="account-panel-1"
+                    onclick="DrawerAccount.changeTab(event)"
+                  >
+                    {{- block.settings.login_prompt_button_text -}}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          {%- when 'main-close' -%}
+            </div>
+
+          {%- when 'footer-open' -%}
+            <footer data-dialog-element="footer">
+          {%- when 'footer-close' -%}
+            </footer>
+        {%- endcase -%}
+      {%- endfor -%}
+    </footer>
+  </drawer-account>
+{%- endunless -%}

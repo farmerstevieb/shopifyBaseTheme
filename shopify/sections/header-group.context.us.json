@@ -1,0 +1,50 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "header-group.json",
+  "context": {
+    "market": "us"
+  },
+  "sections": {
+    "promo-bar": {
+      "settings": {
+        "desktop_columns": "2"
+      },
+      "blocks": {
+        "91cae7c7-7733-492c-a073-5d176a70fbaa": {
+          "settings": {
+            "icon": "none",
+            "text_desktop": "<em>Europe's most loved <\/em>premium hair extensions",
+            "link": "shopify:\/\/collections\/hair-extensions"
+          }
+        },
+        "d7e69581-85e4-4214-a7e2-e488640ad330": {
+          "disabled": true,
+          "settings": {}
+        },
+        "promo_text_XFUqWj": {
+          "settings": {
+            "bg_color_custom": "#a3a861"
+          }
+        }
+      }
+    },
+    "header": {
+      "settings": {},
+      "blocks": {
+        "d84dcf54-1333-4cc5-a294-140ddfc958bd": {
+          "settings": {
+            "title_1": "COLOR RINGS"
+          }
+        }
+      }
+    }
+  }
+}

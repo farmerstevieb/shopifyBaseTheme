@@ -1,0 +1,63 @@
+@tailwind utilities;
+
+.animate-arrow {
+  .icon-arrow path {
+    transform: translateX(-0.25rem);
+    transition: transform 100ms ease;
+  }
+
+  &:hover {
+    .icon-arrow path {
+      transform: translateX(-0.05rem);
+    }
+  }
+}
+
+.lg\:rtl-grid {
+  @screen lg {
+    direction: rtl;
+  }
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.tooltip-arrow {
+  @apply absolute w-2 h-2 bg-white rotate-45;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: calc(50% - 12px);
+    left: calc(50% - 24px);
+    transform: rotate(-45deg);
+    width: 48px;
+    height: 24px;
+  }
+}
+
+@layer components {
+  .up-arrow {
+    --arrow-color: theme("colors.white");
+
+    &::before {
+      content: "";
+      left: calc(50% - 8px);
+      border-right: 8px solid transparent;
+      border-bottom: 8px solid var(--arrow-color);
+      border-left: 8px solid transparent;
+
+      @apply absolute -top-2 w-0 h-0;
+    }
+  }
+}
+
+.visually-hidden {
+  @apply sr-only;
+}

@@ -1,0 +1,26 @@
+.c-cart {
+  @screen lg {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: var(--gap);
+    border-block: 1px solid theme("colors.border.light");
+  }
+
+  &__items {
+    padding-inline: var(--row-space);
+
+    @screen lg {
+      padding-inline: var(--row-space) var(--gap);
+    }
+  }
+
+  &__summary {
+    position: relative;
+    padding-inline: var(--row-space);
+    background-color: #f7f7f7;
+
+    @screen lg {
+      padding-left: var(--gap);
+    }
+  }
+}

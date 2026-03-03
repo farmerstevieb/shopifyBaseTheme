@@ -1,0 +1,33 @@
+.product-price {
+  &--sale {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-quickshop & {
+    flex-direction: row-reverse;
+    font-size: theme("fontSize.2xl");
+  }
+
+  &__previous {
+    .product-price--sale & {
+      color: theme("colors.grey.70");
+      text-decoration: line-through;
+
+      .product-quickshop & {
+        margin-inline-end: theme("spacing.2");
+      }
+    }
+  }
+
+  &__current {
+    .product-price--sale & {
+      color: theme("colors.red.50");
+
+      .product-quickshop & {
+        font-weight: theme("fontWeight.bold");
+        color: theme("colors.black");
+      }
+    }
+  }
+}

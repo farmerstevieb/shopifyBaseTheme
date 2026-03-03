@@ -1,0 +1,129 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "blocks": {
+        "903c816d-19c4-46bc-abf0-26ed1df5e158": {
+          "type": "subtotal",
+          "settings": {}
+        },
+        "f4fa73f0-3e7f-46f2-a22c-19b07d554e72": {
+          "type": "free_delivery",
+          "settings": {}
+        },
+        "a627cb36-f171-45c4-b3be-94d4bcffebb6": {
+          "type": "buttons",
+          "settings": {
+            "checkout_button_style": "primary"
+          }
+        },
+        "0a1d9f7c-e20b-4a0a-a6e3-d70010a90484": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "<p><a href=\"/pages/delivery-returns\" title=\"Delivery & Returns\">Got a discount code?</a> You can add it in the checkout.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "903c816d-19c4-46bc-abf0-26ed1df5e158",
+        "f4fa73f0-3e7f-46f2-a22c-19b07d554e72",
+        "a627cb36-f171-45c4-b3be-94d4bcffebb6",
+        "0a1d9f7c-e20b-4a0a-a6e3-d70010a90484"
+      ],
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "#ffffff",
+        "color_spacing": false,
+        "summary_background_color": "#f8ede9",
+        "summary_text_color": "dark"
+      }
+    },
+    "e074b694-a064-42f8-bf43-526cacd27fc1": {
+      "type": "products-recommended",
+      "blocks": {
+        "template--16816433070328__e074b694-a064-42f8-bf43-526cacd27fc1-section_header-1": {
+          "type": "section_header",
+          "settings": {
+            "content_width": 0,
+            "offset_heading": 0,
+            "subheading_spacing": 16,
+            "heading_spacing": 16,
+            "overline_spacing": 16,
+            "description_spacing": 16,
+            "subheading_spacing_desktop": 16,
+            "heading_spacing_desktop": 16,
+            "overline_spacing_desktop": 16,
+            "description_spacing_desktop": 16,
+            "cta_sizes": "large",
+            "cta_sizes_dsk": "large-dsk",
+            "cta_align": "vertical",
+            "cta_align_desktop": "horizontal",
+            "content_align": "",
+            "position": "center",
+            "vertical_position": "center",
+            "color": "dark",
+            "subheading_size": "md",
+            "heading_size": "2xl",
+            "overline_size": "md",
+            "text_size": "md",
+            "position_desktop": "start",
+            "vertical_position_desktop": "center",
+            "subheading_size_desktop": "md",
+            "heading_size_desktop": "",
+            "overline_size_desktop": "md",
+            "text_size_desktop": "",
+            "subheading": "",
+            "heading": "<p>You may also like</p>",
+            "overline": "",
+            "text": "",
+            "text_tranform": "",
+            "text_weight": "",
+            "text_undeline": false,
+            "cta_1_text": "",
+            "cta_1_icon": "none",
+            "cta_1_icon_position": "right",
+            "cta_1_link": "",
+            "cta_1_link_style": "primary",
+            "cta_1_target": false
+          }
+        },
+        "template--16816433070328__e074b694-a064-42f8-bf43-526cacd27fc1-recommended-1": {
+          "type": "recommended",
+          "settings": {
+            "intent": "related",
+            "limit": 10
+          }
+        }
+      },
+      "block_order": [
+        "template--16816433070328__e074b694-a064-42f8-bf43-526cacd27fc1-section_header-1",
+        "template--16816433070328__e074b694-a064-42f8-bf43-526cacd27fc1-recommended-1"
+      ],
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "#ffffff",
+        "color_spacing": false,
+        "text_color": "dark",
+        "slider_enabled": "true"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "e074b694-a064-42f8-bf43-526cacd27fc1"
+  ]
+}

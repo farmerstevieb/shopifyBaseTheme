@@ -1,0 +1,40 @@
+{% comment %}
+  Renders share block.
+  Accepts:
+  - share_link: {String} url to be added to the input the user will get/copy.
+  Usage:
+  {% render 'share', share_link: share_url %}
+{% endcomment %}
+
+<ul class="flex gap-x-4">
+  <li>
+    <a
+      class="flex"
+      rel="noreferrer"
+      href="https://twitter.com/intent/tweet?url={{ share_url }}"
+    >
+      <span class="sr-only">Share on twitter</span>
+      {%- render 'theme-icons' with 'twitter', width: 18, height: 18 -%}
+    </a>
+  </li>
+  <li>
+    <a
+      class="flex"
+      rel="noreferrer"
+      href="https://www.facebook.com/sharer/sharer.php?u={{ share_url }}"
+    >
+      <span class="sr-only">Share on facebook</span>
+      {%- render 'theme-icons' with 'facebook', width: 18, height: 18 -%}
+    </a>
+  </li>
+  <li>
+    <a
+      class="flex"
+      rel="noreferrer"
+      href="https://pinterest.com/pin/create/button/?url={{ share_url }}"
+    >
+      <span class="sr-only">Share on pinterest</span>
+      {%- render 'theme-icons' with 'pinterest', width: 18, height: 18 -%}
+    </a>
+  </li>
+</ul>

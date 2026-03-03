@@ -1,0 +1,7 @@
+config/settings_data.json
+templates/**/*.json
+templates/*.json
+sections/*.json
+locales/*.json
+
+snippets/pandectes-rules.liquid

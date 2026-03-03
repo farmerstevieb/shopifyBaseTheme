@@ -1,0 +1,136 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "index.json",
+  "context": {
+    "market": "us"
+  },
+  "sections": {
+    "hero_banner_mkAzCL": {
+      "settings": {},
+      "blocks": {
+        "slide_kpafwx": {
+          "settings": {
+            "image": "shopify://shop_images/Best_Sellers_-_Desk.jpg"
+          }
+        }
+      }
+    },
+    "hero_banner_X48qjx": {
+      "disabled": false,
+      "settings": {
+        "user_restriction": "customer"
+      },
+      "blocks": {
+        "slide_XQ7P4r": {
+          "settings": {
+            "heading_size": "3sm",
+            "heading": "<p>Weave Only The Best Into Every Strand </p>",
+            "overline": "Transform your salon experience with the perfect Weft ",
+            "cta_1_text": "SHOP WEFTS",
+            "cta_1_link": "shopify://collections/weft-extensions",
+            "image": "shopify://shop_images/Best_Sellers_-_Desk.jpg",
+            "image_mobile": "shopify://shop_images/Best_Sellers_-_Mob_0fa50e66-63cd-44d3-a661-920551b46e36.jpg"
+          }
+        }
+      }
+    },
+    "banner_grid_carousel_VckFHA": {
+      "settings": {},
+      "blocks": {
+        "card_R4WGhM": {
+          "settings": {
+            "heading": "<p>Pre-Bonded Extensions</p>",
+            "cta_1_link": "shopify://collections/pre-bonded-hair-extensions",
+            "image": "shopify://shop_images/Prebonded_e4bbea81-0cb1-4403-a415-a21340ebb7c6.jpg"
+          }
+        },
+        "card_gmKYWc": {
+          "settings": {
+            "heading": "<p>Color Rings</p>"
+          }
+        }
+      }
+    },
+    "banner_grid_carousel_Xc74Gm": {
+      "settings": {},
+      "blocks": {
+        "card_9BM8FX": {
+          "settings": {
+            "heading": "<p>Color Rings</p>"
+          }
+        }
+      }
+    },
+    "text_media_AtJayj": {
+      "settings": {},
+      "blocks": {
+        "text_rmxcUF": {
+          "settings": {
+            "heading": "<p>New Clip In Deluxe Colors </p>",
+            "text": "<p>Six new colors for your clients looking for temporary hair solutions.</p>"
+          }
+        }
+      }
+    },
+    "text_media_Wg4L7M": {
+      "disabled": false,
+      "settings": {
+        "user_restriction": "customer"
+      },
+      "blocks": {
+        "text_36xF8M": {
+          "settings": {
+            "heading": "<p>New Elegance & Deluxe Color Ring</p>",
+            "text": "<p>We’ve updated our Color Rings to create one that does it all.</p>"
+          }
+        }
+      }
+    },
+    "hero_banner_7drQEk": {
+      "settings": {},
+      "blocks": {
+        "slide_HgpQ6b": {
+          "settings": {
+            "heading": "<p>Wonderpiece Colors</p>",
+            "overline": "Stylists, six new Wonderpiece colors just landed."
+          }
+        }
+      }
+    },
+    "text_media_pnjajf": {
+      "settings": {},
+      "blocks": {
+        "media_p9YFg8": {
+          "settings": {
+            "video_file": "shopify://files/videos/RemiCachet-Versatality_Film_16x9_Video 1 US - 1280 x 720.mp4"
+          }
+        }
+      }
+    },
+    "banner_grid_3zPBnj": {
+      "settings": {},
+      "blocks": {
+        "card_YpYFzX": {
+          "settings": {
+            "text": "<p>Delivering the highest quality of ethically sourced hair, we offer the largest range of innovation, application methods and colors in the market.</p>"
+          }
+        },
+        "card_kzrEyx": {
+          "settings": {
+            "heading": "<p>Color Matching</p>",
+            "text": "<p>Use our color chart to find the perfect color for your clients.</p>",
+            "cta_1_text": "discover our colors"
+          }
+        }
+      }
+    }
+  }
+}

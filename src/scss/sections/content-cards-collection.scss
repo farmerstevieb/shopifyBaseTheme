@@ -1,0 +1,16 @@
+.content-cards-collection {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: max(var(--gap), 40 / 1424 * 100%);
+
+    &:has(> li:nth-child(4)) {
+      @media (max-width: theme("screens.lg")) {
+        > li {
+          .o-picture img,
+          .card > svg {
+            --ar: 1/1;
+          }
+        }
+      }
+    }
+  }

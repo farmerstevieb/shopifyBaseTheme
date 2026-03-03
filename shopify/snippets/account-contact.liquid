@@ -1,0 +1,31 @@
+<div class="c-account-contact">
+  <div class="c-account-contact__header">
+    <h2 class="font-heading">Contact Us</h2>
+  </div>
+  {% for block in section.blocks %}
+    {%- case block.type -%}
+      {%- when 'contact' -%}
+        <div class="c-account-contact__body">
+          <div class="c-account-contact__container">
+            <div class="c-account-contact__title">{{ block.settings.contact_title }}</div>
+            <div class="c-account-contact__text">{{ block.settings.contact_text }}</div>
+            <div class="c-account-contact__phone">
+              <a href="tel:+44{{ block.settings.contact_phone | replace: ' ', '' }}"
+                >+44 (0){{ block.settings.contact_phone -}}
+              </a>
+            </div>
+            <div class="c-account-contact__email">
+              <a href="mailto:{{ block.settings.contact_email }}">Email us</a>
+            </div>
+          </div>
+          <div class="c-account-contact__container">
+            <div class="c-account-contact__title c-account-contact__title-address">Find us</div>
+            <div class="c-account-contact__text">{{ block.settings.contact_address }}</div>
+            <div class="c-account-contact__email">
+              <a href="{{ block.settings.contact_url }}" target="_blank">Find us on Google Maps</a>
+            </div>
+          </div>
+        </div>
+    {%- endcase -%}
+  {%- endfor -%}
+</div>

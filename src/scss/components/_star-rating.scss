@@ -1,0 +1,36 @@
+.spr-starrating {
+  // stylelint-disable-next-line
+  font-size: theme("fontSize.sm") !important;
+
+  @apply items-center;
+
+  .spr-stars span {
+    @apply flex;
+  }
+}
+
+.rating-star {
+  --font-size: 1.6;
+  --percent: calc(
+    (
+        var(--rating) / var(--rating-max) + var(--rating-decimal) *
+          var(--font-size) / (var(--rating-max) * (var(--font-size)))
+      ) * 100%
+  );
+
+  display: inline-flex;
+  margin: 0;
+
+  &::before {
+    content: "★★★★★";
+    background: linear-gradient(
+      90deg,
+      #ffd000 var(--percent),
+      rgb(0 0 0 / 15%) var(--percent)
+    );
+    background-clip: text;
+    // stylelint-disable-next-line
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

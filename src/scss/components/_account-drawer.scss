@@ -1,0 +1,25 @@
+.account-drawer {
+  &__tab-trigger {
+    @apply button button--underline uppercase;
+
+    &[aria-selected="false"] {
+      @apply opacity-50 no-underline;
+    }
+  }
+
+  &__main {
+    grid-auto-columns: 100%;
+    grid-auto-flow: column;
+
+    @apply relative grid overflow-hidden;
+
+    > div {
+      transform: translateX(calc(-100% * var(--tab-offset, 0)));
+      transition: transform 200ms, opacity 400ms;
+
+      &[aria-expanded="false"] {
+        @apply opacity-0;
+      }
+    }
+  }
+}

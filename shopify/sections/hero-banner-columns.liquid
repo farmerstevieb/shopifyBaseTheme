@@ -1,0 +1,130 @@
+{%- liquid
+  render 'theme_assets' with 'section-hero.min.css'
+  render 'section-spacing-and-color'
+
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+
+  # Spacing Class (Required)
+  capture section_padding_class
+    echo 'section-spacing--' | append: section.settings.padding
+  endcapture
+
+  # Slider
+  capture slider_snippet
+    render 'slider-settings', target: section
+  endcapture
+
+  assign slider_snippet = slider_snippet | split: ' ** '
+
+  assign slider_settings = slider_snippet[0]
+  assign slider_classes = slider_snippet[1]
+  assign slider_variables = slider_snippet[2]
+
+  assign aspect_ratio_dsk = '560 / 672'
+  assign aspect_ratio_mob = '207 / 394'
+  assign banner_ratio = section.settings.banner_ratio
+  assign banner_ratio_dsk = section.settings.banner_ratio_dsk
+
+  if banner_ratio != ''
+    assign aspect_ratio_mob = banner_ratio | replace: ' ', ''
+  endif
+
+  if banner_ratio_dsk != ''
+    assign aspect_ratio_dsk = banner_ratio_dsk | replace: ' ', ''
+  endif
+-%}
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {{ slider_variables }}
+
+  <juno-slider
+    class="slider slider--slideshow {{ section_padding_class }} {{ slider_classes }}"
+    {{ slider_settings }}
+  >
+    <div
+      class="slider__viewport"
+      data-slider="viewport"
+    >
+      <ul class="slider__track">
+        {%- for block in section.blocks -%}
+          <li
+            class="hero hero--{{ section.settings.height }} hero--columns {% if section.settings.padding == 'padded' %} hero--padded{% endif%}"
+            style="--overlay:{{ block.settings.overlay | default: 'none' }}"
+            {{ block.shopify_attributes }}
+          >
+            <ul class="grid grid-cols-12">
+              {%- for i in (1..2) -%}
+                {%- liquid
+                  assign image_key = 'image_' | append: i
+                  assign image_mobile_key = 'image_mobile_' | append: i
+                  assign image_fit_key = 'image_fit_' | append: i
+                  assign video_file_key = 'video_file_' | append: i
+                  assign video_url_key = 'video_url_' | append: i
+                  assign video_autoplay_key = 'video_autoplay_' | append: i
+                  assign video_muted_key = 'video_muted_' | append: i
+                  assign order_key = 'order_' | append: i
+                -%}
+                <li
+                  class="relative col-span-6 hero__item md:col-span-4"
+                  style="--order: {{ block.settings[order_key]}}"
+                >
+                  {%- liquid
+                    assign media_class = 'hero__media o-picture--fill'
+                    assign image_class = 'o-img--' | append: block.settings[image_fit_key]
+                    assign video_src = block.settings[video_file_key] | default: block.settings[video_url_key]
+
+                    if video_src
+                      assign play_video_on_mobile = true
+
+                      if block.settings[image_mobile_key]
+                        assign play_video_on_mobile = false
+                      endif
+
+                      capture placeholder
+                        render 'object-image' with block.settings[image_key], mobile_image: block.settings[image_mobile_key], preload: forloop.first, class: 'o-video__image js-video-image', img_class: image_class, visible_placeholder: false
+                      endcapture
+
+                      render 'object-video' with video_src, placeholder: placeholder, autoplay: block.settings[video_autoplay_key], muted: block.settings[video_muted_key], loop: true, fit: 'cover', class: media_class, play_on_mobile: play_video_on_mobile, aspect: aspect_ratio_dsk, aspect_mobile: aspect_ratio_mob
+                    else
+                      render 'object-image' with block.settings[image_key], mobile_image: block.settings[image_mobile_key], preload: forloop.first, class: media_class, img_class: image_class, visible_placeholder: false, aspect: aspect_ratio_dsk, aspect_mobile: aspect_ratio_mob
+                    endif
+                  -%}
+                  {%- if forloop.last -%}
+                    {%- render 'shop-the-look',
+                      products: block.settings.stl_products,
+                      position: block.settings.stl_position,
+                      title: block.settings.stl_title
+                    -%}
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+
+              <li
+                class="col-span-12 hero__item hero__item-text md:col-span-4"
+                style="--order: {{ block.settings.order_3}}"
+              >
+                {%- render 'object-content',
+                  block: block.settings,
+                  attributes: block.shopify_attributes,
+                  class: 'h-full px-row py-12 md:p-6',
+                  has_heading_class: true
+                -%}
+              </li>
+            </ul>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </juno-slider>
+{% endif %}

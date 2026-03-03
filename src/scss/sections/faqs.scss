@@ -1,0 +1,77 @@
+.c-faqs {
+  max-width: 886px;
+  margin: 0 auto;
+
+  @screen md {
+    padding-inline: 0;
+  }
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: theme("spacing.4");
+  }
+
+  &__item {
+    border: 1px solid theme("colors.grey.110");
+
+    &--heading {
+      gap: 0.4rem;
+      padding: 1.6rem;
+      font-size: theme("fontSize.sm");
+      font-weight: 600;
+      line-height: 1.5;
+      color: theme("colors.grey.5");
+      letter-spacing: theme("letterSpacing.wide");
+
+      &.is-open > span {
+        transform: rotate(180deg);
+      }
+    }
+
+    &--content-inner {
+      padding: 1.6rem 1.6rem 0;
+      font-size: theme("fontSize.smd");
+      font-weight: 400;
+      line-height: 1.5;
+      color: theme("colors.grey.45");
+      border-top: 1px solid theme("colors.grey.110");
+
+      ol {
+        padding-left: 1.6rem;
+        list-style: auto;
+      }
+
+      ul {
+        padding-left: 1.6rem;
+        list-style: disc;
+      }
+
+      a {
+        text-decoration: underline;
+      }
+
+      * {
+        &:last-child {
+          padding-bottom: 16px;
+        }
+      }
+    }
+
+    &--icon {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__blog {
+    &--heading {
+      font-size: theme("fontSize.md");
+      color: theme("colors.grey.10");
+    }
+
+    &--content-inner {
+      padding: 1.6rem;
+      color: theme("colors.grey.0");
+    }
+  }
+}

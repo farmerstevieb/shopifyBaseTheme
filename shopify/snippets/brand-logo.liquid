@@ -1,0 +1,58 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Brand Logo
+  -------------------------------------------------------------------------------
+  Accepts
+  - section: {Object} (required)
+  - class: {Object} the parent class (required)
+  - logo_colour {String/HEX} sets the logos colour (optional),
+  - word_one_colour {String/HEX} sets the first word's colour (optional),
+  - word_two_colour {String/HEX} sets the second word's colour (optional),
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'brand-logo', section: section -%}
+  -------------------------------------------------------------------------------
+  Description
+  Displays the brand's primary logos.
+{%- endcomment -%}
+
+{%- liquid
+  assign class = class
+
+  assign logo_colour = logo_colour | default: section.settings.logo_colour
+  assign word_one_colour = word_one_colour | default: section.settings.word_one_colour
+  assign word_two_colour = word_two_colour | default: section.settings.word_two_colour
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .{{ class }} img,
+  #shopify-section-{{ section.id }} .{{ class }} svg {
+    max-height: {{ section.settings.brand_logo_max_height_mobile | append: 'px' }};
+  }
+
+  @media (min-width: 1024px) {
+    #shopify-section-{{ section.id }} .{{ class }} img,
+    #shopify-section-{{ section.id }} .{{ class }} svg {
+      max-height: {{ section.settings.brand_logo_max_height_desktop | append: 'px' }};
+    }
+  }
+{%- endstyle -%}
+
+<a
+  class="{{ class }}"
+  href="{{ routes.root_url }}"
+>
+  {%- if section.settings.brand_image != blank -%}
+    {%- render 'object-image' with section.settings.brand_image, img_class: 'o-img--contain h-full' -%}
+  {%- else -%}
+    {%- render 'theme-brand-logos' with section.settings.brand_logo,
+      section: section,
+      classes: 'block w-fit h-full',
+      logo_colour: logo_colour,
+      word_one_colour: word_one_colour,
+      word_two_colour: word_two_colour
+    -%}
+  {%- endif -%}
+
+  <span class="sr-only">{{- shop.name -}}</span>
+</a>

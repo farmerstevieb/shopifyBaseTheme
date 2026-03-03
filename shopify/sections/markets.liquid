@@ -1,0 +1,174 @@
+{%- if settings.enable_markets -%}
+  {%- liquid
+    assign defaultMarket = null
+    assign currentMarket = null
+
+    for block in section.blocks
+      if block.settings.country_codes contains localization.country.iso_code
+        assign currentMarket = block.settings
+        break
+      endif
+      if block.settings.code == section.settings.default_market
+        assign defaultMarket = block.settings
+      endif
+    endfor
+
+    assign currentMarket = currentMarket | default: defaultMarket | default: section.blocks[0].settings
+  -%}
+
+  <script type="module">
+    const buttonHTML = `
+      <img
+        class="object-cover rounded-full aspect-square"
+        src="https://cdn.shopify.com/static/images/flags/{{ currentMarket.code | downcase }}.svg"
+        loading="lazy"
+        width="18"
+        height="18"
+        alt=""
+      />
+      <span>{{ currentMarket.code }}</span>
+    `;
+
+    const elTriggers = document.querySelectorAll('[is=modal-opener][modal="#MarketsDialog"]');
+    for (const elTrigger of elTriggers) {
+      elTrigger.insertAdjacentHTML('afterbegin', buttonHTML);
+    }
+  </script>
+
+  <modal-dialog id="MarketsDialog" modal-mode="mega" hidden>
+    <div data-a11y-dialog-hide></div>
+
+    <div role="document">
+      <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+        {%- render 'theme-icons' with 'close' -%}
+        <span class="sr-only">Close dialog</span>
+      </button>
+
+      <div>
+        <div class="flex flex-col items-center p-8 text-center gap-y-1 text-md md:p-9">
+          <img
+            class="object-cover rounded-full mb-5 aspect-square md:w-[200px] js-lazyload"
+            data-src="https://cdn.shopify.com/static/images/flags/{{ currentMarket.code | downcase }}.svg"
+            loading="eager"
+            width="138"
+            height="138"
+            alt=""
+          >
+          <p>{{ 'sections.markets.welcome_text' | t: market_name: currentMarket.title }}</p>
+          <button class="font-semibold button" data-a11y-dialog-hide>
+            {{ 'sections.markets.continue_button' | t: market_code: currentMarket.code }}
+            {%- render 'theme-icons' with 'chevron-right', width: 16, height: 16 -%}
+          </button>
+        </div>
+
+        {% if section.blocks.size > 1 %}
+          <hr class="o-hr" role="presentation">
+
+          <div class="flex flex-col items-center p-8 font-bold text-center uppercase gap-y-5 tracking-1 md:p-9">
+            <p>{{ 'sections.markets.alternative_text' | t }}</p>
+            <ul class="grid grid-cols-2 md:grid-cols-3 justify-items-center gap-x-8 md:gap-x-11 gap-y-4">
+              {%- for block in section.blocks -%}
+                {%- liquid
+                  if block.settings.image
+                    assign imageSrc = block.settings.image | image_url: width: 32, height: 32
+                  else
+                    assign imageSrc = block.settings.code | downcase | prepend: 'https://cdn.shopify.com/static/images/flags/' | append: '.svg'
+                  endif
+                -%}
+
+                <li class="flex">
+                  <a class="button gap-x-4" href="{{ block.settings.domain }}">
+                    <img
+                      class="object-cover rounded-full aspect-square js-lazyload"
+                      loading="eager"
+                      data-src="{{ imageSrc }}"
+                      width="32"
+                      height="32"
+                      alt=""
+                    >
+                    <span>
+                      {{- block.settings.code }}
+                      {% if block.settings.currency != empty %}
+                        ({{ block.settings.currency }})
+                      {% endif %}
+                    </span>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </modal-dialog>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Markets",
+  "presets": [{ "name": "Markets" }],
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Important"
+    },
+    {
+      "type": "paragraph",
+      "content": "Please make remember to toggle on/off markets ui in theme settings."
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "id": "default_market",
+      "type": "text",
+      "label": "Default market code"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "market",
+      "name": "Market",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "code",
+          "label": "Code"
+        },
+        {
+          "type": "text",
+          "id": "currency",
+          "label": "Currency"
+        },
+        {
+          "type": "text",
+          "id": "country_codes",
+          "label": "Country codes",
+          "info": "List of country codes that belong to this market"
+        },
+        {
+          "type": "url",
+          "id": "domain",
+          "label": "Market domain URL"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Override default image or provide one for custom markets e.g International"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

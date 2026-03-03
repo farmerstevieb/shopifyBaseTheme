@@ -1,0 +1,158 @@
+{% style %}
+  .shopify-section[id*="{{ section.id }}"] {
+    --bg: {{ section.settings.background_color }};
+    padding-inline: var(--row-space);
+    background: var(--bg);
+  }
+{% endstyle %}
+
+{%- liquid
+  capture text_color
+    case section.settings.text_color
+      when 'dark'
+        echo 'text-primary'
+      when 'light'
+        echo 'text-primaryInverse'
+    endcase
+  endcapture
+-%}
+
+<div class="flex flex-col gap-y-9 lg:gap-y-12 pt-14 pb-4 {{ text_color }}">
+  <div class="footer-columns">
+    <div class="border-solid footer-columns__columns border-border-inverseEvenLighter max-lg:border-b">
+      {%- for link in linklists[section.settings.footer_menu].links -%}
+        <div class="footer-columns__column">
+          {%- capture content -%}
+            <ul class="flex flex-col gap-y-2">
+              {%- for child_link in link.links -%}
+                <li class="last:pb-4 last:lg:pb-0">
+                  <a
+                    class="font-normal select-none text-smd text-inherit hover:underline leading-base"
+                    href="{{ child_link.url }}"
+                  >
+                    {{- child_link.title -}}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endcapture -%}
+
+          {%- liquid
+            assign heading_classes = 'font-semibold text-sm leading-base tracking-standard ' | append: text_color
+
+            render 'object-accordion', title: link.title, heading_class: heading_classes, content: content, is_mobile: true
+          -%}
+        </div>
+      {%- endfor -%}
+
+      <div class="footer-columns__column footer-columns__column--newsletter-socials">
+        {%- if section.settings.show_newsletter -%}
+          <div>
+            {%- render 'form-newsletter',
+              form_id: 'newsletter',
+              title: section.settings.heading_newsletter,
+              text: section.settings.text_newsletter,
+              use_klaviyo: section.settings.use_klaviyo_form,
+              klaviyo_form: section.settings.klaviyo_form_embed,
+              classes: text_color,
+              button_style: section.settings.button_style
+            -%}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_social and shop.brand.metafields.social_links.size > 0 -%}
+          <div class="flex pt-6 gap-x-4 gap-y-2 max-lg:justify-center lg:flex-col xl:flex-row">
+            <p>
+              <small class="text-sm font-semibold">
+                {{- 'sections.footer.socials.title' | t -}}
+              </small>
+            </p>
+
+            <ul class="flex items-center gap-4 max-lg:justify-center">
+              {%- for social_link in shop.brand.metafields.social_links -%}
+                <li class="flex h-fit">
+                  <a
+                    href="{{ social_link[1].value }}"
+                    rel="noreferrer"
+                    aria-describedby="a11y-external-message"
+                  >
+                    {%- render 'theme-icons' with social_link[0],
+                      width: 16,
+                      height: 16,
+                      stroke: 'none',
+                      fill: 'currentColor'
+                    -%}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center py-10 text-sm border-solid max-lg:pt-0 footer-bottom lg:border-t border-border-inverseEvenLighter">
+    <div class="flex flex-col items-stretch w-full lg:justify-between lg:flex-row gap-y-6 lg:gap-y-4 gap-x-8">
+      <div class="flex items-center gap-x-6 max-lg:flex-col">
+        {%- render 'brand-logo', section: section, class: 'footer-bottom__logo' -%}
+
+        <div class="grid items-center grid-cols-2 grid-rows-2 gap-x-10 gap-y-px max-lg:flex-col max-lg:flex max-lg:text-center max-lg:gap-y-4">
+          <div class="col-span-1 col-start-1 row-start-1">
+            <small class="text-sm font-semibold cursor-default">
+              {%- liquid
+                assign year = 'now' | date: '%Y'
+                echo 'sections.footer.copyright' | t: date: year
+              -%}
+            </small>
+          </div>
+
+          {%- if linklists[section.settings.footer_link_bottom].links.size > 0 -%}
+            <div class="col-span-1 col-start-2 row-start-1">
+              <ul class="flex items-center gap-x-9">
+                {%- for link in linklists[section.settings.footer_link_bottom].links -%}
+                  <li>
+                    <a class="text-xs lg:text-smd" href="{{ link.url }}">
+                      {{- link.title -}}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.footer_bottom_text != blank -%}
+            <p class="col-span-2 col-start-1 row-start-2 text-xs">
+              {{- section.settings.footer_bottom_text -}}
+            </p>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center flex-grow lg:justify-end">
+        {%- if section.settings.payment_logos != blank -%}
+          {%- render 'object-image' with section.settings.payment_logos -%}
+        {%- else -%}
+          {%- liquid
+            assign payment_types = shop.enabled_payment_types
+            if payment_types.size == 0
+              assign payment_types = 'visa,master,american_express,paypal,apple_pay,gpay' | split: ','
+            endif
+          -%}
+
+          <ul
+            class="flex flex-wrap items-center justify-center gap-2 lg:justify-end"
+            role="list"
+            aria-label="{{- 'sections.footer.sr.supported_payments' | t -}}"
+          >
+            {%- for type in payment_types -%}
+              <li class="flex">
+                {{ type | payment_type_svg_tag: class: 'w-[27px] h-[18px] lg:text-2xs' }}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

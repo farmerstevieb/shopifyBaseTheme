@@ -1,0 +1,59 @@
+.content-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+
+  @screen md {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: max(var(--gap), 40 / 1424 * 100%);
+
+    // If 4 cards, make them 2x2 on tablet size screens
+    &:has(> li:nth-child(4)) {
+      @media (max-width: theme("screens.lg")) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        > li {
+          grid-column: span 1;
+
+          .o-picture img,
+          .card > svg {
+            --ar: 1/1;
+          }
+        }
+      }
+    }
+  }
+
+  &--carousel {
+    --slides: 1.22;
+    --col-gap: var(--gap);
+
+    gap: 0;
+    margin-left: calc(var(--col-gap) * -1);
+
+    @screen md {
+      --slides: 2;
+    }
+
+    @screen lg {
+      --slides: 3;
+    }
+
+    @screen xl {
+      --slides: 4;
+    }
+
+    li {
+      flex-shrink: 0;
+
+      // prettier-ignore
+      width: calc(
+        (100% / var(--slides)) - (var(--col-gap) * ((var(--slides) - 1) / var(--slides)))
+      );
+      width: calc((100% / var(--slides)));
+      min-width: 0;
+      padding-left: var(--col-gap);
+    }
+  }
+}

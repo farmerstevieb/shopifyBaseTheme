@@ -1,0 +1,56 @@
+{% style %}
+  :has(#recover:target) #shopify-section-{{ section.id }} {
+    display: none;
+  }
+{% endstyle %}
+
+{%- render 'section-spacing' -%}
+
+<div class="grid lg:grid-cols-2 gap-y-9 max-lg:mt-6">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'media' -%}
+        <div class="{%- if block.settings.mobile_hidden -%}hidden lg:flex{%- endif -%}">
+          {%-
+            render 'object-image'
+            with block.settings.image,
+            mobile_image: block.settings.image_mobile,
+            class: 'o-picture--fill',
+            aspect: '840 / 745',
+            aspect_mobile: '1 / 1',
+            preload: true,
+            img_class: 'o-picture--fill',
+          -%}
+        </div>
+    {%- endcase -%}
+  {%- endfor -%}
+
+  <div class="flex only:col-span-2 js-spacing-content max-w-[756px] mx-auto w-full pt-12 lg:pt-14">
+    <div class="w-full text-center text-grey-0">
+      <h1 id="login" tabindex="-1" class="text-4xl mb-[8px] font-medium font-heading text-center">
+        {{ 'customer.login.title' | t }}
+      </h1>
+
+      {%- render 'form-login', class: 'gap-y-6', title: '', text: 'customer.login.subtext | t' -%}
+
+      {%- if shop.checkout.guest_login -%}
+        <div class="mb-11">
+          <h2 class="text-2xl font-bold mb-[32px] font-heading">
+            {{ 'customer.login.guest_subtitle' | t }}
+          </h2>
+
+          {%- form 'guest_login' -%}
+            <button class="button button--secondary button--full">
+              {{ 'customer.login.guest_continue' | t }}
+            </button>
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{% if section.settings.apply_content == true %}
+  <script>
+    document.querySelector('.js-spacing-content').classList.add('o-row--content');
+  </script>
+{% endif %}

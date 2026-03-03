@@ -1,0 +1,95 @@
+{% comment %}
+  Renders a set of links for paginated results. Must be used within paginate tags.
+
+  Usage:
+  {% paginate results by 2 %}
+    {% render 'pagination', paginate: paginate, anchor: '#yourID' %}
+  {% endpaginate %}
+
+  Accepts:
+  - paginate: {Object}
+  - anchor: {String} (optional) This can be added so that on page reload it takes you to wherever you've placed your anchor tag.
+{% endcomment %}
+
+{%- liquid
+  assign paginate = paginate
+  assign items_per_page = items_per_page
+  assign show_text = show_text | default: false
+
+  assign items = paginate.items
+
+  capture current_items
+    assign items = paginate.items
+    assign current_offset = paginate.current_offset
+
+    if paginate.next
+      echo items_per_page
+    else
+      echo items | minus: current_offset
+    endif
+  endcapture
+-%}
+
+{%- if paginate.parts.size > 0 -%}
+  {%- if show_text -%}
+    <p
+      class="mb-4 text-md text-center js-pagination-text"
+    >
+      {{- 'general.pagination.info' | t: pagination_amount: current_items, total_count: items -}}
+    </p>
+  {%- endif -%}
+
+  <nav class="text-sm" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+    <ul class="flex flex-wrap justify-center space-x-[-1px]" role="list">
+      <li class="flex {% unless paginate.previous %} pointer-events-none{% endunless%}">
+        <a
+          href="{{ paginate.previous.url }}{{ anchor }}"
+          class="inline-flex items-center justify-center hover:text-white py-[6px] px-3 md:px-4"
+          aria-label="{{ 'general.pagination.previous' | t }}"
+        >
+          {% render 'theme-icons' with 'chevron-left', class: 'stroke-black' %}
+        </a>
+      </li>
+
+      {%- for part in paginate.parts -%}
+        <li class="flex border border-border-light">
+          {%- if part.is_link -%}
+            <a
+              href="{{ part.url }}{{ anchor }}"
+              class="inline-flex items-center justify-center hover:bg-grey-10 text-grey-35 hover:text-white py-[4px] px-3 xs:px-7 text-smd"
+              aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+            >
+              {{- part.title -}}
+            </a>
+          {%- else -%}
+            {%- if part.title == paginate.current_page -%}
+              <a
+                role="link"
+                aria-disabled="true"
+                class="inline-flex items-center justify-center hover:bg-grey-10 hover:text-white py-[6px] px-3 xs:px-7 bg-grey-20 text-white text-smd font-semibold	"
+                aria-current="page"
+                aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+              >
+                {{- part.title -}}
+              </a>
+            {%- else -%}
+              <span class="inline-flex items-center justify-center py-[6px] px-3 xs:px-5">
+                {{- part.title -}}
+              </span>
+            {%- endif -%}
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      <li class="flex {% unless paginate.next %} pointer-events-none{% endunless%}">
+        <a
+          href="{{ paginate.next.url }}{{ anchor }}"
+          class="inline-flex items-center justify-center hover:text-white py-[6px] px-3 md:px-4 rotate-180"
+          aria-label="{{ 'general.pagination.next' | t }}"
+        >
+          {%- render 'theme-icons' with 'chevron-left', class: 'stroke-black' -%}
+        </a>
+      </li>
+    </ul>
+  </nav>
+{%- endif -%}

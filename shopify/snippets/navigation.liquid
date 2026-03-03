@@ -1,0 +1,362 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Navigation - Main
+  -------------------------------------------------------------------------------
+  Accepts
+  - section: {Object} (required) supplies the relevant settings
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'navigation', section: section -%}
+  -------------------------------------------------------------------------------
+  Description
+  Renders both the mobile and desktop navigation for the site.
+{%- endcomment -%}
+
+{%- assign section = section -%}
+
+<nav class="nav js-header-nav">
+  <header class="nav__header">
+    {%- render 'brand-logo', section: section, class: 'nav__logo' -%}
+
+    <button
+      type="button"
+      class="nav__close js-nav-close"
+    >
+      {%- render 'theme-icons' with 'close', width: 20, height: 20, classes: 'stroke-grey-5' -%}
+      <span class="sr-only">{{- 'general.drawers.close' | t -}}</span>
+    </button>
+  </header>
+
+  <ul class="nav__list js-nav-list">
+    {%- for link in linklists[section.settings.main_menu].links -%}
+      <li class="nav__item nav__item--top{%- if link.links.size > 0 %} nav__item--has-submenu js-submenu{% endif -%}">
+        {%- if link.links.size > 0 -%}
+          {%- liquid
+            assign title = link.title
+            assign icon = ''
+            assign swatch = ''
+            assign text_accessors = title | split: '['
+
+            for accessor in text_accessors
+              if accessor contains 'icon='
+                assign icon_name = accessor | split: ']' | first
+                assign icon_name = icon_name | remove: 'icon='
+                assign to_replace = '[icon=' | append: icon_name | append: ']'
+
+                capture icon
+                  render 'theme-icons' with icon_name, classes: 'align-middle mr-3 stroke-primary', width: 20, height: 20
+                endcapture
+
+                assign title = title | replace: to_replace, ''
+                assign icon = icon
+              endif
+
+              if accessor contains 'swatch='
+                assign swatch_name = accessor | split: ']' | first
+                assign swatch_name = swatch_name | remove: 'swatch='
+                assign to_replace = '[swatch=' | append: swatch_name | append: ']'
+
+                assign title = title | replace: to_replace, ''
+                assign swatch = swatch_name | prepend: 'swatch--'
+              endif
+            endfor
+
+            capture has_icon_class
+              if icon != empty or swatch != empty
+                echo 'nav__link--has-icon'
+              endif
+            endcapture
+          -%}
+
+          <div
+            class="nav__link nav__link--top {{ has_icon_class }} js-submenu-open"
+            role="button"
+          >
+            {%- if swatch != empty -%}
+              <div
+                class="{{ swatch }} nav__swatch"
+              ></div>
+            {%- endif -%}
+
+            {%- liquid
+              if icon != blank
+                echo icon
+              endif
+            -%}
+
+            <small>{{- title -}}</small>
+
+            {%- render 'theme-icons' with 'chevron-down', height: 16, width: 16, classes: 'nav__chevron' -%}
+            <span class="sr-only">{{- 'general.drawers.submenu.open' | t -}}</span>
+          </div>
+
+          {%- liquid
+            assign childlist_only_submenu = false
+
+            for child_link in link.links
+              # If there's a megamenu linked to any child, then we want the full submenu to show...
+              for block in section.blocks
+                if block.settings.parent == link.title
+                  break
+                endif
+              endfor
+
+              # If there are no megamenus, and there are no grandchild links then we should just show a simple menu...
+              unless child_link.links.size > 0
+                assign childlist_only_submenu = true
+
+                break
+              endunless
+            endfor
+
+            capture childlist_only_submenu_class
+              if childlist_only_submenu
+                echo 'nav__submenu--linear'
+              endif
+            endcapture
+          -%}
+
+          <div class="nav__submenu {{ childlist_only_submenu_class }} js-submenu-main">
+            <ul class="nav__child-list text-primary scrollbar-hide">
+              {%- for child_link in link.links -%}
+                {%- liquid
+                  assign title = child_link.title
+                  assign icon = ''
+                  assign swatch = ''
+                  assign text_accessors = title | split: '['
+
+                  for accessor in text_accessors
+                    if accessor contains 'icon='
+                      assign icon_name = accessor | split: ']' | first
+                      assign icon_name = icon_name | remove: 'icon='
+                      assign to_replace = '[icon=' | append: icon_name | append: ']'
+
+                      capture icon
+                        render 'theme-icons' with icon_name, classes: 'align-middle mr-3 stroke-primary', width: 20, height: 20
+                      endcapture
+
+                      assign title = title | replace: to_replace, ''
+                      assign icon = icon
+                    endif
+
+                    if accessor contains 'swatch='
+                      assign swatch_name = accessor | split: ']' | first
+                      assign swatch_name = swatch_name | remove: 'swatch='
+                      assign to_replace = '[swatch=' | append: swatch_name | append: ']'
+
+                      assign title = title | replace: to_replace, ''
+                      assign swatch = swatch_name | prepend: 'swatch--'
+                    endif
+                  endfor
+
+                  capture has_links_class
+                    if child_link.links.size > 0
+                      echo 'nav__item--child-has-links'
+                    endif
+                  endcapture
+                -%}
+
+                <li class="nav__item nav__item--child {{ has_links_class }}">
+                  <div class="nav__heading">
+                    {%- if swatch != empty -%}
+                      <div
+                        class="{{ swatch }} nav__swatch"
+                      ></div>
+                    {%- endif -%}
+
+                    {%- liquid
+                      if icon != blank
+                        echo icon
+                      endif
+                    -%}
+
+                    {%- if childlist_only_submenu -%}
+                      <a
+                        class="nav__title nav__title--child"
+                        href="{{ child_link.link }}"
+                      >
+                        {{- title -}}
+                      </a>
+                    {%- else -%}
+                      <small class="nav__title nav__title--child">
+                        {{- title -}}
+                      </small>
+                    {%- endif -%}
+                  </div>
+
+                  {%- if child_link.links.size > 0 -%}
+                    <ul class="nav__grandchild-list">
+                      {%- for grand_child_link in child_link.links -%}
+                        {%- liquid
+                          assign title = grand_child_link.title
+                          assign icon = ''
+                          assign swatch = ''
+                          assign text_accessors = title | split: '['
+
+                          for accessor in text_accessors
+                            if accessor contains 'icon='
+                              assign icon_name = accessor | split: ']' | first
+                              assign icon_name = icon_name | remove: 'icon='
+                              assign to_replace = '[icon=' | append: icon_name | append: ']'
+
+                              capture icon
+                                render 'theme-icons' with icon_name, classes: 'align-middle mr-3 stroke-primary', width: 20, height: 20
+                              endcapture
+
+                              assign title = title | replace: to_replace, ''
+                              assign icon = icon
+                            endif
+
+                            if accessor contains 'swatch='
+                              assign swatch_name = accessor | split: ']' | first
+                              assign swatch_name = swatch_name | remove: 'swatch='
+                              assign to_replace = '[swatch=' | append: swatch_name | append: ']'
+
+                              assign title = title | replace: to_replace, ''
+                              assign swatch = swatch_name | prepend: 'swatch--'
+                            endif
+                          endfor
+
+                          capture has_icon_class
+                            if icon != empty or swatch != empty
+                              echo 'nav__link--has-icon'
+                            endif
+                          endcapture
+                        -%}
+
+                        <li class="nav__item nav__item--grandchild">
+                          <a
+                            class="nav__link {{ has_icon_class }}"
+                            href="{{ grand_child_link.url }}"
+                          >
+                            {%- if swatch != empty -%}
+                              <div
+                                class="{{ swatch }} nav__swatch"
+                              ></div>
+                            {%- endif -%}
+
+                            {%- liquid
+                              if icon != blank
+                                echo icon
+                              endif
+                            -%}
+
+                            <p class="nav__title nav__title--grandchild">
+                              {{- title -}}
+                            </p>
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+
+              {%- # Megamenu Content -%}
+
+              {%- for block in section.blocks -%}
+                {%- if block.settings.parent == link.title -%}
+                  <ul class="nav__item nav__item--child nav__item--megamenu">
+                    {%- for n in (1..3) -%}
+                      {%- liquid
+                        assign imageKey = 'image_' | append: n
+                        assign titleKey = 'title_' | append: n
+                        assign linkKey = 'link_' | append: n
+                        assign sizeKey = 'size_' | append: n
+
+                        # Make sure there is an image added in CMS
+                        unless block.settings[imageKey]
+                          continue
+                        endunless
+                      -%}
+
+                      <li
+                        class="nav__megamenu-item"
+                        {{ block.shopify_attributes }}
+                      >
+                        {%- case block.settings[sizeKey] -%}
+                          {%- when 'standard' -%}
+                            {%- render 'object-image' with block.settings[imageKey],
+                              width: 250,
+                              height: 280,
+                              aspect: '25 / 28'
+                            -%}
+                          {%- when 'wide' -%}
+                            {%- render 'object-image' with block.settings[imageKey],
+                              width: 456,
+                              height: 286,
+                              aspect: '228 / 143'
+                            -%}
+                        {%- endcase -%}
+
+                        {%- if block.settings[titleKey] != blank -%}
+                          <a
+                            class="nav__megamenu-link"
+                            href="{{ block.settings[linkKey] }}"
+                          >
+                            <small class="nav__title nav__title--megamenu">
+                              {{- block.settings[titleKey] -}}
+                            </small>
+                            {%- render 'theme-icons' with 'chevron-right', width: 16, height: 16 -%}
+                          </a>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                    {%- break -%}
+                  </ul>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- else -%}
+          <a
+            class="nav__link nav__link--top"
+            href="{{ link.url }}"
+          >
+            <small>{{- link.title -}}</small>
+          </a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+
+  <footer class="nav__footer">
+    {% # Accounts / Login %}
+    <a
+      class="nav__footer-link"
+      href="
+        {%- liquid
+          if customer
+            echo routes.account_url
+          else
+            echo routes.account_login_url
+          endif
+        -%}
+      "
+    >
+      {%- render 'theme-icons' with 'user', width: 24, height: 24, classes: 'stroke-grey-5' -%}
+      <p class="nav__footer-text">
+        {%- liquid
+          if customer
+            echo 'sections.header.accounts.view_account' | t
+          else
+            echo 'sections.header.accounts.log_in' | t
+          endif
+        -%}
+      </p>
+    </a>
+
+    {% # Accounts / Register %}
+    {%- unless customer -%}
+      <a
+        class="nav__footer-link"
+        href="{{ routes.account_register_url  }}"
+      >
+        {%- render 'theme-icons' with 'pencil', width: 24, height: 24, classes: 'stroke-grey-5' -%}
+        <p class="nav__footer-text">
+          {{- 'sections.header.accounts.register' | t -}}
+        </p>
+      </a>
+    {%- endunless -%}
+  </footer>
+</nav>

@@ -1,0 +1,135 @@
+{%- if section.blocks.size > 0 -%}
+  <style type="text/css">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign product_option_name_1 = block.settings.product_option_name_1 | handleize
+        assign color_1 = block.settings.color_1
+        assign image_1 = block.settings.image_1 | image_url: width: 40, height: 40, crop: 'center'
+
+        assign product_option_name_2 = block.settings.product_option_name_2 | handleize
+        assign color_2 = block.settings.color_2
+        assign image_2 = block.settings.image_2 | image_url: width: 40, height: 40, crop: 'center'
+
+        assign product_option_name_3 = block.settings.product_option_name_3 | handleize
+        assign color_3 = block.settings.color_3
+        assign image_3 = block.settings.image_3 | image_url: width: 40, height: 40, crop: 'center'
+
+        assign product_option_name_4 = block.settings.product_option_name_4 | handleize
+        assign color_4 = block.settings.color_4
+        assign image_4 = block.settings.image_4 | image_url: width: 40, height: 40, crop: 'center'
+
+        assign product_option_name_5 = block.settings.product_option_name_5 | handleize
+        assign color_5 = block.settings.color_5
+        assign image_5 = block.settings.image_5 | image_url: width: 40, height: 40, crop: 'center'
+
+        assign product_option_name_6 = block.settings.product_option_name_6 | handleize
+        assign color_6 = block.settings.color_6
+        assign image_6 = block.settings.image_6 | image_url: width: 40, height: 40, crop: 'center'
+
+        assign product_option_name_7 = block.settings.product_option_name_7 | handleize
+        assign color_7 = block.settings.color_7
+        assign image_7 = block.settings.image_7 | image_url: width: 40, height: 40, crop: 'center'
+
+        assign product_option_name_8 = block.settings.product_option_name_8 | handleize
+        assign color_8 = block.settings.color_8
+        assign image_8 = block.settings.image_8 | image_url: width: 40, height: 40, crop: 'center'
+      -%}
+
+      {%- if product_option_name_1 != blank -%}
+        .swatch--{{ product_option_name_1 }} {
+          {%- if color_1 != blank and color_1 != 'rgba(0,0,0,0)' -%}
+            background-color: {{ color_1 }};
+          {%- elsif image_1 != blank -%}
+            background-image: url({{ image_1 }});
+            background-size: 110%;
+            background-position: center;
+          {%- endif -%}
+        }
+      {%- endif -%}
+
+      {%- if product_option_name_2 != blank -%}
+        .swatch--{{ product_option_name_2 }} {
+          {%- if color_2 != blank and color_2 != 'rgba(0,0,0,0)' -%}
+            background-color: {{ color_2 }};
+          {%- elsif image_2 != blank -%}
+            background-image: url({{ image_2 }});
+            background-size: 110%;
+            background-position: center;
+          {%- endif -%}
+        }
+      {%- endif -%}
+
+      {%- if product_option_name_3 != blank -%}
+        .swatch--{{ product_option_name_3 }} {
+          {%- if color_3 != blank and color_3 != 'rgba(0,0,0,0)' -%}
+            background-color: {{ color_3 }};
+          {%- elsif image_3 != blank -%}
+            background-image: url({{ image_3 }});
+            background-size: 110%;
+            background-position: center;
+          {%- endif -%}
+        }
+      {%- endif -%}
+
+      {%- if product_option_name_4 != blank -%}
+        .swatch--{{ product_option_name_4 }} {
+          {%- if color_4 != blank and color_4 != 'rgba(0,0,0,0)' -%}
+            background-color: {{ color_4 }};
+          {%- elsif image_4 != blank -%}
+            background-image: url({{ image_4 }});
+            background-size: 110%;
+            background-position: center;
+          {%- endif -%}
+        }
+      {%- endif -%}
+
+      {%- if product_option_name_5 != blank -%}
+        .swatch--{{ product_option_name_5 }} {
+          {%- if color_5 != blank and color_5 != 'rgba(0,0,0,0)' -%}
+            background-color: {{ color_5 }};
+          {%- elsif image_5 != blank -%}
+            background-image: url({{ image_5 }});
+            background-size: 110%;
+            background-position: center;
+          {%- endif -%}
+        }
+      {%- endif -%}
+
+      {%- if product_option_name_6 != blank -%}
+        .swatch--{{ product_option_name_6 }} {
+          {%- if color_6 != blank and color_6 != 'rgba(0,0,0,0)' -%}
+            background-color: {{ color_6 }};
+          {%- elsif image_6 != blank -%}
+            background-image: url({{ image_6 }});
+            background-size: 110%;
+            background-position: center;
+          {%- endif -%}
+        }
+      {%- endif -%}
+
+      {%- if product_option_name_7 != blank -%}
+        .swatch--{{ product_option_name_7 }} {
+          {%- if color_7 != blank and color_7 != 'rgba(0,0,0,0)' -%}
+            background-color: {{ color_7 }};
+          {%- elsif image_7 != blank -%}
+            background-image: url({{ image_7 }});
+            background-size: 110%;
+            background-position: center;
+          {%- endif -%}
+        }
+      {%- endif -%}
+
+      {%- if product_option_name_8 != blank -%}
+        .swatch--{{ product_option_name_8 }} {
+          {%- if color_8 != blank and color_8 != 'rgba(0,0,0,0)' -%}
+            background-color: {{ color_8 }};
+          {%- elsif image_8 != blank -%}
+            background-image: url({{ image_8 }});
+            background-size: 110%;
+            background-position: center;
+          {%- endif -%}
+        }
+      {%- endif -%}
+    {%- endfor -%}
+  </style>
+{%- endif -%}

@@ -1,0 +1,60 @@
+<!-- | -->
+<style>
+  [data-swatch] {
+    background-image: var(--_bg, url({{ 'swatch.png' | asset_url }}));
+    box-shadow: inset 0 0 0 1px var(--_border);
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  {%- for block in section.blocks -%}
+    [data-swatch="{{ block.settings.title | handleize | replace: '-', '_' }}"] {
+      --_border: {{ block.settings.border_color | default: 'rgb(0 0 0 / 0%)' }};
+      {% if block.settings.image %}
+        --_bg: url({{ block.settings.image | image_url: width: 40, height: 40 }});
+      {% else %}
+        --_bg: {{ block.settings.background | default: 'rgb(0 0 0 / 0%)' }};
+      {% endif %}
+    }
+  {%- endfor -%}
+</style>
+<!-- | -->
+
+{% schema %}
+{
+  "name": "Product swatches",
+  "blocks": [
+    {
+      "type": "swatch",
+      "name": "Swatch",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Swatch color/image",
+          "info": "Choose a color OR image to associate with a product option that utilises swatches"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Option name",
+          "info": "Match this text to the name of the product option that is utilising a product swatch. If you currently have a swatch with no image or color in it, and that option is titled 'Red', then simply match the text in the box above to 'Red'"
+        },
+        {
+          "type": "color_background",
+          "id": "background",
+          "label": "Color"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "or Image"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

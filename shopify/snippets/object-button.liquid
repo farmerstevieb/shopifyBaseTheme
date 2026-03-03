@@ -1,0 +1,97 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Button
+  -------------------------------------------------------------------------------
+  Accepts
+  - settings: {Object} (required) the section or block settings
+  - index: {Integer} (required) match to the button settings index
+  - size: {String} (optional) alter the size of the ctas
+  - class: {String} (optional) add a custom class
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'object-button' with
+    settings: settings,
+    size: 'size',
+    class: 'class',
+    index; index
+  -%}
+  -------------------------------------------------------------------------------
+  Description
+  Displays a standard 'type="button"'' Button, with the option to add custom icons. For
+  use specifically with the ...button() part utilised in schema files.
+{%- endcomment -%}
+
+{%- liquid
+  assign class = class
+
+  # Controls button sizing: smallest, small, medium
+  if size != blank
+    assign size = size | prepend: ' button--'
+  endif
+
+  # Look for available Button Content
+  assign index = index | default: 1
+  assign text_setting = 'button_' | append: index | append: '_text'
+  assign link_style_setting = 'button_' | append: index | append: '_link_style'
+  assign icon_setting = 'button_' | append: index | append: '_icon'
+  assign icon_position_setting = 'button_' | append: index | append: '_icon_position'
+-%}
+
+{%- if settings[text_setting] != blank -%}
+  {%- liquid
+    capture button_style
+      unless settings[link_style_setting] == 'link'
+        echo 'button button--remove-icon button--' | append: settings[link_style_setting] | append: size
+      else
+        echo 'link'
+      endunless
+    endcapture
+  -%}
+
+  <button
+    class="{{ button_style }} o-ctas__cta o-ctas__cta--{{ forloop.index }} flex gap-2 {{ class }}"
+    type="button"
+  >
+    {%- if settings[link_style_setting] == 'link'
+      and settings[icon_setting] != 'none'
+      and settings[icon_position_setting] == 'left'
+    -%}
+      <div
+        class="min-w-[18px] rounded-full flex items-center justify-center min-h-[18px] aspect-square bg-brand-1 o-ctas__cta-icon"
+      >
+    {%- endif -%}
+    {%- liquid
+      if settings[icon_setting] != 'none' and settings[icon_position_setting] == 'left'
+        render 'theme-icons' with settings[icon_setting], width: 12, height: 12
+      endif
+    -%}
+    {%- if settings[link_style_setting] == 'link'
+      and settings[icon_setting] != 'none'
+      and settings[icon_position_setting] == 'left'
+    -%}
+      </div>
+    {%- endif -%}
+
+    {{- settings[text_setting] -}}
+
+    {%- if settings[link_style_setting] == 'link'
+      and settings[icon_setting] != 'none'
+      and settings[icon_position_setting] == 'right'
+    -%}
+      <div
+        class="min-w-[18px] rounded-full flex items-center justify-center min-h-[18px] aspect-square bg-brand-1 o-ctas__cta-icon"
+      >
+    {%- endif -%}
+    {%- liquid
+      if settings[icon_setting] != 'none' and settings[icon_position_setting] == 'right'
+        render 'theme-icons' with settings[icon_setting], width: 12, height: 12
+      endif
+    -%}
+    {%- if settings[link_style_setting] == 'link'
+      and settings[icon_setting] != 'none'
+      and settings[icon_position_setting] == 'right'
+    -%}
+      </div>
+    {%- endif -%}
+  </button>
+{%- endif -%}

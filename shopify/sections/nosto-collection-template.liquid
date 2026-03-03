@@ -1,0 +1,177 @@
+{%- comment -%}
+  Conditional rendering for design mode vs live mode
+{%- endcomment -%}
+{%- if request.design_mode -%}
+  {%- comment -%}
+    Show backup template logic in design mode for customizer preview
+  {%- endcomment -%}
+  {%- render 'main-collection-products', section: section -%}
+
+{%- else -%}
+  {%- comment -%}
+    Show Nosto code in live mode
+  {%- endcomment -%}
+
+  {%- liquid
+    render 'section-spacing-and-color'
+
+    # Image Aspect Ratios
+    capture media_aspect
+      render 'section-aspect-ratios', section: section
+    endcapture
+
+    # Grid Spacing, Structure
+    render 'section-grid', section: section
+  -%}
+
+  {%- comment -%}
+    Prepare section blocks data for React
+  {%- endcomment -%}
+  {%- capture blocks_data -%}
+[
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'banner' -%}
+      {%- comment -%}
+        Pre-render icons for CTAs
+      {%- endcomment -%}
+      {%- capture cta_1_icon_html -%}
+        {%- if block.settings.cta_1_icon != blank and block.settings.cta_1_icon != 'none' -%}
+          {%- render 'theme-icons' with block.settings.cta_1_icon, width: '1.5em', height: '1.5em' -%}
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- capture cta_2_icon_html -%}
+        {%- if block.settings.cta_2_icon != blank and block.settings.cta_2_icon != 'none' -%}
+          {%- render 'theme-icons' with block.settings.cta_2_icon, width: '1.5em', height: '1.5em' -%}
+        {%- endif -%}
+      {%- endcapture -%}
+      {
+        "id": {{ block.id | json }},
+        "type": {{ block.type | json }},
+        "settings": {
+          "banner_width": {{ block.settings.banner_width | json }},
+          "order": {{ block.settings.order | default: 0 | json }},
+          "heading": {{ block.settings.heading | json }},
+          "heading_font_weight": {{ block.settings.heading_font_weight | json }},
+          "heading_font_weight_mobile": {{ block.settings.heading_font_weight_mobile | json }},
+          "subheading": {{ block.settings.subheading | json }},
+          "text": {{ block.settings.text | json }},
+          "cta_1_text": {{ block.settings.cta_1_text | json }},
+          "cta_1_link": {{ block.settings.cta_1_link | json }},
+          "cta_1_link_style": {{ block.settings.cta_1_link_style | json }},
+          "cta_1_icon": {{ block.settings.cta_1_icon | json }},
+          "cta_1_icon_html": {{ cta_1_icon_html | json }},
+          "cta_1_icon_position": {{ block.settings.cta_1_icon_position | json }},
+          "cta_1_target": {{ block.settings.cta_1_target | json }},
+          "cta_2_text": {{ block.settings.cta_2_text | json }},
+          "cta_2_link": {{ block.settings.cta_2_link | json }},
+          "cta_2_link_style": {{ block.settings.cta_2_link_style | json }},
+          "cta_2_icon": {{ block.settings.cta_2_icon | json }},
+          "cta_2_icon_html": {{ cta_2_icon_html | json }},
+          "cta_2_icon_position": {{ block.settings.cta_2_icon_position | json }},
+          "cta_2_target": {{ block.settings.cta_2_target | json }},
+          "image": {{ block.settings.image | json }},
+          "image_mobile": {{ block.settings.image_mobile | json }},
+          "video_url": {{ block.settings.video_url | json }},
+          "video_file": {{ block.settings.video_file | json }},
+          "video_autoplay": {{ block.settings.video_autoplay | json }},
+          "video_muted": {{ block.settings.video_muted | json }},
+          "position": {{ block.settings.position | json }},
+          "vertical_position": {{ block.settings.vertical_position | json }},
+          "color": {{ block.settings.color | json }},
+          "color_desk": {{ block.settings.color_desk | json }},
+          "content_gap": {{ block.settings.content_gap | json }},
+          "content_width": {{ block.settings.content_width | json }},
+          "content_position": {{ block.settings.content_position | json }},
+          "offset_heading": {{ block.settings.offset_heading | json }},
+          "subheading_spacing": {{ block.settings.subheading_spacing | json }},
+          "heading_spacing": {{ block.settings.heading_spacing | json }},
+          "overline_spacing": {{ block.settings.overline_spacing | json }},
+          "description_spacing": {{ block.settings.description_spacing | json }},
+          "subheading_spacing_desktop": {{ block.settings.subheading_spacing_desktop | json }},
+          "heading_spacing_desktop": {{ block.settings.heading_spacing_desktop | json }},
+          "overline_spacing_desktop": {{ block.settings.overline_spacing_desktop | json }},
+          "description_spacing_desktop": {{ block.settings.description_spacing_desktop | json }},
+          "cta_sizes": {{ block.settings.cta_sizes | json }},
+          "cta_sizes_dsk": {{ block.settings.cta_sizes_dsk | json }},
+          "cta_align": {{ block.settings.cta_align | json }},
+          "cta_align_desktop": {{ block.settings.cta_align_desktop | json }},
+          "content_align": {{ block.settings.content_align | json }},
+          "position_desktop": {{ block.settings.position_desktop | json }},
+          "vertical_position_desktop": {{ block.settings.vertical_position_desktop | json }},
+          "subheading_size": {{ block.settings.subheading_size | json }},
+          "heading_size": {{ block.settings.heading_size | json }},
+          "overline_size": {{ block.settings.overline_size | json }},
+          "text_size": {{ block.settings.text_size | json }},
+          "subheading_size_desktop": {{ block.settings.subheading_size_desktop | json }},
+          "heading_size_desktop": {{ block.settings.heading_size_desktop | json }},
+          "overline_size_desktop": {{ block.settings.overline_size_desktop | json }},
+          "text_size_desktop": {{ block.settings.text_size_desktop | json }},
+          "spread_content": {{ block.settings.spread_content | json }},
+          "mobile_subheading": {{ block.settings.mobile_subheading | json }},
+          "mobile_heading": {{ block.settings.mobile_heading | json }},
+          "mobile_overline": {{ block.settings.mobile_overline | json }},
+          "mobile_text": {{ block.settings.mobile_text | json }},
+          "subheading_tranform": {{ block.settings.subheading_tranform | json }},
+          "overline": {{ block.settings.overline | json }},
+          "text_tranform": {{ block.settings.text_tranform | json }},
+          "text_weight": {{ block.settings.text_weight | json }},
+          "text_undeline": {{ block.settings.text_undeline | json }},
+          "image_fit": {{ block.settings.image_fit | json }},
+          "hide_mobile_media": {{ block.settings.hide_mobile_media | json }}
+        }
+      }{% unless forloop.last %},{% endunless %}
+    {%- endif -%}
+  {%- endfor -%}
+]
+{%- endcapture -%}
+
+  <div
+    id="nosto-category-content"
+    class="relative flex w-full items-center justify-center"
+    data-nst-category-pagination-amount="{{ section.settings.pagination_amount }}"
+    data-nst-category-pagination-type="{{ section.settings.pagination_style }}"
+    data-nst-category-id="{{ collection.id }}"
+    data-nst-category-path="{{ collection.title | escape }}"
+    data-nst-category-customer-is-logged-in="{{ customer.has_account }}"
+    data-nst-category-blocks="{{ blocks_data | escape }}"
+  >
+    <div class="relative min-h-[calc(100dvh_-_var(--header-group-height,_11.2rem))] w-full">
+      <div class="loading-overlay h-[5rem] w-[5rem]">
+        <div class="loading-overlay__spinner h-[5rem] w-[5rem] text-highlight">
+          {%- render 'theme-icons' with 'loading' -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- paginate collection.products by section.settings.pagination_amount -%}
+    <noscript>
+      <nav aria-label="Pages">
+        <ul>
+          {%- for i in (1..section.settings.pagination_amount) -%}
+            <li>
+              <a href="{{ collection.url }}?page={{ i }}">
+                {{ i }}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </noscript>
+
+    {% if paginate.current_offset > 0 %}
+      <link
+        rel="prev"
+        href="{{ collection.url }}?page={{ paginate.current_offset | divided_by: section.settings.pagination_amount }}"
+      >
+    {% endif %}
+
+    {% assign offset = paginate.pages_count | minus: 1 %}
+    {% if paginate.current_offset < offset %}
+      <link
+        rel="next"
+        href="{{ collection.url }}?page={{ paginate.current_offset | plus: section.settings.pagination_amount | divided_by: section.settings.pagination_amount }}"
+      >
+    {% endif %}
+  {%- endpaginate -%}
+{%- endif -%}

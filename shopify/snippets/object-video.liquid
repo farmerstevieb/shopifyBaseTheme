@@ -1,0 +1,135 @@
+{% comment %}
+  Renders an video element
+  Accepts:
+  - object-video: ShopifyVideoObject
+  - video_mob: ShopifyVideoObject
+  - image?: ShopifyImageObject
+  - preload?: boolean = false
+  - autoplay?: boolean = false
+  - fit?: 'contain' : 'cover' = 'contain'
+  - mute?: boolean = false
+  - loop?: boolean = false
+  - loading?: 'lazy' | 'eager' = 'lazy'
+
+  Usage:
+  {% render 'object-video' with object-video as video %}
+{% endcomment %}
+
+{%- liquid
+  assign video = video | default: object-video
+
+  capture video_id
+    if video.external_id
+      echo video.external_id
+    else
+      echo video.id
+    endif
+  endcapture
+
+  capture video_id_mob
+    if video_mob.external_id
+      echo video_mob.external_id
+    else
+      echo video_mob.id
+    endif
+  endcapture
+
+  capture video_type
+    if video.host
+      echo video.host
+    elsif video.type
+      echo video.type
+    else
+      echo 'html5'
+    endif
+  endcapture
+
+  capture video_type_mob
+    if video_mob.host
+      echo video_mob.host
+    elsif video_mob.type
+      echo video_mob.type
+    else
+      echo 'html5'
+    endif
+  endcapture
+
+  capture video_sources
+    if video.sources.size > 0
+      echo video | json | prepend: 'data-sources='
+    elsif video.host == 'youtube'
+      echo video.external_id | prepend: 'data-url="https://www.youtube.com/embed/' | append: '"'
+    else
+      echo video | prepend: 'data-url="' | append: '"'
+    endif
+  endcapture
+
+  capture video_sources_mob
+    if video_mob.sources.size > 0
+      echo video_mob | json | prepend: 'data-sources-mob='
+    elsif video_mob.host == 'youtube'
+      echo video_mob.external_id | prepend: 'data-url-mob="https://www.youtube.com/embed/' | append: '"'
+    else
+      echo video_mob | prepend: 'data-url-mob="' | append: '"'
+    endif
+  endcapture
+
+  capture video_settings
+    echo fit | default: 'contain'
+    if autoplay == true
+      echo ' autoload autoplay'
+    endif
+    if loop == true
+      echo ' loop'
+    endif
+    if muted == true
+      echo ' mute'
+    endif
+    if play_on_mobile != false
+      echo ' canPlayOnMobile'
+    endif
+  endcapture
+
+  assign loading = loading | default: 'lazy'
+-%}
+
+<div
+  class="o-video {{ class | default: '' }} js-video"
+  data-id="{{ video_id | strip }}"
+  data-type="{{ video_type | strip }}"
+  {% if video_id_mob != blank and video_type == video_type_mob %}
+    data-id-mob="{{ video_id_mob | strip }}"
+  {% endif %}
+  data-status="paused"
+  data-settings="{{ video_settings }}"
+  data-video-type="{{ video.media_type }}"
+  style="--ar: {{ aspect }}; --ar-mob: {{ aspect_mobile | default: aspect }};"
+>
+  <div
+    class="o-video__container js-video-container {{ vid_media_class }}"
+    {{ video_sources }}
+    {{ video_sources_mob }}
+  ></div>
+  {{ placeholder | default: '' }}
+  {% if play_overlay %}
+    <button
+      class="o-button js-video-trigger absolute inset-0 flex h-full w-full items-center justify-center bg-cover"
+      aria-label="Play video"
+    >
+      <span class="absolute inset-0 bg-black opacity-50"></span>
+      <svg
+        class="relative"
+        role="presentation"
+        focusable="false"
+        viewBox="0 0 168 168"
+        width="168"
+        height="168"
+      >
+        <g opacity=".75" fill="#fff">
+          <path d="M84 14c-38.6 0-70 31.4-70 70s31.4 70 70 70 70-31.4 70-70-31.4-70-70-70Zm0 126c-30.88 0-56-25.12-56-56s25.12-56 56-56 56 25.12 56 56-25.12 56-56 56Z"/>
+          <path d="m63 119 56-35-56-35v70Z"/>
+        </g>
+      </svg>
+    </button>
+  {% endif %}
+</div>

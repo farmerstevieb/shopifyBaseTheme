@@ -1,0 +1,52 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "c3a61938-c7f1-445a-bfec-5a9a6b780148": {
+      "type": "breadcrumbs",
+      "disabled": true,
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "transparent",
+        "color_spacing": false,
+        "text_color": "dark"
+      }
+    },
+    "main": {
+      "type": "main-login",
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "transparent",
+        "color_spacing": false,
+        "text_color": "dark"
+      }
+    },
+    "main-recover": {
+      "type": "main-recover-password",
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "transparent",
+        "color_spacing": false,
+        "text_color": "dark"
+      }
+    }
+  },
+  "order": [
+    "c3a61938-c7f1-445a-bfec-5a9a6b780148",
+    "main",
+    "main-recover"
+  ]
+}

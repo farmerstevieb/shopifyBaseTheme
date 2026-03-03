@@ -1,0 +1,88 @@
+.o-icon {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+
+  &--heart,
+  &--heart-full,
+  &--shopping-bag,
+  &--search {
+    width: 18px;
+    height: 18px;
+  }
+
+  &--input-chevron {
+    width: 16px;
+    height: 16px;
+  }
+
+  &--search-input,
+  &--next,
+  &--back {
+    width: 14px;
+    height: 14px;
+  }
+
+  &--nav-close,
+  &--nav,
+  &--wishlist {
+    width: 20px;
+    height: 20px;
+  }
+
+  &--cross {
+    width: 12px;
+    height: 12px;
+  }
+
+  &--error {
+    width: 15px;
+    height: 15px;
+  }
+
+  &--burger-menu {
+    width: 30px;
+    height: 30px;
+  }
+
+  &--tag {
+    width: 18px;
+    height: 18px;
+  }
+
+  &--printer,
+  &--check {
+    width: 13px;
+    height: 13px;
+  }
+
+  &--share {
+    aspect-ratio: 1;
+    width: 32px;
+    height: auto;
+  }
+
+  &__customer {
+    &-icon {
+      width: 1.4rem;
+      height: 1.4rem;
+
+      &--faqs {
+        width: 3rem;
+        height: 3rem;
+      }
+
+      &--pop-up {
+        position: absolute;
+        top: 50%;
+        right: 17px;
+        transform: translate(0, -50%) rotate(270deg);
+      }
+
+      &--contact {
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+    }
+  }
+}

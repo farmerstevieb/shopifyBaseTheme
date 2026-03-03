@@ -1,0 +1,168 @@
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {%- capture show_section -%}
+    {{- section.settings.show_if -}}
+  {%- endcapture -%}
+  {% assign show_section = show_section | strip %}
+  {% if show_section == blank or show_section == 'true' or show_section == true %}
+    {%- liquid
+      render 'section-spacing-and-color'
+      assign slider_enabled = section.settings.slider_enabled
+      capture header_class
+        case section.settings.text_color
+          when 'dark'
+            echo 'section-header section-header--slider mb-12 md:mb-6 stroke-grey-5'
+          when 'light'
+            echo 'section-header section-header--slider mb-12 md:mb-6 stroke-white'
+        endcase
+      endcapture
+
+      capture color_count_class
+        case section.settings.text_color
+          when 'dark'
+            echo 'text-grey-25'
+          when 'light'
+            echo 'text-white'
+        endcase
+      endcapture
+
+      assign section_header = section.blocks | where: 'type', 'section_header' | first
+    -%}
+
+    {%- if section_header -%}
+      {%- render 'object-content',
+        block: section_header.settings,
+        attributes: section_header.shopify_attributes,
+        class: header_class,
+        heading_font_weight: 'font-medium'
+      -%}
+    {%- endif -%}
+
+    <juno-slider
+      class="c-products-slider slider slider--products {% unless slider_enabled == 'false'%}slider--full{% endunless%}"
+      enabled="{{ slider_enabled }}"
+      loop
+      showArrows
+    >
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'list' -%}
+            <div
+              class="slider__viewport {% if slider_enabled == 'false' %} is-disable {% endif %}"
+              data-slider="viewport"
+              {{ block.shopify_attributes }}
+            >
+              <ul class="slider__track">
+                {%- for item in block.settings.list -%}
+                  <li class="slider__item">
+                    {%- render 'card-product',
+                      product: item,
+                      product_index: forloop.index,
+                      color_count_class: color_count_class,
+                      aspect_ratio: '300 / 384'
+                    -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+            {%- break -%}
+
+          {%- when 'collection' -%}
+            <div
+              class="slider__viewport  {% if slider_enabled == 'false' %} is-disable {% endif %}"
+              data-slider="viewport"
+              {{ block.shopify_attributes }}
+            >
+              <ul class="slider__track">
+                {%- for item in block.settings.collection.products limit: 8 -%}
+                  <li class="slider__item">
+                    {%- render 'card-product',
+                      product: item,
+                      product_index: forloop.index,
+                      color_count_class: color_count_class,
+                      aspect_ratio: '300 / 384'
+                    -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+            {%- break -%}
+
+          {% when 'recommended' %}
+            {% liquid
+              assign product_id = product.id
+              if request.page_type == 'cart'
+                assign product_id = cart.items.first.product_id
+              endif
+
+              assign product_list = product.metafields.custom.product_list.value
+            %}
+
+            {%- if product_list != blank -%}
+              <div
+                class="slider__viewport  {% if slider_enabled == 'false' %} is-disable {% endif %}"
+                data-slider="viewport"
+                {{ block.shopify_attributes }}
+              >
+                <ul class="slider__track">
+                  {%- for item in product_list limit: block.settings.limit -%}
+                    <li class="slider__item">
+                      {%- render 'card-product',
+                        product: item,
+                        color_count_class: color_count_class,
+                        aspect_ratio: '300 / 384',
+                        product_index: forloop.index
+                      -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- else -%}
+              <product-recommendations
+                class="slider__viewport  {% if slider_enabled == 'false' %} is-disable {% endif %}"
+                data-slider="viewport"
+                data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product_id }}&limit={{ block.settings.limit }}&intent={{ block.settings.intent }}"
+                {{ block.shopify_attributes }}
+              >
+                {%- if recommendations.performed and recommendations.products_count > 0 -%}
+                  <ul class="slider__track">
+                    {%- for item in recommendations.products -%}
+                      <li class="slider__item">
+                        {%- render 'card-product',
+                          product: item,
+                          color_count_class: color_count_class,
+                          aspect_ratio: '300 / 384',
+                          product_index: forloop.index
+                        -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {% else %}
+                  <style>
+                    #shopify-section-{{ section.id }} {
+                      display: none;
+                    }
+                  </style>
+                {%- endif -%}
+              </product-recommendations>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </juno-slider>
+  {%- endif -%}
+{% endif %}

@@ -1,0 +1,76 @@
+<modal-dialog id="ProductMediaModal" class="dialog dialog--full" modal-mode="lightbox" hidden>
+  <div role="document">
+    <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+      {%- render 'theme-icons' with 'close' -%}
+      <span class="sr-only">Close dialog</span>
+    </button>
+
+    <div class="c-lightbox">
+      <div class="c-lightbox__thumbnails"></div>
+
+      <div class="c-lightbox__viewport">
+        <ul class="c-lightbox__track">
+          {%- if product.selected_or_first_available_variant.featured_media != null -%}
+            {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+            <li
+              class="c-lightbox__item"
+              data-thumbnail="{{ featured_media | image_url: width: 72, height: 72 }}"
+              data-zoom="{{ featured_media | image_url: width: 1, height: 1 }}"
+            >
+              {%- case featured_media.media_type -%}
+                {%- when 'image' -%}
+                  {%- render 'object-image' with featured_media,
+                    class: 'o-picture--fill',
+                    img_class: 'o-img--contain ',
+                    aspect: '1 / 1'
+                  -%}
+
+                {%- when 'video', 'external_video' -%}
+                  {%- render 'object-video' with featured_media, class: 'h-full', aspect: '1 / 1', fit: 'contain' -%}
+              {%- endcase -%}
+            </li>
+          {%- endif -%}
+
+          {%- for media in product.media -%}
+            {% liquid
+              if media.id == product.selected_or_first_available_variant.featured_media.id
+                continue
+              endif
+
+              # Hide other variant images
+              if section.settings.hide_variants
+                if variant_images contains media.src
+                  continue
+                endif
+
+                # Hide images by alt tag
+                if section.settings.hide_variants_by_alt
+                  # TODO: This currently assumes that alt tag contains only ONE option value e.g. color
+                  assign alt = media.alt | downcase
+                  assign options = product.selected_or_first_available_variant.options | downcase
+                  unless options contains alt
+                    continue
+                  endunless
+                endif
+              endif
+            %}
+
+            <li
+              class="c-lightbox__item flex justify-center"
+              data-thumbnail="{{ media | image_url: width: 72, height: 72 }}"
+              data-zoom="{{ media | image_url: width: 1, height: 1 }}"
+            >
+              {%- case media.media_type -%}
+                {%- when 'image' -%}
+                  {%- render 'object-image' with media, img_class: 'o-img--contain w-auto' -%}
+
+                {%- when 'video', 'external_video' -%}
+                  {%- render 'object-video' with media, class: 'h-full', aspect: '1 / 1', fit: 'contain' -%}
+              {%- endcase -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  </div>
+</modal-dialog>

@@ -1,0 +1,116 @@
+{%- liquid
+  render 'theme_assets' with 'section-before-after.min.css'
+  render 'section-spacing-and-color'
+-%}
+
+{% liquid
+capture display_section_snippet
+render 'section_user-restriction'
+endcapture
+assign display_section = display_section_snippet | strip
+%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  <div class="c-before-after js-before-after">
+    <div class="c-before-after__wrapper js-before-after-wrapper">
+      {% for block in section.blocks %}
+        {% if 'before, after' contains block.type %}
+          {%- liquid
+            assign stl_position = 'bottom-left'
+
+            if block.type == 'after'
+              assign stl_position = 'bottom-right'
+            endif
+          -%}
+          {% assign media_class = 'c-before-after__img c-before-after__img--' | append: block.type %}
+          <div class="c-before-after__inner">
+            {% render 'object-image' with block.settings.image,
+              mobile_image: block.settings.image_mobile,
+              block: block.settings,
+              class: media_class,
+              img_class: '',
+              aspect: '1920 / 768',
+              aspect_mobile: '621 / 828',
+              is_before_after: true
+            %}
+          </div>
+          {%- render 'shop-the-look',
+            products: block.settings.stl_products,
+            position: stl_position,
+            title: block.settings.stl_title
+          -%}
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <input
+      type="range"
+      min="0"
+      max="100"
+      value="50"
+      aria-label="Percentage of before photo shown"
+      class="c-before-after__slider js-before-after-slider"
+    >
+    <div class="c-before-after__slider-line" aria-hidden="true"></div>
+    <div class="c-before-after__slider-button" aria-hidden="true">
+      <svg
+        class="c-before-after__slider-button-svg"
+        xmlns="http://www.w3.org/2000/svg"
+        width="30"
+        height="30"
+        fill="currentColor"
+        viewBox="0 0 256 256"
+      >
+        <rect width="256" height="256" fill="none"></rect>
+
+        <line
+          x1="96"
+          y1="128"
+          x2="16"
+          y2="128"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="16"
+        ></line>
+        <polyline
+          points="48 160 16 128 48 96"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="16"
+        ></polyline>
+        <line
+          x1="160"
+          y1="128"
+          x2="240"
+          y2="128"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="16"
+        ></line>
+        <polyline
+          points="208 96 240 128 208 160"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="16"
+        ></polyline>
+      </svg>
+    </div>
+  </div>
+{% endif %}

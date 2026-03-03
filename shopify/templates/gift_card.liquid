@@ -1,0 +1,174 @@
+{% # theme-check-disable %}
+{%- comment -%}
+  !!!! - PLEASE DO NOT EDIT - !!!!
+  THIS FILE IS DEPLOYED AUTOMATICALLY BY GITHUB.
+  CHANGES YOU MAKE MAY BE AUTOMATICALLY OVERWRITTEN AT ANY TIME.
+
+  Github is used to create an automated theme deployment pipeline for Shopify,
+  it is used to provide version control, theme testing and reliable deployment environments.
+
+  If you need to modify this file, please contact Juno eCommerce at shopify@junowebdesign.com.
+{%- endcomment -%}
+
+{% layout none %}
+
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_background }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    {%- assign formatted_balance = gift_card.balance | money_without_trailing_zeros | strip_html -%}
+
+    <title>{{ 'gift_cards.issued.title' | t: value: formatted_balance, shop: shop.name }}</title>
+
+    <meta name="description" content="{{ 'gift_cards.issued.subtext' | t }}">
+
+    {{ content_for_header }}
+
+    {{- 'main.css' | asset_url | stylesheet_tag: preload: true -}}
+  </head>
+
+  <body class="gradient gift-card">
+    <main class="flex flex-col justify-center pl-2 pr-2 text-center">
+      <div class="gift-card__image-wrapper">
+        {%- if settings.logo != blank -%}
+          {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+          {{ settings.logo | image_url: width: 570 | image_tag: class: 'gift-card__image', alt: logo_alt }}
+        {%- else %}
+          {% assign video_src = 'video_1280.mp4' | file_url %}
+          <video class="ml-auto mr-auto w-5/6 max-w-[400px]" width="400" height="auto" autoplay loop muted playsinline>
+            <source src="{{ video_src }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        {%- endif %}
+      </div>
+      <h2 class="content__heading mb-3 mt-4 w-full text-xl font-semibold leading-1 text-primary">
+        {{ 'gift_cards.issued.received_gift_message' | t }}
+      </h2>
+      <header class="flex flex-col justify-center pl-2 pr-2 text-center">
+        <div class="gift-card__price">
+          <h1 class="content__heading mb-0 mt-0 w-full text-2xl font-semibold leading-1 text-primary">
+            {% if settings.currency_code_enabled %}
+              {{ gift_card.balance | money_with_currency }}
+            {% else %}
+              {{ gift_card.balance | money }}
+            {% endif %}
+          </h1>
+          {%- if gift_card.enabled == false or gift_card.expired -%}
+            <p class="badge badge--expired mt-0">{{ 'gift_cards.issued.expired' | t }}</p>
+          {%- endif -%}
+        </div>
+        {% if gift_card.expires_on %}
+          {%- assign gift_card_expiration_date = gift_card.expires_on | date: '%B %e, %Y' -%}
+          <p class="gift-card__text mt-0">
+            {{ 'gift_cards.issued.expiration_date' | t: expires_on: gift_card_expiration_date }}
+          </p>
+        {% endif %}
+      </header>
+
+      <div class="gift-card__text-wrapper mb-3 mt-3 text-sm">
+        {% if gift_card.recipient %}
+          <p class="gift-card__text">Dear {{ gift_card.recipient.nickname }}</p>
+        {% endif %}
+        {% if gift_card.recipient and gift_card.message != blank %}
+          <p class="gift-card__text">{{ gift_card.message }}</p>
+        {% endif %}
+        <p class="gift-card__text">{{ 'gift_cards.issued.how_to_use_gift_card' | t }}</p>
+      </div>
+      <p id="gift-card-code text-sm" class="gift-card__number">{{ gift_card.code | format_code }}</p>
+      {%- if gift_card.pass_url -%}
+        <a href="{{ gift_card.pass_url }}" class="gift_card__apple-wallet no-print">
+          <img
+            src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}"
+            width="120"
+            height="40"
+            alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}"
+            loading="lazy"
+          >
+        </a>
+      {%- endif -%}
+      <div class="gift-card__buttons no-print flex flex-col items-center text-center">
+        <span class="gift-card__copy-success form__message mb-2" role="status"></span>
+        <template>
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="icon icon-success"
+            viewBox="0 0 13 13"
+            width="13"
+            height="13"
+          >
+            <path d="M6.5 12.35C9.73087 12.35 12.35 9.73086 12.35 6.5C12.35 3.26913 9.73087 0.65 6.5 0.65C3.26913 0.65 0.65 3.26913 0.65 6.5C0.65 9.73086 3.26913 12.35 6.5 12.35Z" fill="#428445" stroke="white" stroke-width="0.7"/>
+            <path d="M5.53271 8.66357L9.25213 4.68197" stroke="white"/>
+            <path d="M4.10645 6.7688L6.13766 8.62553" stroke="white">
+          </svg>
+          {{ 'gift_cards.issued.copy_code_success' | t }}
+        </template>
+        <button class="gift-card__copy-button mb-5 inline-flex max-w-xs cursor-pointer bg-black pb-3 pl-5 pr-5 pt-3 font-semibold uppercase text-primary text-white">
+          {{ 'gift_cards.issued.copy_code' | t }}
+        </button>
+        <a
+          href="{{ shop.url }}"
+          class="button--underline flex w-full justify-center text-black"
+          target="_blank"
+          rel="noopener"
+          aria-describedby="a11y-new-window-message"
+        >
+          {{ 'gift_cards.issued.shop_link' | t }}
+        </a>
+      </div>
+    </main>
+
+    <div hidden>
+      <span id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</span>
+    </div>
+  </body>
+</html>
+
+<script>
+  var string = { qrImageAlt: {{ 'gift_cards.issued.qr_image_alt' | t | json }} };
+  var template = document.getElementsByTagName("template")[0];
+  var clonedTemplate = template.content.cloneNode(true);
+  var isMessageDisplayed = false
+  document
+  .querySelector('.gift-card__copy-button')
+  .addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('gift-card-code').innerText).then(function () {
+      if (!isMessageDisplayed) {
+        document.querySelector('.gift-card__copy-success').appendChild(clonedTemplate);
+        isMessageDisplayed = true
+      }
+    });
+  });
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var videoElements = document.querySelectorAll('video');
+
+    videoElements.forEach(function(videoElement) {
+      videoElement.controls = false;
+
+      videoElement.addEventListener('play', function () {
+        this.controls = false;
+      });
+
+      videoElement.addEventListener('pause', function () {
+        this.controls = false;
+      });
+    });
+  });
+</script>
+
+{% # theme-check-enable %}

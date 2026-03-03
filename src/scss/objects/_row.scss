@@ -1,0 +1,18 @@
+.o-row {
+  --vw: 100vw;
+  --dvw: 100dvw;
+  --row-space: max(
+    var(--page-space),
+    (var(--dvw, var(--vw)) - var(--row-width, var(--page-width)) * 1px) / 2
+  );
+
+  margin-block-end: var(--row-spacing);
+
+  @screen lg {
+    margin-block-end: var(--row-spacing-dsk, var(--row-spacing));
+  }
+
+  &--with-space {
+    padding-inline: var(--row-space);
+  }
+}

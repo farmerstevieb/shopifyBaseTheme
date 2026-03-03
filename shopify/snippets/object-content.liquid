@@ -1,0 +1,494 @@
+{%- liquid
+  # Content
+  assign overline = overline | default: block.overline
+  assign subheading = subheading | default: block.subheading
+  assign heading = heading | default: block.heading
+  assign text = text | default: block.text
+  assign text = text | default: block.text
+  assign text_blocks = text_blocks | default: block.text_blocks
+  assign bullet_content = block.bullet_content
+  assign bullet_icon = bullet_icon | default: block.bullet_icon
+  assign content_width = content_width | default: block.content_width
+  assign subheading_spacing = subheading_spacing | default: block.subheading_spacing
+  assign subheading_spacing_desktop = subheading_spacing_desktop | default: block.subheading_spacing_desktop
+  assign heading_spacing = heading_spacing | default: block.heading_spacing
+  assign heading_spacing_desktop = heading_spacing_desktop | default: block.heading_spacing_desktop
+  assign overline_spacing = overline_spacing | default: block.overline_spacing
+  assign overline_spacing_desktop = overline_spacing_desktop | default: block.overline_spacing_desktop
+  assign description_spacing = description_spacing | default: block.description_spacing
+  assign description_spacing_desktop = description_spacing_desktop | default: block.description_spacing_desktop
+  assign icon = icon | default: block.icon
+  assign spread_content = spread_content | default: block.spread_content
+  assign content_position = content_position | default: block.content_position
+  assign business_logo = business_logo | default: block.business_logo
+  assign content_class = content_class
+  assign business_logo_class = business_logo_class
+  assign heading_font = 'font-normal'
+  assign heading_tracking_font = heading_tracking_font | default: block.heading_tracking_font
+  assign heading_font_weight_mobile = heading_font_weight_mobile | default: block.heading_font_weight_mobile
+  assign heading_font_weight = heading_font_weight | default: block.heading_font_weight
+  assign vertical_position_desktop = vertical_position_desktop | default: block.vertical_position_desktop
+  assign cta_link = cta_link
+  assign has_heading_class = has_heading_class | default: false
+
+  # Section Header
+  assign content_align = content_align | default: block.content_align
+  assign header_class = 'content-horizontal'
+
+  if content_align != blank
+    assign header_class = 'content-vertical'
+  endif
+
+  # Article Content
+  assign content_tag = content_tag | default: block.content_tag
+  assign published = published
+
+  # CTAs
+  assign cta_sizes = cta_sizes | default: block.cta_sizes
+  assign cta_sizes_dsk = cta_sizes_dsk | default: block.cta_sizes_dsk
+  assign cta_1_text = cta_1_text | default: block.cta_1_text
+  assign cta_2_text = cta_2_text | default: block.cta_2_text
+
+  # External Content
+  # - Can be inserted directly into the main content
+  assign external_content_above_ctas = external_content_above_ctas | default: ''
+  assign external_content_below_ctas = external_content_below_ctas | default: ''
+
+  # External Button
+  # - Can be inserted directly into the CTA content
+  assign external_button = external_button | default: ''
+
+  # Truncate functionality
+  assign truncate = truncate | default: false
+  assign max_lines = max_lines | default: 3
+  assign trigger_more_text = trigger_more_text | default: 'Read more'
+  assign trigger_less_text = trigger_less_text | default: 'Read less'
+
+  # --------- Settings --------- #
+
+  comment
+    # DO NOT REMOVE!
+    # Tailwind font sizes:
+    # text-xs text-sm text-md text-base text-lg text-2xl lg:text-xs lg:text-sm lg:text-md lg:text-base lg:text-lg lg:text-2xl
+    # text-3xl text-4xl text-5xl text-6xl text-7xl text-8xl text-9xl lg:text-3xl lg:text-4xl lg:text-5xl lg:text-6xl lg:text-7xl lg:text-8xl lg:text-9xl
+    # text-3sm lg:text-3sm text-6xxl lg:text-6xxl
+    # font-thin font-light font-medium font-bold max-lg:font-thin max-lg:font-light max-lg:font-medium max-lg:font-bold
+  endcomment
+
+  # Subheading
+  assign subheading_class = subheading_class | default: ''
+  assign subheading_size = subheading_size | default: block.subheading_size
+  if subheading_size != blank
+    assign subheading_class = ' text-' | append: subheading_size | prepend: subheading_class
+  endif
+  assign subheading_size_desktop = subheading_size_desktop | default: block.subheading_size_desktop
+  if subheading_size_desktop != blank
+    assign subheading_class = ' lg:text-' | append: subheading_size_desktop | prepend: subheading_class
+  endif
+
+  # Heading
+  assign heading_class = heading_class | default: ''
+  assign heading_tag = heading_tag | default: 'h2'
+  assign heading_size = heading_size | default: block.heading_size
+
+  if heading_size != blank
+    assign heading_class = ' text-' | append: heading_size | prepend: heading_class
+  endif
+
+  assign heading_size_desktop = heading_size_desktop | default: block.heading_size_desktop
+
+  if heading_size_desktop != blank
+    assign heading_class = ' lg:text-' | append: heading_size_desktop | prepend: heading_class
+  endif
+
+  if heading_font_weight != blank or heading_font_weight != ''
+    assign heading_font = heading_font_weight
+  endif
+
+  if heading_font_weight_mobile != blank or heading_font_weight_mobile != ''
+    assign heading_font_weight_mobile = heading_font_weight_mobile | prepend: ' max-lg:'
+    assign heading_font = heading_font | append: heading_font_weight_mobile
+  endif
+
+  # Overline
+  assign overline_class = overline_class | default: ' font-normal tracking-0 '
+
+  assign overline_size = overline_size | default: block.overline_size
+  assign overline_size_desktop = overline_size_desktop | default: block.overline_size_desktop
+
+  if overline_size != blank
+    assign overline_class = ' text-' | append: overline_size | prepend: overline_class
+  endif
+
+  if overline_size_desktop != blank
+    assign overline_class = ' lg:text-' | append: overline_size_desktop | prepend: overline_class
+  endif
+
+  # Text
+  assign text_class = text_class | default: ''
+  assign text_size = text_size | default: block.text_size
+  assign text_tranform = text_tranform | default: block.text_tranform
+  assign text_weight = text_weight | default: block.text_weight
+  assign text_undeline = text_undeline | default: block.text_undeline
+  if text_undeline
+    assign text_undeline = 'underline'
+  endif
+
+  if has_heading_class
+    assign text_class = '  ' | prepend: text_class
+  endif
+
+  if text_size != blank
+    assign text_class = ' text-' | append: text_size | prepend: text_class
+  endif
+
+  if text_tranform != ''
+    assign text_class = ' ' | append: text_tranform | prepend: text_class
+  endif
+
+  if text_weight != ''
+    assign text_class = ' ' | append: text_weight | prepend: text_class
+  endif
+
+  if text_undeline != ''
+    assign text_class = ' ' | append: text_undeline | prepend: text_class
+  endif
+
+  assign text_size_desktop = text_size_desktop | default: block.text_size_desktop
+  if text_size_desktop != blank
+    assign text_class = ' lg:text-' | append: text_size_desktop | prepend: text_class
+  endif
+
+  if text_class contains 'text-base'
+    assign text_class = ' [&_p]:leading-[18px]' | prepend: text_class
+  endif
+
+  # Position
+  assign position = position | default: block.position | default: 'start'
+  assign position_desktop = position_desktop | default: block.position_desktop | default: position
+  assign vertical_position = vertical_position | default: block.vertical_position
+  assign vertical_position_desktop = vertical_position_desktop | default: block.vertical_position_desktop
+
+  # Color
+  assign color = color | default: block.color
+
+  case color
+    when 'dark'
+      assign subheading_class = subheading_class | append: ' text-brand-bramble'
+      assign overline_class = overline_class | append: ' text-brand-bramble'
+      assign heading_class = heading_class | append: ' text-brand-bramble'
+      assign text_class = text_class | append: ' text-brand-bramble'
+
+    when 'light'
+      assign subheading_class = subheading_class | append: ' text-primaryInverse'
+      assign overline_class = overline_class | append: ' text-primaryInverse'
+      assign heading_class = heading_class | append: ' text-primaryInverse'
+      assign text_class = text_class | append: ' text-primaryInverse'
+  endcase
+
+  if color == blank
+    assign color = 'inherit'
+  endif
+
+  # Color
+  assign color = color | default: block.color
+  assign color_class = 'text-' | append: color
+  assign color_desk = color_desk | default: block.color_desk
+
+  if color_desk == blank
+    case color
+      when 'dark'
+        assign subheading_class = subheading_class | append: ' text-brand-bramble'
+        assign overline_class = overline_class | append: ' text-brand-bramble'
+        assign heading_class = heading_class | append: ' text-brand-bramble'
+        assign text_class = text_class | append: ' text-brand-bramble'
+      when 'light'
+        assign subheading_class = subheading_class | append: ' text-primaryInverse'
+        assign overline_class = overline_class | append: ' text-primaryInverse'
+        assign heading_class = heading_class | append: ' text-primaryInverse'
+        assign text_class = text_class | append: ' text-primaryInverse'
+      else
+        assign subheading_class = subheading_class | append: ' text-inherit'
+        assign overline_class = overline_class | append: ' text-inherit'
+        assign heading_class = heading_class | append: ' text-inherit'
+        assign text_class = text_class | append: ' text-inherit'
+    endcase
+  else
+    case color
+      when 'dark'
+        assign subheading_class = subheading_class | append: ' max-lg:text-brand-bramble'
+        assign overline_class = overline_class | append: ' max-lg:text-brand-bramble'
+        assign heading_class = heading_class | append: ' max-lg:text-brand-bramble'
+        assign text_class = text_class | append: ' max-lg:text-brand-bramble'
+      when 'light'
+        assign subheading_class = subheading_class | append: ' max-lg:text-primaryInverse'
+        assign overline_class = overline_class | append: ' max-lg:text-primaryInverse'
+        assign heading_class = heading_class | append: ' max-lg:text-primaryInverse'
+        assign text_class = text_class | append: ' max-lg:text-primaryInverse'
+      else
+        assign subheading_class = subheading_class | append: ' max-lg:text-inherit'
+        assign overline_class = overline_class | append: ' max-lg:text-inherit'
+        assign heading_class = heading_class | append: ' max-lg:text-inherit'
+        assign text_class = text_class | append: ' max-lg:text-inherit'
+    endcase
+
+    case color_desk
+      when 'dark'
+        assign subheading_class = subheading_class | append: ' lg:text-brand-bramble'
+        assign overline_class = overline_class | append: ' lg:text-brand-bramble'
+        assign heading_class = heading_class | append: ' lg:text-brand-bramble'
+        assign text_class = text_class | append: ' lg:text-brand-bramble'
+      when 'light'
+        assign subheading_class = subheading_class | append: ' lg:text-primaryInverse'
+        assign overline_class = overline_class | append: ' lg:text-primaryInverse'
+        assign heading_class = heading_class | append: ' lg:text-primaryInverse'
+        assign text_class = text_class | append: ' lg:text-primaryInverse'
+      else
+        assign subheading_class = subheading_class | append: ' lg:text-inherit'
+        assign overline_class = overline_class | append: ' lg:text-inherit'
+        assign heading_class = heading_class | append: ' lg:text-inherit'
+        assign text_class = text_class | append: ' lg:text-inherit'
+    endcase
+  endif
+
+  if color == blank
+    assign color = 'inherit'
+  endif
+
+  # --------- Custom Content --------- #
+
+  # Content Colour Scheme
+  assign content_class = content_class | append: ' content--color-' | append: color
+
+  # Card Content Placement
+  if content_position != blank
+    assign class = class | append: ' card__content--' | append: content_position
+  endif
+
+  # Content Style
+  # ------------------------------
+  assign content_style = 'style="'
+
+  # Content Width
+  if content_width > 0
+    assign max_width = '--content-width:#px;' | replace: '#', content_width
+    assign content_style = content_style | append: max_width
+  endif
+
+  # Spacing
+
+  if subheading_spacing > 0
+    assign subheading_spacing = '--subheading-spacing: #px;' | replace: '#', subheading_spacing
+    assign content_style = content_style | append: subheading_spacing
+  endif
+
+  if subheading_spacing_desktop > 0
+    assign subheading_spacing_desktop = '--subheading-spacing-desktop: #px;' | replace: '#', subheading_spacing_desktop
+    assign content_style = content_style | append: subheading_spacing_desktop
+  endif
+
+  if heading_spacing > 0
+    assign heading_spacing = '--heading-spacing: #px;' | replace: '#', heading_spacing
+    assign content_style = content_style | append: heading_spacing
+  endif
+
+  if heading_spacing_desktop > 0
+    assign heading_spacing_desktop = '--heading-spacing-desktop: #px;' | replace: '#', heading_spacing_desktop
+    assign content_style = content_style | append: heading_spacing_desktop
+  endif
+
+  if overline_spacing > 0
+    assign overline_spacing = '--overline-spacing: #px;' | replace: '#', overline_spacing
+    assign content_style = content_style | append: overline_spacing
+  endif
+
+  if overline_spacing_desktop > 0
+    assign overline_spacing_desktop = '--overline-spacing-desktop: #px;' | replace: '#', overline_spacing_desktop
+    assign content_style = content_style | append: overline_spacing_desktop
+  endif
+
+  if description_spacing > 0
+    assign description_spacing = '--description-spacing: #px;' | replace: '#', description_spacing
+    assign content_style = content_style | append: description_spacing
+  endif
+
+  if description_spacing_desktop > 0
+    assign description_spacing_desktop = '--description-spacing-desktop: #px;' | replace: '#', description_spacing_desktop
+    assign content_style = content_style | append: description_spacing_desktop
+  endif
+
+  assign content_style = content_style | append: '"'
+  assign section_header_style = content_style
+-%}
+{%- if overline != blank or heading != blank or text != blank or cta_1_text != blank or cta_2_text != blank -%}
+  {%- if block.show_trustpilot_stats -%}
+    {% liquid
+      assign content_class = content_class | append: ' max-lg:!flex-col max-lg:!items-start'
+    %}
+  {% endif %}
+  <div
+    class="h-full {{ class }}"
+    {% if data_block_id %}
+      data-block-id="{{ data_block_id }}"
+    {% endif %}
+    {{ section_header_style }}
+  >
+    <div
+      class="content {{ content_class }} {{ header_class }}"
+      {{ content_style }}
+      data-position="{{ position }}"
+      {% if position_desktop != position %}
+        data-position-desktop="{{ position_desktop }}"
+      {% endif %}
+      data-vertical-position="{{ vertical_position }}"
+      {% if vertical_position_desktop != vertical_position %}
+        data-vertical-position-desktop="{{ vertical_position_desktop }}"
+      {% endif %}
+      {{ attributes | default: null }}
+    >
+      {%- if business_logo != blank -%}
+        <div class="{{ business_logo_class }}">
+          {%- render 'object-image' with business_logo, class: 'o-picture--fill', height: 24 -%}
+        </div>
+      {%- endif -%}
+
+      {%- if subheading != blank -%}
+        <div class="content__subheading	font-semibold tracking-0 {{ subheading_class }}">
+          {{-
+            subheading
+            | replace: '[highlight]', '<span class="text-highlight">'
+            | replace: '[/highlight]', '</span>'
+          -}}
+        </div>
+      {%- endif -%}
+
+      {%- if heading != blank -%}
+        {%- liquid
+          capture spread_content_class
+            if spread_content
+              echo 'grow '
+            endif
+          endcapture
+        -%}
+
+        <{{ heading_tag }}
+          class="content__heading w-full leading-1 {{ heading_tracking_font }} {{ heading_font }} {{ spread_content_class }} {{ heading_class }}"
+          {% if block.offset_heading != 0 and block.offset_heading != blank %}
+            {% # Offsets the title to be larger than the width of the content %}
+            style="width: calc(100% + {{ block.offset_heading }}px);"
+          {% endif %}
+        >
+          {{-
+            heading
+            | replace: 'p>', 'span>'
+            | replace: '[highlight]', '<span class="text-highlight">'
+            | replace: '[/highlight]', '</span>'
+          -}}
+        </{{ heading_tag }}>
+      {%- endif -%}
+
+      {%- if overline != blank -%}
+        <p>
+          <small class="content__overline {{ overline_class }}">
+            {{-
+              overline
+              | replace: '[highlight]', '<span class="text-highlight">'
+              | replace: '[/highlight]', '</span>'
+            -}}
+          </small>
+        </p>
+      {%- endif -%}
+
+      {% assign bullet_filtered = bullet_content | strip_html %}
+      {% assign bullet_array = bullet_filtered | split: ';' %}
+      {%- if bullet_array.size > 0 -%}
+        <div class="content__text">
+          {% for b in bullet_array %}
+            <p class="flex items-center gap-1 text-smd font-normal italic leading-base text-grey-25">
+              {%- render 'theme-icons' with bullet_icon, width: '1.4rem', height: '1.4rem', classes: 'stroke-black' -%}
+              {{- b -}}
+            </p>
+          {% endfor %}
+        </div>
+      {%- endif -%}
+
+      {%- if text != blank -%}
+        {% if truncate == true %}
+          {% render 'object_truncate-text',
+            text: text,
+            text_class: text_class,
+            max_lines: max_lines,
+            trigger_more_text: trigger_more_text,
+            trigger_less_text: trigger_less_text
+          %}
+        {% else %}
+          <div class="content__text rte grow-0 {{ text_class }}">
+            {{- text | replace: '[highlight]', '<span class="text-highlight">' | replace: '[/highlight]', '</span>' -}}
+          </div>
+        {% endif %}
+      {%- endif -%}
+
+      {%- if block.show_trustpilot_stats -%}
+        <div class="c-trustpilot__business--stats-container ">
+          {%- render 'trustpilot-business-stats' -%}
+        </div>
+      {%- endif -%}
+
+      {%- if published != blank or content_tag != blank -%}
+        <div class="mt-auto flex gap-5">
+          {%- if content_tag != blank -%}
+            <p class="flex items-center gap-2 text-md font-medium leading-normal text-primary">
+              {%- render 'theme-icons' with icon, width: '1.5em', height: '1.5em', classes: 'stroke-black' -%}
+              {{- content_tag -}}
+            </p>
+          {%- endif -%}
+          {%- if published != blank -%}
+            <p class="flex items-center gap-2 text-md font-medium leading-normal text-primary">
+              {%- render 'theme-icons' with 'calendar', width: '1.5em', height: '1.5em', classes: 'stroke-black' -%}
+              {{- published -}}
+            </p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {{- external_content_above_ctas -}}
+
+      {%- liquid
+        capture cta_sizes_class
+          unless cta_sizes == 'standard'
+            echo cta_sizes
+          endunless
+        endcapture
+
+        capture cta_sizes_dsk_class
+          unless cta_sizes_dsk == 'standard'
+            echo cta_sizes_dsk
+          endunless
+        endcapture
+        capture cta_classes
+          case block.cta_align
+            when 'horizontal'
+              echo ' flex-row'
+            when 'vertical'
+              echo ' flex-col'
+          endcase
+
+          case block.cta_align_desktop
+            when 'horizontal'
+              echo '  lg:flex-row'
+            when 'vertical'
+              echo ' lg:flex-col'
+          endcase
+        endcapture
+
+        if block.cta_margin_end
+          assign cta_classes = cta_classes | append: ' mt-auto'
+        endif
+
+        render 'object-ctas', settings: block, class: cta_classes, cta_custom_class: cta_custom_class, cta_sizes: cta_sizes_class, cta_sizes_dsk: cta_sizes_dsk_class, amount: 2, external_button: external_button, cta_link: cta_link
+      -%}
+
+      {{- external_content_below_ctas -}}
+    </div>
+  </div>
+{%- endif -%}

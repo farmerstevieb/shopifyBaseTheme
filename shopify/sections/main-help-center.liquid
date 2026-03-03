@@ -1,0 +1,180 @@
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {% capture item_template %}
+    <details class="border group">
+      <summary class="flex items-center justify-between px-4 py-3 cursor-pointer">
+        <h2 class="font-bold font-heading">
+          <span aria-hidden="true">Q. </span>
+          [title]
+        </h2>
+        {%- render 'theme-icons' with 'chevron-right', width: 18, height: 18, class: 'group-open:rotate-90' -%}
+      </summary>
+
+      <div class="p-4 border-t rte text-md">
+        [content]
+      </div>
+    </details>
+
+  {% endcapture %}
+
+  {% # Skip header for search results %}
+  {% unless search.performed %}
+    {% render 'section-spacing-and-color', width: 773, set_padding: false, set_bg: false %}
+
+    <header class="text-center px-[var(--row-space)] py-11 mb-9" style="background-color: var(--bg);">
+      <h1 class="mb-5 text-5xl font-extrabold -tracking-2 leading-1 font-heading">
+        {{ blog.title | escape }}
+      </h1>
+
+      <form
+        action="{{ routes.search_url }}"
+        method="get"
+        role="search"
+        class="js-help-center-form"
+      >
+        <input type="hidden" name="section_id" value="{{ section.id }}">
+        <input type="hidden" name="author" value="{{ section.settings.author }}">
+        <input type="hidden" name="type" value="article">
+        <input type="hidden" name="options[prefix]" value="last">
+
+        <div class="flex gap-4 max-md:flex-col md:items-center">
+          <div class="relative flex-grow">
+            <label class="o-input" data-field="input" for="HelpCenter-search">
+              <input
+                class="o-input__field"
+                id="HelpCenter-search"
+                type="search"
+                name="q"
+                placeholder="{{ 'templates.help_center.form_search_placeholder' | t }}"
+                value="{{ search.terms | escape }}"
+                {% comment %}
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-owns="predictive-search-results"
+                  aria-controls="predictive-search-results"
+                  aria-haspopup="listbox"
+                  aria-autocomplete="list"
+                  autocorrect="off"
+                  autocomplete="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                {% endcomment %}
+              >
+              <span class="sr-only">{{ 'templates.help_center.form_search_placeholder' | t }}</span>
+            </label>
+
+            <button type="submit" class="absolute w-5 -translate-y-1/2 right-2 top-1/2">
+              {%- render 'theme-icons' with 'search', width: 18, height: 18 -%}
+              <span class="sr-only">{{ 'templates.help_center.form_search_submit' | t }}</span>
+            </button>
+          </div>
+
+          {% if blog.all_tags.size > 0 %}
+            <div class="flex-grow">
+              <label class="o-input" for="HelpCenter-tag">
+                <span class="sr-only">
+                  {{- 'templates.contact.form.enquiry_type' | t -}}
+                </span>
+
+                <select
+                  id="HelpCenter-tag"
+                  class="o-input__field"
+                  name="tag"
+                >
+                  <option
+                    value=""
+                    {% unless current_tags %}
+                      selected
+                    {% endunless %}
+                  >
+                    {{ 'templates.help_center.any_category' | t }}
+                  </option>
+                  {% for tag in blog.all_tags %}
+                    <option
+                      value="{{ tag.handle }}"
+                      {% if current_tags contains tag %}
+                        selected
+                      {% endif %}
+                    >
+                      {{ tag.title }}
+                    </option>
+                  {% endfor %}
+                </select>
+
+                {% render 'theme-icons' with 'chevron-down', width: 16, height: 16, class: 'o-input__arrow' %}
+              </label>
+            </div>
+          {% endif %}
+
+          <div class="js-help-center-reset" hidden>
+            <button
+              type="reset"
+              class="button button--secondary gap-x-2"
+            >
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.84998 7.49998C1.84998 4.66458 4.05979 1.84998 7.49998 1.84998C10.2783 1.84998 11.6515 3.9064 12.2367 5H10.5C10.2239 5 10 5.22386 10 5.5C10 5.77614 10.2239 6 10.5 6H13.5C13.7761 6 14 5.77614 14 5.5V2.5C14 2.22386 13.7761 2 13.5 2C13.2239 2 13 2.22386 13 2.5V4.31318C12.2955 3.07126 10.6659 0.849976 7.49998 0.849976C3.43716 0.849976 0.849976 4.18537 0.849976 7.49998C0.849976 10.8146 3.43716 14.15 7.49998 14.15C9.44382 14.15 11.0622 13.3808 12.2145 12.2084C12.8315 11.5806 13.3133 10.839 13.6418 10.0407C13.7469 9.78536 13.6251 9.49315 13.3698 9.38806C13.1144 9.28296 12.8222 9.40478 12.7171 9.66014C12.4363 10.3425 12.0251 10.9745 11.5013 11.5074C10.5295 12.4963 9.16504 13.15 7.49998 13.15C4.05979 13.15 1.84998 10.3354 1.84998 7.49998Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+              </svg>
+              {{ 'templates.help_center.form_reset' | t }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </header>
+  {% endunless %}
+
+  <ul class="peer space-y-5 px-[var(--row-space)] transition-opacity js-help-center-items">
+    {% if search.performed %}
+      {% assign search_term = search.terms | split: 'AND' | first | strip %}
+      {% assign new_value = search_term %}
+      {% if search_term != blank %}
+        {% assign new_value = '<mark>' | append: search_term | append: '</mark>' %}
+      {% endif %}
+
+      {%- paginate search.results by section.settings.limit -%}
+        {% assign pagination = paginate %}
+        {%- for article in search.results -%}
+          <li>
+            {% assign title = article.title | replace: search_term, new_value %}
+            {% assign content = article.content | replace: search_term, new_value %}
+            {{ item_template | replace: '[title]', title | replace: '[content]', content }}
+          </li>
+        {% else %}
+          <li class="mb-4 text-2xl font-extrabold text-center">
+            {{- 'templates.help_center.no_results_text' | t -}}
+          </li>
+        {%- endfor -%}
+      {%- endpaginate -%}
+    {% else %}
+      {%- paginate blog.articles by section.settings.limit -%}
+        {% assign pagination = paginate %}
+        {%- for article in blog.articles -%}
+          <li>
+            {{ item_template | replace: '[title]', article.title | replace: '[content]', article.content }}
+          </li>
+        {%- endfor -%}
+      {%- endpaginate -%}
+    {% endif %}
+  </ul>
+
+  <div class="transition-opacity px-[var(--page-space)] js-help-center-pagination">
+    {%- if pagination.pages > 1 -%}
+      <hr class="mb-8 o-hr mt-9">
+      {%- render 'pagination', paginate: pagination -%}
+    {%- endif -%}
+  </div>
+{% endif %}

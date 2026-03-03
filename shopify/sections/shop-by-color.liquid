@@ -1,0 +1,100 @@
+{%- liquid
+  render 'theme_assets' with 'section-banner-grid.min.css'
+  render 'section-spacing-and-color'
+
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+
+  # Spacing Class (Required)
+  capture section_padding_class
+    echo 'section-spacing--' | append: section.settings.padding
+  endcapture
+
+  # Slider
+  capture slider_snippet
+    render 'slider-settings', target: section, extend_beyond_padding: true, breakpoint: '(max-width: 768px)'
+  endcapture
+
+  assign slider_snippet = slider_snippet | split: ' ** '
+
+  assign slider_settings = slider_snippet[0]
+  assign slider_classes = slider_snippet[1]
+  assign slider_variables = slider_snippet[2]
+
+  assign section_header = section.blocks | where: 'type', 'section_header' | first
+  assign blocks = section.blocks | where: 'type', 'color_picker'
+
+  if section_header
+    render 'object-content', block: section_header.settings, attributes: section_header.shopify_attributes, class: 'section-header mb-9'
+  endif
+-%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {{ slider_variables }}
+
+  <juno-slider
+    class="slider slider--swatches {{ section_padding_class }} {{ slider_classes }}"
+    {{ slider_settings }}
+  >
+    <div
+      class="slider__viewport"
+      data-slider="viewport"
+    >
+      <ul class="slider__track md:flex md:flex-wrap md:justify-center gap-y-10">
+        {%- for block in blocks -%}
+          {%- liquid
+            assign swatch_name = block.settings.swatch_name
+            assign swatch_link = block.settings.swatch_link
+            assign swatch_color = block.settings.swatch_color
+            assign swatch_image = block.settings.swatch_image | image_url: width: 40, height: 40, crop: 'center'
+
+            assign swatch_style = ''
+
+            if swatch_color != blank and swatch_color != 'rgba(0,0,0,0)'
+              assign swatch_color = 'background-color: #;' | replace: '#', swatch_color
+              assign swatch_style = swatch_style | append: swatch_color
+            endif
+
+            if swatch_image != blank
+              assign swatch_image = 'background-image: url(#);' | replace: '#', swatch_image
+              assign swatch_image = swatch_image | append: 'background-size: 110%;'
+              assign swatch_image = swatch_image | append: 'background-repeat: no-repeat;'
+              assign swatch_image = swatch_image | append: 'background-position: center;'
+              assign swatch_style = swatch_style | append: swatch_image
+            endif
+
+            if swatch_style != ''
+              assign swatch_style = swatch_style | prepend: 'style="' | append: '"'
+            endif
+          -%}
+
+          <li class="relative flex flex-col items-center gap-6 slider__item w-15">
+            {%- if swatch_link != blank -%}
+              <a class="absolute inset-0 cursor-pointer" href="{{ swatch_link }}"></a>
+            {%- endif -%}
+            <div class="rounded-full w-15 h-15" {{ swatch_style }}></div>
+
+            {%- if swatch_name != blank -%}
+              <span
+                class="font-semibold tracking-wide text-center uppercase"
+              >
+                {{- swatch_name -}}
+              </span>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </juno-slider>
+{% endif %}

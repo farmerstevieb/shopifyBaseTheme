@@ -1,0 +1,171 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  &--article {
+    row-gap: theme("spacing.6");
+  }
+
+  &--icons-text {
+    --rte-gap: theme("spacing.2");
+
+    gap: theme("spacing.4");
+    align-items: center;
+
+    @screen max-md {
+      flex-direction: row;
+
+      .card__media {
+        width: auto;
+      }
+    }
+
+    @screen md {
+      text-align: center;
+    }
+
+    .card__media {
+      justify-content: center;
+      min-width: 64px;
+    }
+
+    .card__content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      @screen md {
+        gap: 0.8rem;
+        max-width: 360px;
+      }
+    }
+  }
+
+  &--banner-grid {
+    @apply gap-y-6;
+
+    &-overlay {
+      .card__content {
+        &::before {
+          content: "";
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          opacity: 0.15;
+          background: var(--overlay);
+        }
+      }
+    }
+
+    .card__content {
+      @apply z-1 flex w-full justify-center;
+
+      @screen max-md {
+        @apply mt-3;
+      }
+
+      .content {
+        @apply h-full;
+      }
+
+      .buttons {
+        position: absolute;
+        bottom: 32px;
+        width: min(100% - 32px);
+      }
+    }
+
+    &-position {
+      display: grid;
+
+      .content {
+        position: relative;
+      }
+
+      .card__media {
+        grid-area: 1 / 1;
+      }
+
+      .card__content {
+        grid-area: 1/1;
+        margin-top: 0;
+
+        .content {
+          @apply px-5 py-4;
+        }
+      }
+
+      .o-ctas {
+        position: absolute;
+        bottom: 2rem;
+        inset-inline: 0;
+        padding-inline: 1.6rem;
+
+        @screen lg {
+          padding-inline: 2rem;
+        }
+      }
+    }
+  }
+
+  &__media {
+    display: flex;
+    align-self: stretch;
+    width: 100%;
+  }
+
+  &__content {
+    --content-gap: theme("spacing.2");
+
+    flex-grow: 1;
+
+    &--journal {
+      @screen max-md {
+        margin-top: 1.2rem;
+      }
+
+      .rte:not(:last-child) {
+        margin-bottom: theme("spacing.2");
+      }
+    }
+  }
+
+  .c-money {
+    &__compare-price {
+      color: theme("colors.grey.65");
+    }
+  }
+
+  &__banner {
+    position: relative;
+    display: grid;
+    grid-template: 1fr/1fr;
+    flex-shrink: 0;
+    align-items: center;
+    width: 100%;
+
+    &-text {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      grid-area: 1/1;
+      width: 100%;
+      max-width: unset;
+      height: 100%;
+      padding: 2.4rem;
+
+      @screen lg {
+        padding: 4rem;
+      }
+
+      @screen max-lg {
+        .button {
+          width: fit-content;
+        }
+      }
+    }
+  }
+}

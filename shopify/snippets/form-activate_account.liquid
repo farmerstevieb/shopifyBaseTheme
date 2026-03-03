@@ -1,0 +1,87 @@
+{%- liquid
+  assign class = class | prepend: 'form ' | strip
+
+  if title contains ' | t'
+    assign title = title | replace: ' | t' | t
+  endif
+
+  if text contains ' | t'
+    assign text = text | replace: ' | t' | t
+  endif
+-%}
+
+{% form 'activate_customer_password', class: class, id: 'ActivateAccountForm' %}
+  {%- if title or text -%}
+    <header class="form__header">
+      {%- if title -%}
+        <h2 class="text-2xl font-bold mb-2 font-heading">{{ title }}</h2>
+      {%- endif -%}
+
+      {%- if text -%}
+        <p>{{ text }}</p>
+      {%- endif -%}
+    </header>
+  {%- endif -%}
+
+  <div class="form__fields">
+    <label class="o-input{%- if form.errors %} has-error{%- endif -%}" data-field="input">
+      <input
+        id="ActivatePassword"
+        class="o-input__field"
+        name="customer[password]"
+        type="password"
+        autocomplete="new-password"
+        placeholder="{{ 'customer.activate.form.password' | t }}"
+        {% if form.errors %}
+          aria-invalid="true"
+          aria-describedby="ActivatePassword-error"
+        {% endif %}
+      >
+      <span class="sr-only">{{ 'customer.activate.form.password' | t }}</span>
+
+      {%- if form.errors contains 'password' -%}
+        <small id="ActivatePassword-error" class="o-input__error">
+          {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+          {{ form.errors.translated_fields.password | capitalize }}
+          {{ form.errors.messages.password }}
+        </small>
+      {%- endif -%}
+    </label>
+
+    <label class="o-input{%- if form.errors %} has-error{%- endif -%}" data-field="input">
+      <input
+        id="ActivatePasswordConfirmation"
+        class="o-input__field"
+        name="customer[password_confirmation]"
+        type="password"
+        autocomplete="new-password"
+        placeholder="{{ 'customer.activate.form.password_confirm' | t }}"
+        {% if form.errors %}
+          aria-invalid="true"
+          aria-describedby="ActivatePasswordConfirmation-error"
+        {% endif %}
+      >
+      <span class="sr-only">{{ 'customer.activate.form.password_confirm' | t }}</span>
+
+      {%- if form.errors contains 'password_confirmation' -%}
+        <small id="ActivatePasswordConfirmation-error" class="o-input__error">
+          {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+          {{ form.errors.translated_fields.password_confirmation | capitalize }}
+          {{ form.errors.messages.password_confirmation }}
+        </small>
+      {%- endif -%}
+    </label>
+  </div>
+
+  <div class="form__footer">
+    <button class="button button--primary button--full" type="submit">
+      {{ 'customer.activate.form.submit' | t }}
+    </button>
+    <button
+      class="button button--secondary button--full"
+      name="decline"
+    >
+      {{ 'customer.activate.form.cancel' | t }}
+    </button>
+  </div>
+{% endform %}

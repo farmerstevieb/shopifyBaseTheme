@@ -1,0 +1,146 @@
+{% if enable %}
+  <script>
+    const formatPostalCode = (function () {
+
+        const postalCodeFormating = {
+            "United Kingdom": /^([A-Z]{1,2}\d{1,2}[A-Z]?)\s*(\d[A-Z]{2})$/
+        };
+
+        var formatPostCode = (countryField, postalField) => {
+            // return true if country is not in the formatting rules
+            // or if post code is blank
+            // let selectors = getSelectors();
+            // let countryField = selectors[0];
+            // let postalField = selectors[1];
+            let country = countryField.value;
+            let postalCode = postalField.value.toUpperCase();
+
+            if (!postalCodeFormating[country] || postalCode === '') {
+                return;
+            }
+
+            let expression = postalCodeFormating[country];
+            let parts = postalCode.match(expression);
+
+            if (parts) {
+                parts.shift();
+                postalField.value = parts.join(' ');
+            }
+        }
+
+        let submitForm = () => {
+            formatPostCode();
+        }
+
+
+        getSelectors = (type, editForm) => {
+            {% if template == 'cart' or template == 'customers/addresses' %}
+                let addressType = null;
+                let selectors = {
+                    country: "[name='address[country]']",
+                    postcode: "[name='address[zip]']"
+                };
+            {% else %}
+                let addressType = 'shipping';
+                let selectors = {
+                    country: "select[name='checkout[shipping_address][country]']",
+                    postcode: "[name='checkout[shipping_address][zip]']:not([tabIndex='-1'])"
+                };
+            {% endif %}
+
+            if (type) {
+                addressType = type;
+            }
+
+            let countrySelector;
+            let postalSelector;
+            if (addressType && addressType == 'billing') {
+                countrySelector = selectors.country.replace('shipping_address', 'billing_address');
+                postalSelector = selectors.postcode.replace('shipping_address', 'billing_address');
+            } else {
+                countrySelector = selectors.country;
+                postalSelector = selectors.postcode;
+            }
+
+            let editFormInput;
+            let countryField;
+            let postalField;
+            if (addressType && addressType == 'edit') {
+                if (editForm) {
+                    editFormInput = editForm;
+                } else {
+                    editFormInput = document.querySelector('.js-edit-address-form:not([data-address-id="new"])');
+                }
+                countryField = editFormInput.querySelector(countrySelector);
+                postalField = editFormInput.querySelector(postalSelector);
+            } else {
+                countryField = document.querySelector(countrySelector);
+                postalField = document.querySelector(postalSelector);
+            }
+            return [countryField, postalField];
+        }
+
+        return {
+            init: (type, editForm) => {
+                let selectorsArray = getSelectors(type, editForm);
+                let countryField = selectorsArray[0];
+                let postalField = selectorsArray[1];
+
+                // format on blur
+                postalField.addEventListener('blur', () => {
+                    formatPostCode(countryField, postalField);
+                });
+
+                // trigger change to fire when page loads
+                let event = new Event('change');
+                countryField.addEventListener('change', () => {
+                    formatPostCode(countryField, postalField);
+                });
+                countryField.dispatchEvent(event);
+            },
+            submitForm: submitForm
+        }
+    }());
+
+    {%- if template == 'cart' or template == 'customers/addresses' -%}
+
+        const addressTypeCheck = () => {
+            let editAddressBtnContainer = document.querySelectorAll('.js-edit-address-button--parent');
+            if (editAddressBtnContainer.length >= 1) {
+                editAddressBtnContainer.forEach(editAddressBtnCont => {
+                    let editAddressBtn = editAddressBtnCont.querySelector('.js-edit-address-button');
+
+                    if (editAddressBtn) {
+                        editAddressBtn.addEventListener("click", () => {
+                            let addressType = 'edit';
+                            const editFormParent = editAddressBtn.closest('.js-edit-address-form-parent');
+                            const editForm = editFormParent.querySelector('.js-edit-address-form');
+                            formatPostalCode.init(addressType, editForm);
+                        });
+                    }
+                });
+            }
+            formatPostalCode.init();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            addressTypeCheck();
+        });
+
+    {%- else -%}
+        // WON'T WORK
+        if (Shopify.Checkout.step == 'contact_information' || Shopify.Checkout.step == 'payment_method') {
+            let addressType = Shopify.Checkout.step == 'contact_information' ? 'shipping' : 'billing';
+
+            document.addEventListener("DOMContentLoaded", () => {
+                formatPostalCode.init(addressType);
+            });
+
+            // check zip on form submit
+            document.querySelector('[data-step] form').addEventListener('submit', () => {
+                formatPostalCode.submitForm();
+            });
+        }
+    {%- endif -%}
+  </script>
+{%- endif -%}

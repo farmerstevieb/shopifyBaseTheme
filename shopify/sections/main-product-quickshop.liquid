@@ -1,0 +1,308 @@
+{%- liquid
+  assign product_form_id = 'product-form-' | append: section.id
+  assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
+
+  # Slider
+  # - [Start]
+  capture slider_snippet
+    render 'section-slider', target: section, name: 'product-quickshop', thumbnails: true, viewport_classes: 'relative'
+  endcapture
+
+  assign slider_snippet = slider_snippet | split: ' ** '
+
+  assign slider_settings = slider_snippet[0]
+  assign slider_classes = slider_snippet[1]
+  assign slider_styling = slider_snippet[2]
+  assign slider_components = slider_snippet[3] | split: '::'
+
+  assign slider_viewport = slider_components[0]
+  assign slider_track_class = slider_components[1]
+  assign slider_item_class = slider_components[2]
+  # - [End]
+
+  capture media_wrapper_classes
+    echo 'flex flex-col max-w-xl'
+  endcapture
+
+  capture media_classes
+    echo 'relative grid w-full flex-shrink-0'
+  endcapture
+-%}
+
+{{ slider_styling }}
+
+{%- # Only displays on the product.quickshop template -%}
+{%- liquid
+  capture template
+    assign template_name = template.name
+
+    if template.suffix != blank
+      assign template_name = template_name | append: '-' | append: template.suffix
+    endif
+
+    echo template_name
+  endcapture
+-%}
+
+{%- if template == 'product-quickshop' -%}
+  {%- style -%}
+    .template-product-quickshop > *:not(main, header) {
+      display: none;
+    }
+
+    .template-product-quickshop > main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - var(--header-height, 0px));
+    }
+
+    .template-product-quickshop > main .product-quickshop {
+      max-width: 819px;
+      max-height: 90vh;
+      border-radius: 6px;
+      box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.18),
+        0 25px 57px rgba(0, 0, 0, 0.22);
+      padding: 3.6rem;
+    }
+  {%- endstyle -%}
+{%- endif -%}
+<div class="shopify-section--product-quickshop">
+  <div
+    class="js-product-quickbuy"
+    id="MainProduct-{{ section.id }}"
+    data-section="{{ section.id }}"
+  >
+    <div class="flex">
+      <div class="absolute left-8 top-8 z-30">
+        {%- render 'product-stickers', product: product -%}
+      </div>
+      {%- # Media -%}
+      <div class="w-[43%]	max-lg:hidden lg:pr-6">
+        {%- if product.media.size > 1 -%}
+          <juno-slider
+            class="{{ slider_classes }} sticky top-0 {{ media_wrapper_classes }}"
+            {{ slider_settings }}
+          >
+        {%- else -%}
+          <div class="sticky top-0 {{ media_wrapper_classes }}">
+        {%- endif -%}
+
+        {%- if product.metafields.info.badge -%}
+          <div class="absolute right-4 top-4 z-1 h-7 w-7 md:h-[42px] md:w-[42px]">
+            {%- render 'object-image' with product.metafields.info.badge, width: 42, height: 42 -%}
+          </div>
+        {%- endif -%}
+
+        <div {{ slider_viewport }}>
+          <ul class="{{ slider_track_class }}">
+            {%- if product.selected_or_first_available_variant.featured_media != null
+              and product.selected_or_first_available_variant.featured_media.media_type == 'image'
+            -%}
+              {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+              <li
+                class="{{ slider_item_class }} {{ media_classes }}"
+                data-thumbnail-source="{{ featured_media | image_url: width: 48, height: 48 }}"
+                data-thumbnail-height="48"
+                data-thumbnail-width="48"
+              >
+                {%- render 'object-image' with featured_media, aspect: '320/410', preload: true -%}
+              </li>
+            {%- endif -%}
+
+            {%- for media in product.images -%}
+              {% liquid
+                if media.id == product.selected_or_first_available_variant.featured_media.id
+                  continue
+                endif
+
+                # Hide other variant images
+                if section.settings.hide_variants
+                  if variant_images contains media.src
+                    continue
+                  endif
+
+                  # Hide images by alt tag
+                  if section.settings.hide_variants_by_alt
+                    # TODO: This currently assumes that alt tag contains only ONE option value e.g. color
+                    assign alt = media.alt | downcase
+                    assign options = product.selected_or_first_available_variant.options | downcase
+                    unless options contains alt
+                      continue
+                    endunless
+                  endif
+                endif
+              %}
+
+              <li
+                class="{{ media_classes }}"
+                data-thumbnail-source="{{ media | image_url: width: 84, height: 84 }}"
+                data-thumbnail-height="48"
+                data-thumbnail-width="48"
+              >
+                {%- render 'object-image' with media, aspect: '320/410' -%}
+              </li>
+            {% else %}
+              <li class="{{ media_classes }}">
+                {%- render 'object-image' -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+        {%- if product.media.size > 1 -%}
+          </juno-slider>
+        {%- else -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- # Product Information -%}
+      <div class="details flex w-full flex-col gap-6	lg:w-[57%] lg:pl-6">
+        {%- assign product_form_id = 'product-form-' | append: section.id -%}
+        <div class="flex flex-col">
+          <h1 class="mb-2 pr-2 text-2xl font-medium tracking-wide text-grey-0">
+            {{ product.title | escape }}
+          </h1>
+
+          <div
+            class="mb-4 flex gap-1 text-2xl"
+            id="price-{{ section.id }}"
+            role="status"
+            {{ block.shopify_attributes }}
+          >
+            {%- if customer -%}
+              {%- render 'product-price',
+                product: product,
+                use_variant: true,
+                class: 'text-lg font-semibold flex flex-row-reverse gap-x-1'
+              -%}
+            {%- endif -%}
+          </div>
+
+          {%- liquid
+            assign length_guide_page = settings.length_guide_page
+            assign colour_guide_page = settings.colour_guide_page
+          -%}
+
+          {% render 'product-variant-picker',
+            product: product,
+            update_url: 'false',
+            is_modal: true,
+            length_guide_page: length_guide_page,
+            colour_guide_page: colour_guide_page
+          %}
+          {%- if customer -%}
+            <div class="mb-2 flex flex-col text-grey-5" {{ block.shopify_attributes }}>
+              {%- assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id -%}
+              <label class="font-bold" for="Quantity-{{ section.id }}">
+                <span class="sr-only{% if cart_qty == 0 %} hidden{% endif %}">
+                  {{- 'products.product.quantity.in_cart_html' | t: quantity: cart_qty -}}
+                </span>
+              </label>
+
+              <quantity-input class="quantity-input js-quantity-input">
+                <button class="button" name="minus">
+                  <span class="sr-only">
+                    {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                  </span>
+                  {%- render 'theme-icons' with 'minus', width: 18, height: 18 -%}
+                </button>
+
+                <input
+                  class="quantity__input text-sm font-normal"
+                  type="number"
+                  name="quantity"
+                  id="Quantity-{{ section.id }}"
+                  data-cart-quantity="{{ cart_qty }}"
+                  data-min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                  min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                  {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+                    data-max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                    max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                  {% endif %}
+                  step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+                  value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                  form="{{ product_form_id }}"
+                >
+
+                <button class="button" name="plus">
+                  <span class="sr-only">
+                    {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                  </span>
+                  {%- render 'theme-icons' with 'plus', width: 18, height: 18 -%}
+                </button>
+              </quantity-input>
+            </div>
+          {%- endif -%}
+
+          {%- render 'product-buy-buttons',
+            block: block,
+            product: product,
+            product_form_id: product_form_id,
+            section: section
+          -%}
+        </div>
+      </div>
+    </div>
+    {%- if length_guide_page != blank -%}
+      <modal-dialog
+        id="PopupModal-{{ length_guide_page.handle }}"
+        modal-mode="mega"
+        hidden
+        aria-labelledby="dialog-{{ length_guide_page.title | handleize }}"
+      >
+        <div data-a11y-dialog-hide></div>
+
+        <div role="document">
+          <header data-dialog-element="header">
+            <h2 id="dialog-{{ length_guide_page.title | handleize }}" class="{{title_class}}">
+              {{ length_guide_page.title }}
+            </h2>
+
+            <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+              {%- render 'theme-icons' with 'close' -%}
+              <span class="sr-only">Close dialog</span>
+            </button>
+          </header>
+
+          <div data-dialog-element="main">
+            <div class="rte" style="--rte-gap: 16px;">
+              {{ length_guide_page.content }}
+            </div>
+          </div>
+        </div>
+      </modal-dialog>
+    {%- endif -%}
+
+    {%- if colour_guide_page != blank -%}
+      <modal-dialog
+        id="PopupModal-{{ colour_guide_page.handle }}"
+        modal-mode="mega"
+        hidden
+        aria-labelledby="dialog-{{ colour_guide_page.title | handleize }}"
+      >
+        <div data-a11y-dialog-hide></div>
+
+        <div role="document">
+          <header data-dialog-element="header">
+            <h2 id="dialog-{{ colour_guide_page.title | handleize }}" class="{{title_class}}">
+              {{ colour_guide_page.title }}
+            </h2>
+
+            <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+              {%- render 'theme-icons' with 'close' -%}
+              <span class="sr-only">Close dialog</span>
+            </button>
+          </header>
+
+          <div data-dialog-element="main">
+            <div class="rte" style="--rte-gap: 16px;">
+              {{ colour_guide_page.content }}
+            </div>
+          </div>
+        </div>
+      </modal-dialog>
+    {%- endif -%}
+  </div>
+</div>

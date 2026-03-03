@@ -1,0 +1,126 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "eff9c09c-8a7e-40e3-8a2a-76ca65b5d8b1": {
+      "type": "breadcrumbs",
+      "settings": {
+        "spacing": "0",
+        "spacing_dsk": "0",
+        "padding": "contained",
+        "background_color": "",
+        "color_spacing": false,
+        "text_color": "dark"
+      }
+    },
+    "main": {
+      "type": "nosto-search-template",
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "rgba(0,0,0,0)",
+        "color_spacing": false,
+        "text_color": "dark",
+        "image_aspect_ratio": "square",
+        "custom_image_aspect_ratio": "",
+        "mob_gap_x": 24,
+        "mob_gap_y": 24,
+        "tab_gap_x": 24,
+        "tab_gap_y": 24,
+        "dsk_gap_x": 24,
+        "dsk_gap_y": 36,
+        "xl_dsk_gap_x": 24,
+        "xl_dsk_gap_y": 36,
+        "mob_per_row": "2",
+        "tab_per_row": "3",
+        "dsk_per_row": "3",
+        "xl_dsk_per_row": "4",
+        "pagination_amount": 16,
+        "pagination_style": "text"
+      }
+    },
+    "f244a128-5551-4070-80e0-66039a556861": {
+      "type": "predictive-search",
+      "settings": {}
+    },
+    "a5520eb9-304f-4662-8913-fa49946a1026": {
+      "type": "products-slider",
+      "blocks": {
+        "template--16816432611576__a5520eb9-304f-4662-8913-fa49946a1026-section_header-1": {
+          "type": "section_header",
+          "settings": {
+            "content_width": 0,
+            "offset_heading": 0,
+            "cta_sizes": "large",
+            "cta_sizes_dsk": "large-dsk",
+            "cta_align": "vertical",
+            "cta_align_desktop": "horizontal",
+            "position": "center",
+            "vertical_position": "center",
+            "color": "dark",
+            "subheading_size": "md",
+            "heading_size": "2xl",
+            "text_size": "md",
+            "position_desktop": "start",
+            "vertical_position_desktop": "center",
+            "subheading_size_desktop": "md",
+            "heading_size_desktop": "",
+            "text_size_desktop": "",
+            "subheading": "",
+            "heading": "<p>You may also like</p>",
+            "overline": "",
+            "text": "",
+            "text_tranform": "",
+            "cta_1_text": "",
+            "cta_1_icon": "none",
+            "cta_1_icon_position": "right",
+            "cta_1_link": "",
+            "cta_1_link_style": "primary",
+            "cta_1_target": false
+          }
+        },
+        "c32895ec-a041-486d-8d95-15bfb410f892": {
+          "type": "list",
+          "settings": {
+            "list": [
+              "a-test-product-20",
+              "b-test-product-20",
+              "d-test-product",
+              "c-test-product-20",
+              "e-test-product",
+              "e-test-product-1"
+            ]
+          }
+        }
+      },
+      "block_order": [
+        "template--16816432611576__a5520eb9-304f-4662-8913-fa49946a1026-section_header-1",
+        "c32895ec-a041-486d-8d95-15bfb410f892"
+      ],
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "",
+        "color_spacing": false,
+        "text_color": "dark",
+        "slider_enabled": "true",
+        "show_if": "{% if search.results.size == 0 or request.design_mode == true %}\n  true\n{% else %}\nfalse\n{% endif %}"
+      }
+    }
+  },
+  "order": [
+    "eff9c09c-8a7e-40e3-8a2a-76ca65b5d8b1",
+    "main",
+    "f244a128-5551-4070-80e0-66039a556861",
+    "a5520eb9-304f-4662-8913-fa49946a1026"
+  ]
+}

@@ -1,0 +1,55 @@
+{% # theme-check-disable %}
+{%- liquid
+  assign prefix = 'badge_'
+
+  assign compare_at_price = product.compare_at_price
+  assign price = product.price
+
+  assign show_stickers = false
+  if compare_at_price > price
+    assign show_stickers = true
+  endif
+
+  assign badges = product.tags | where: prefix
+  if badges.size > 0
+    assign show_stickers = true
+  endif
+-%}
+
+{%- if show_stickers -%}
+  {%- capture sticker_html -%}
+    <span class="block w-full px-[5px] py-[1px] text-center text-sm font-semibold uppercase tracking-standard" data-sticker="[handle]">
+      [label]
+    </span>
+  {%- endcapture -%}
+
+  <div class="flex w-full flex-wrap gap-2 text-sm font-bold" {{ block.shopify_attributes }}>
+    {%- liquid
+      # On sale
+      if compare_at_price > price
+        assign on_sale_label = 'products.stickers.on_sale' | t
+        echo sticker_html | replace: '[handle]', 'sale' | replace: '[label]', on_sale_label
+      endif
+
+      # Sold out
+      unless product.available
+        assign sold_out_label = 'products.stickers.sold_out' | t
+        echo sticker_html | replace: '[handle]', 'sold_out' | replace: '[label]', sold_out_label
+      endunless
+
+      # Tag stickers
+      for badge in badges
+        assign badge_text = badge | remove: prefix
+        assign badge_handle = badge_text | handleize | replace: '-', '_'
+        capture label
+          echo 'products.stickers.' | append: badge_handle | t
+        endcapture
+        if label contains 'Translation missing'
+          assign label = badge_text
+        endif
+        echo sticker_html | replace: '[handle]', badge_handle | replace: '[label]', label
+      endfor
+    -%}
+  </div>
+{%- endif -%}
+{% # theme-check-enable %}

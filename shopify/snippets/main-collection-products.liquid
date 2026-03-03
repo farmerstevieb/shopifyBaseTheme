@@ -1,0 +1,100 @@
+  {%- liquid
+    render 'section-spacing-and-color'
+
+    # Force display_section to true in design mode to bypass user restrictions
+    assign display_section = 'true'
+
+    # Image Aspect Ratios
+    capture media_aspect
+      render 'section-aspect-ratios', section: section
+    endcapture
+
+    # Grid Spacing, Structure
+    render 'section-grid', section: section
+
+    assign count = 0
+    assign product_per_page = section.settings.pagination_amount
+
+    for block in section.blocks
+      assign banner_width = block.settings.banner_width
+
+      case banner_width
+        when 'double'
+          assign count = count | plus: 2
+        when 'triple'
+          assign count = count | plus: 3
+        when 'full'
+          assign count = count | plus: 4
+        else
+          assign count = count | plus: 1
+      endcase
+    endfor
+    assign product_per_page = product_per_page | minus: count
+  -%}
+
+  {%- if display_section == 'true' -%}
+    {%- # Product Grid -%}
+    {%- capture product_grid -%}
+    <div
+      class="js-paginatable js-products max-lg:mb-4"
+      section="{{ section.id }}"
+    >
+      {%- paginate collection.products by product_per_page -%}
+        <product-grid class="block mb-[40px] js-product-grid">
+          {%- if collection.products.size == 0 -%}
+            <h2 class="text-center pt-17 font-heading">
+              {{- 'templates.collection.results.none' | t -}}
+            </h2>
+          {%- else -%}
+            <ul class="grid section-grid js-paginatable-list">
+              {%- for product in collection.products -%}
+                {%- if paginate.current_page == 1 -%}
+                  {% assign order = forloop.index %}
+
+                  {%- for block in section.blocks -%}
+                    {%- if order == block.settings.order -%}
+                      {%-
+                        render 'card-banner',
+                        block: block;
+                        class: 'card'
+                      -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+
+                <li class="js-paginatable-item">
+                  {%- render 'card-product',
+                    product: product,
+                    product_index: forloop.index,
+                    aspect_ratio: media_aspect,
+                    collection_style: true,
+                    class: 'card'
+                  -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </product-grid>
+
+        {%- liquid
+          # Converts string to integer
+          assign pagination_visibility = settings.pagination_visibility | plus: 0
+
+          if paginate.pages > pagination_visibility
+            case section.settings.pagination_style
+              when 'text'
+                render 'pagination', paginate: paginate, items_per_page: product_per_page, show_text: true
+              when 'dynamic'
+                render 'pagination-dynamic', paginate: paginate, items_per_page: product_per_page, show_text: true
+            endcase
+          endif
+        -%}
+      {%- endpaginate -%}
+    </div>
+    {%- endcapture -%}
+
+    {%- liquid
+      # Facets
+      render 'facets-main-horizontal', section: section, product_grid: product_grid
+    -%}
+  {%- endif -%}

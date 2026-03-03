@@ -1,0 +1,105 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Object - Image
+  -------------------------------------------------------------------------------
+  Accepts
+  - object-image: {Object} Image Liquid object (required)
+  - mobile_image: {Object} Image Liquid object (optional)
+  - width: {Number} the image width (optional)
+  - height: {Number} the image height (optional)
+  - class: {String} additional class names (optional)
+  - img_class: {String} class names for img (optional)
+  - widths: {String/Array} generates the srcset (optional)
+  - sizes: {String} applies media queries (optional)
+  - crop: {Strings} applies a crop to the image (optional)
+  - visible_placeholder: {Boolean} provides option to show/hide a svg
+    placeholder (optional)
+  -------------------------------------------------------------------------------
+  Usage
+  {% render 'object-image' with object-image %}
+  -------------------------------------------------------------------------------
+  Description
+  Generates a responsive image.
+{%- endcomment -%}
+
+{%- liquid
+  assign image = image | default: object-image
+  assign mobile_image = mobile_image | default: object-image
+  assign preload = preload | default: false
+  assign width = width | default: image.width
+  assign height = height | default: image.height
+  assign class = class | append: ' o-picture'
+  assign img_class = img_class | append: ' o-img'
+  assign widths = widths | default: '375,550,750,900,1100,1250,1500,1780,1950,2100'
+  assign sizes = sizes | default: null
+  assign crop = crop | default: null
+  assign visible_placeholder = visible_placeholder | default: true
+  assign is_before_after = is_before_after | default: false
+  assign hide_mobile_media = hide_mobile_media | default: false
+
+  if hide_mobile_media == true
+    assign hidden_mobile = 'max-lg:hidden'
+  endif
+
+  # Placeholders
+  assign placeholder_loading = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 [w] [h]"/>' | replace: '[w]', width | replace: '[h]', height | base64_encode | prepend: 'src="data:image/svg+xml;base64,' | append: '" data-src='
+
+  if visible_placeholder
+    assign placeholder_shopify = "data:image/svg+xml,%3Csvg style='background: %23EEE' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 525.5 525.5'%3E%3Cpath d='M324.5 212.7H203c-1.6 0-2.8 1.3-2.8 2.8V308c0 1.6 1.3 2.8 2.8 2.8h121.6c1.6 0 2.8-1.3 2.8-2.8v-92.5c0-1.6-1.3-2.8-2.9-2.8zm1.1 95.3c0 .6-.5 1.1-1.1 1.1H203c-.6 0-1.1-.5-1.1-1.1v-92.5c0-.6.5-1.1 1.1-1.1h121.6c.6 0 1.1.5 1.1 1.1V308z' fill='%23dddddd'/%3E%3Cpath d='M210.4 299.5H240v.1s.1 0 .2-.1h75.2v-76.2h-105v76.2zm1.8-7.2l20-20c1.6-1.6 3.8-2.5 6.1-2.5s4.5.9 6.1 2.5l1.5 1.5 16.8 16.8c-12.9 3.3-20.7 6.3-22.8 7.2h-27.7v-5.5zm101.5-10.1c-20.1 1.7-36.7 4.8-49.1 7.9l-16.9-16.9 26.3-26.3c1.6-1.6 3.8-2.5 6.1-2.5s4.5.9 6.1 2.5l27.5 27.5v7.8zm-68.9 15.5c9.7-3.5 33.9-10.9 68.9-13.8v13.8h-68.9zm68.9-72.7v46.8l-26.2-26.2c-1.9-1.9-4.5-3-7.3-3s-5.4 1.1-7.3 3l-26.3 26.3-.9-.9c-1.9-1.9-4.5-3-7.3-3s-5.4 1.1-7.3 3l-18.8 18.8V225h101.4z' fill='%23dddddd'/%3E%3Cpath d='M232.8 254c4.6 0 8.3-3.7 8.3-8.3s-3.7-8.3-8.3-8.3-8.3 3.7-8.3 8.3 3.7 8.3 8.3 8.3zm0-14.9c3.6 0 6.6 2.9 6.6 6.6s-2.9 6.6-6.6 6.6-6.6-2.9-6.6-6.6 3-6.6 6.6-6.6z' fill='%23dddddd'/%3E%3C/svg%3E%0A"
+  else
+    assign placeholder_shopify = ''
+  endif
+-%}
+
+<picture
+  class="{{ class | default: '' }} {{ hidden_mobile }}"
+  style="--ar: {{ aspect }}; --ar-mob: {{ aspect_mobile | default: aspect }}"
+>
+  {%- liquid
+    if preload == true
+      # Ensure srcset is used rather than src when SVG's are ingested as the image object.
+      if mobile_image
+        assign mobile_image_html = mobile_image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths, sizes: sizes | replace: '<img', '<source media="(max-width: 767px)"'
+        if mobile_image_html contains 'srcset='
+          assign image_splitter = mobile_image | image_url: width: width, height: height, crop: crop | escape | prepend: 'src="' | append: '"'
+          assign mobile_image_html_array = mobile_image_html | split: image_splitter
+          assign mobile_image_html = mobile_image_html_array[0] | append: mobile_image_html_array[1]
+        else
+          assign mobile_image_html = mobile_image_html | replace: 'src=', 'srcset='
+        endif
+        echo mobile_image_html
+      endif
+
+      if image
+        echo image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths, sizes: sizes, preload: preload, class: img_class
+      else
+        echo '<img class="[class]" width="[w]" height="[h]" src="[src]"/>' | replace: '[w]', width | replace: '[h]', height | replace: '[src]', placeholder_shopify | replace: '[class]', img_class
+      endif
+    else
+      assign img_class = img_class | append: ' js-lazyload'
+
+      # Ensure srcset is used rather than src when SVG's are ingested as the image object.
+      if mobile_image
+        assign mobile_image_html = mobile_image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths | replace: '<img', '<source media="(max-width: 640px)"'
+        if mobile_image_html contains 'srcset='
+          assign image_splitter = mobile_image | image_url: width: width, height: height, crop: crop | escape | prepend: 'src="' | append: '"'
+          assign mobile_image_html_array = mobile_image_html | split: image_splitter
+          assign mobile_image_html = mobile_image_html_array[0] | append: mobile_image_html_array[1]
+        else
+          assign mobile_image_html = mobile_image_html | replace: 'src=', 'srcset='
+        endif
+        echo mobile_image_html
+      endif
+
+      if image
+        echo image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths, sizes: 'auto', loading: 'eager', class: img_class | replace: 'src=', placeholder_loading | replace: 'srcset=', 'data-srcset='
+      else
+        echo '<img class="[class]" width="[w]" height="[h]" src="[src]"/>' | replace: '[w]', width | replace: '[h]', height | replace: '[src]', placeholder_shopify | replace: '[class]', img_class
+      endif
+    endif
+  -%}
+
+  {%- if is_before_after -%}
+    {%- render 'object-content', block: block, attributes: block.shopify_attributes, class: 'c-before-after__text' -%}
+  {%- endif -%}
+</picture>

@@ -1,0 +1,27 @@
+{% comment %}
+  Renders product variant-picker
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} passing the block information.
+  - update_url: {Boolean} whether or not to update url when changing variants. If false, the url isn't updated. Default: true (optional).
+
+  Usage:
+  {% render 'product-variant-picker', block: block, product: product %}
+{% endcomment %}
+{%- unless product.has_only_default_variant -%}
+  <div class="flex items-center gap-4 uppercase tracking-standard text-sm text-grey-0">
+    {%- for option in product.options_with_values -%}
+      {% assign option_name = option.name | downcase %}
+      <div>
+        <span class="font-semibold text-grey-0">{{ option.name }}:</span>
+        <span
+          data-type="{{ option.name }}"
+          class="js-sticky-variant-options"
+        >
+          {{- option.selected_value -}}
+        </span>
+      </div>
+    {%- endfor -%}
+  </div>
+{%- endunless -%}

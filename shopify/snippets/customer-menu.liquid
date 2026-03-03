@@ -1,0 +1,46 @@
+<div class="c-customer__menu flex flex-col items-center max-lg:overflow-hidden">
+  <div class="pt-7 w-full text-center">
+    <div class="pb-6 flex justify-end">
+      <a
+        class="flex items-center gap-2 font-semibold tracking-standard uppercase text-sm"
+        href="{{ routes.account_logout_url }}"
+      >
+        {% render 'theme-icons' with 'log-out-outline', width: '16', height: '16', viewBox_w: '16', viewBox_h: '16' %}
+        <span>Log out</span>
+      </a>
+    </div>
+    {%- for link in linklists['customer-menu'].links -%}
+      {%- if link.active -%}
+        {%- assign page_title = link.title | split: ']' -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {% if template contains 'order' %}
+      <h2 class="text-4xl font-medium tracking-wide text-grey-10 capitalize">{{ page_title }}</h2>
+    {% else %}
+      <h2 class="text-4xl font-medium tracking-wide text-grey-10 capitalize">{{ page_title[1] }}</h2>
+    {% endif %}
+  </div>
+  <ul class="c-customer__menu-nav">
+    {%- for link in linklists['customer-menu'].links -%}
+      <li class="slider__item slider__item--account w-full lg:w-fit">
+        <a
+          class="c-customer__menu-nav__link{%- if link.active or template.name == 'order' and forloop.first %} is-active {%- endif -%}"
+          href="{{ link.url }}"
+          {%- if link.active -%}
+            aria-current="page"
+          {%- endif -%}
+        >
+          {%- liquid
+            assign title = link.title | split: ']'
+            if title[0] contains 'icon='
+              assign icon = title[0] | replace: '[icon=', ''
+              render 'theme-icons' with icon, width: 16, height: 16
+            endif
+          -%}
+          {{- title[1] -}}
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>

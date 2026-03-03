@@ -1,0 +1,121 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-register",
+      "blocks": {
+        "section_header_aUPEk9": {
+          "type": "section_header",
+          "settings": {
+            "content_width": 600,
+            "offset_heading": 0,
+            "subheading_spacing": 16,
+            "heading_spacing": 16,
+            "overline_spacing": 16,
+            "description_spacing": 0,
+            "subheading_spacing_desktop": 16,
+            "heading_spacing_desktop": 16,
+            "overline_spacing_desktop": 16,
+            "description_spacing_desktop": 0,
+            "cta_sizes": "full",
+            "cta_sizes_dsk": "large",
+            "cta_align": "vertical",
+            "cta_align_desktop": "vertical",
+            "content_align": "1",
+            "position": "center",
+            "vertical_position": "center",
+            "color": "dark",
+            "subheading_size": "md",
+            "heading_size": "4xl",
+            "overline_size": "md",
+            "text_size": "md",
+            "position_desktop": "center",
+            "vertical_position_desktop": "center",
+            "subheading_size_desktop": "md",
+            "heading_size_desktop": "4xl",
+            "overline_size_desktop": "md",
+            "text_size_desktop": "",
+            "subheading": "",
+            "heading": "<p>Join Remi Cachet</p>",
+            "overline": "",
+            "text": "",
+            "text_tranform": "",
+            "text_weight": "",
+            "text_undeline": false,
+            "cta_1_text": "",
+            "cta_1_icon": "none",
+            "cta_1_icon_position": "right",
+            "cta_1_link": "",
+            "cta_1_link_style": "primary",
+            "cta_1_target": false,
+            "cta_margin_end": false
+          }
+        },
+        "section_bullets_VE88Ri": {
+          "type": "section_bullets",
+          "disabled": true,
+          "settings": {
+            "bullet_header": "<p>Proof of business should be one of the following:</p>",
+            "bullet_list": "<ul><li>Hairdressing NVQ (Level 2 or above);</li><li>Proof of Self-Employment;</li><li>Company Registration Number;</li><li>Business Utility Bill;</li><li>Business Bank Statement;</li><li>Business Lease/Rental Agreement;</li></ul>"
+          }
+        }
+      },
+      "block_order": [
+        "section_header_aUPEk9",
+        "section_bullets_VE88Ri"
+      ],
+      "custom_css": [
+        "ul.bg-brand-8.list-disc.list-inside.p-4 {background-color: #fff; margin-bottom: -75px;}"
+      ],
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "rgba(0,0,0,0)",
+        "color_spacing": false,
+        "text_color": "dark",
+        "user_restriction": "",
+        "disable_register": true
+      }
+    },
+    "1714553610866f1bc3": {
+      "type": "apps",
+      "blocks": {
+        "helium_customer_fields_app_block_6xWPWE": {
+          "type": "shopify://apps/helium-customer-fields/blocks/app-block/bab58598-3e6a-4377-aaaa-97189b15f131",
+          "settings": {
+            "form_id": "1Wtmp7",
+            "width": 2000,
+            "vertical_spacing": 0,
+            "horizontal_spacing": 0
+          }
+        }
+      },
+      "block_order": [
+        "helium_customer_fields_app_block_6xWPWE"
+      ],
+      "settings": {
+        "spacing": "lg",
+        "spacing_dsk": "lg",
+        "padding": "contained",
+        "background_color": "rgba(0,0,0,0)",
+        "color_spacing": false,
+        "text_color": "dark",
+        "user_restriction": "",
+        "content_width": 800
+      }
+    }
+  },
+  "order": [
+    "main",
+    "1714553610866f1bc3"
+  ]
+}

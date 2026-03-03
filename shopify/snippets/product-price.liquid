@@ -1,0 +1,52 @@
+{% comment %}
+  Renders a list of product's price (regular, sale)
+
+  Accepts:
+  - product: {Object} Product Liquid object (optional)
+  - use_variant: {Boolean} Renders selected or first variant price instead of overall product pricing (optional)
+  - class: {String} Adds a price class to the price element (optional)
+
+  Usage:
+  {% render 'price', product: product %}
+{% endcomment %}
+{%- liquid
+  if use_variant
+    assign target = product.selected_or_first_available_variant
+  else
+    assign target = product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price | default: 1999
+  assign money_price = price | money
+  if settings.currency_code_enabled
+    assign money_price = price | money_with_currency
+  endif
+
+  if target == product and product.price_varies
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+  endif
+-%}
+
+<div class="inline-flex gap-x-2 leading-base items-center {{ class }} {% if is_card == true %} lg:justify-end leading-base md:text-right md:row-span-2{% endif %} c-money">
+  {%- if compare_at_price > price -%}
+    <span class="sr-only">{{ 'products.product.price.sale_price' | t }}</span>
+    <span class="tracking-1 font-semibold c-money__regular-price">
+      {{ money_price }}
+    </span>
+
+    {%- unless product.price_varies == false and product.compare_at_price_varies %}
+      <span class="sr-only">{{ 'products.product.price.regular_price' | t }}</span>
+      <span class="flex">
+        <s class="text-grey-70 -tracking-2 c-money__compare-price">
+          {{ compare_at_price | money }}
+        </s>
+      </span>
+    {%- endunless -%}
+  {%- else -%}
+    <span class="sr-only">{{ 'products.product.price.regular_price' | t }}</span>
+    <span class="{% if is_card == true %} {% else %} font-semibold{% endif %} c-money__regular-price tracking-1">
+      {{ money_price }}
+    </span>
+  {%- endif -%}
+</div>

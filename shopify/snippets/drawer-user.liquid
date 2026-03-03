@@ -1,0 +1,62 @@
+<juno-dialog id="AccountDialog" modal-mode="side" hidden>
+  <div data-a11y-dialog-hide></div>
+
+  <div role="document">
+    <button data-dialog-element="close" type="button" data-a11y-dialog-hide>
+      {%- render 'theme-icons' with 'close' -%}
+      <span class="sr-only">Close dialog</span>
+    </button>
+
+    <div class="c-account-dialog js-account-tabs">
+      <div class="c-account-dialog__header font-semibold">
+        <button class="c-account-dialog__trigger button" aria-controls="account-panel-1" aria-selected="true">
+          Log in
+        </button>
+        <button class="c-account-dialog__trigger button" aria-controls="account-panel-2" aria-selected="false">
+          Register
+        </button>
+      </div>
+
+      <hr class="o-hr" role="presentation">
+
+      <div class="c-account-dialog__main">
+        <div id="account-panel-1" aria-expanded="true">
+          <div>
+            {%- render 'form-recover',
+              title: 'customer.recover.dialog.title | t',
+              text: 'customer.recover.dialog.text | t'
+            -%}
+            <div class="mb-9">
+              {%- render 'form-login',
+                title: 'customer.login.dialog.title | t',
+                text: 'customer.login.dialog.text | t'
+              -%}
+            </div>
+            <hr class="o-hr mb-5" role="presentation">
+            <p class="text-md mb-4 text-center">Don't have an account?</p>
+            <a class="button button--secondary button--full" href="{{ shop.url }}/account/register">
+              {{ 'Register' }}
+            </a>
+          </div>
+        </div>
+        <div id="account-panel-2" aria-expanded="false">
+          <div>
+            <div class="mb-9">
+              {%- render 'form-register',
+                title: 'customer.register.dialog.title | t',
+                text: 'customer.register.dialog.text | t',
+                text_center: false,
+                show_placeholder: true
+              -%}
+            </div>
+            <hr class="o-hr mb-5" role="presentation">
+            <p class="text-md mb-4 text-center">Already have an account?</p>
+            <button class="button button--secondary button--full" type="button" aria-controls="account-panel-1">
+              {{ 'Log in' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</juno-dialog>

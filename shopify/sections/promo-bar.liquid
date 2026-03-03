@@ -1,0 +1,114 @@
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {%- style -%}
+    @media (min-width: 1024px) {
+      #shopify-section-{{ section.id }} .slider__track {
+        --slides: {{ section.settings.desktop_columns }};
+      }
+    }
+  {%- endstyle -%}
+
+  <juno-slider
+    class="slider slider--promo-bar slider--arrows slider--no-bg-arrows slider--mobile-arrows"
+    wheelGestures
+    showArrows
+    loop
+    enabled
+  >
+    <div
+      class="slider__viewport h-10 lg:h-11"
+      data-slider="viewport"
+    >
+      <ul class="slider__track">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            capture bg_color
+              assign declaration = 'background-color: #;'
+
+              if block.settings.bg_color_custom != blank and block.settings.bg_color_custom != 'rgba(0,0,0,0)'
+                echo declaration | replace: '#', block.settings.bg_color_custom
+              else
+                echo declaration | replace: '#', block.settings.bg_color_brand
+              endif
+            endcapture
+
+            capture icon_position
+              case block.settings.icon_position
+                when 'right'
+                  echo 'flex-row-reverse'
+              endcase
+            endcapture
+
+            capture text_color
+              case block.settings.text_color
+                when 'dark'
+                  echo 'text-primary'
+                when 'light'
+                  echo 'text-primaryInverse'
+              endcase
+            endcapture
+          -%}
+
+          <li
+            class="flex items-center {{ icon_position }} slider__item h-full justify-center gap-x-2 py-3 font-heading text-xbase leading-none {{ text_color }}"
+            {{ block.shopify_attributes }}
+            style="{{ bg_color }}"
+          >
+            {%- if block.settings.link != blank -%}
+              <a
+                class="absolute left-0 top-0 h-full w-full"
+                href="{{ block.settings.link }}"
+              ></a>
+            {%- endif -%}
+
+            {%- render 'theme-icons' with block.settings.icon, width: 18, height: 18 -%}
+            <small class="rte -mb-px w-fit flex-grow-0 select-none text-xbase normal-case tracking-0">
+              {%- if block.settings.text_mobile != blank -%}
+                {%- liquid
+                  capture mobile_visibility
+                    if block.settings.text_desktop != blank
+                      echo 'lg:hidden'
+                    endif
+                  endcapture
+                -%}
+
+                <span class="{{ mobile_visibility }}">
+                  {{- block.settings.text_mobile -}}
+                </span>
+              {%- endif -%}
+
+              {%- if block.settings.text_desktop != blank -%}
+                {%- liquid
+                  capture desktop_visibility
+                    if block.settings.text_mobile != blank
+                      echo 'max-lg:hidden'
+                    endif
+                  endcapture
+                -%}
+
+                <span class="{{ desktop_visibility }}">
+                  {{- block.settings.text_desktop -}}
+                </span>
+              {%- endif -%}
+            </small>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </juno-slider>
+{% endif %}

@@ -1,0 +1,96 @@
+<div class="c-customer-order-history__content">
+  {%- paginate customer.orders by 5 -%}
+    {% if customer.orders.size != 0 %}
+      <div class="c-customer-order-history__content-orders  js-orders-list">
+        {%- for order in customer.orders -%}
+          <div class="c-customer-order-history__content-orders__item">
+            <div class="flex justify-between p-8">
+              <span class="text-md font-semibold tracking-wide text-grey-0">
+                {{- 'customer.orders.order_number' | t }} #{{ order.order_number -}}
+              </span>
+              <div class="text-sm text-brand-moss font-semibold uppercase tracking-standard">
+                {%- if order.fulfillment_status == 'unfulfilled' -%}
+                  Processing
+                {%- else -%}
+                  {{ order.fulfillment_status | capitalize }}
+                {%- endif -%}
+              </div>
+            </div>
+
+            <div class="px-8 pb-10 flex justify-between gap-y-8 gap-x-10 max-lg:flex-col lg:flex-row">
+              <div class="c-customer-order-history__content-orders__item-container">
+                <div class="text-center flex flex-col">
+                  <span class="block text-sm font-semibold uppercase tracking-wide text-grey-0 flex-grow">
+                    {{- 'customer.orders.date' | t -}}
+                  </span>
+                  <span class="text-sm text-grey-10">{{ order.created_at | date: '%b %d, %Y' }}</span>
+                </div>
+
+                <div class="text-center flex flex-col">
+                  <span class="block text-sm font-semibold uppercase tracking-wide text-grey-0 c-customer-order-history__content-orders__item-heading flex-grow">
+                    {{- 'customer.orders.items' | t -}}
+                  </span>
+                  {%- liquid
+                    assign total_items = 0
+                    for line_item in order.line_items
+                      assign total_items = total_items | plus: line_item.quantity
+                    endfor
+                  -%}
+                  <span class="text-sm text-grey-10">{{ total_items }}</span>
+                </div>
+                <div class="text-center flex flex-col">
+                  <span class="block text-sm font-semibold uppercase tracking-wide text-grey-0 c-customer-order-history__content-orders__item-heading flex-grow">
+                    {{- 'customer.orders.order_price' | t -}}
+                  </span>
+                  <span class="text-sm text-grey-10">{{ order.total_price | money }}</span>
+                </div>
+
+                <div class="text-center flex flex-col">
+                  <span class="block text-sm font-semibold uppercase tracking-wide  text-grey-0 flex-grow">
+                    {{- 'customer.orders.tracking' | t -}}
+                  </span>
+                  {% for line_item in order.line_items %}
+                    {%- if forloop.first -%}
+                      {% if line_item.fulfillment.tracking_number %}
+                        <span class="text-sm text-grey-10">
+                        <a class="text-sm" href="{{ line_item.fulfillment.tracking_url }}">
+                          <div class="flex items-center gap-1 text-grey-10">
+                            {{- line_item.fulfillment.tracking_number -}}
+                            {%- render 'theme-icons' with 'link-external', width: 14, height: 14 -%}
+                          </div>
+                        </a>
+                        </span>
+                      {% endif %}
+                    {%- endif -%}
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="c-customer-order-history__content-orders__item-details-btn">
+                <a
+                  class="button button--primary button--full button--standard flex justify-between ps-6"
+                  href="{{ order.customer_url }}"
+                >
+                  View Order
+                  {%- render 'theme-icons' with 'arrow-right', width: 18, height: 18 -%}
+                </a>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {% else %}
+      <p class="no-order pt-6">{{ 'customer.orders.none' | t }}</p>
+      <div class="mt-4">
+        {%- render 'object-ctas',
+          settings: section.settings,
+          cta_sizes: section.settings.cta_sizes,
+          cta_sizes_dsk: section.settings.cta_sizes_desktop
+        -%}
+      </div>
+    {% endif %}
+    {% if paginate.pages >= 1 %}
+      {%- render 'pagination', paginate: paginate -%}
+    {% endif %}
+  {%- endpaginate -%}
+</div>

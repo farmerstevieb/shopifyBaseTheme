@@ -1,0 +1,6 @@
+.c-pagination {
+  max-width: calc(374px + var(--row-space) * 2);
+  margin-inline: auto;
+  padding-block: theme("spacing.6");
+  padding-inline: var(--row-space);
+}

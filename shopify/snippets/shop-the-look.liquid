@@ -1,0 +1,73 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Shop the Look
+  -------------------------------------------------------------------------------
+  Accepts
+  - products: {Object} the section setting product object that has an array of
+    products associated with it (required)
+  - position: {String/Object} the section setting object or string that
+    indicates where the shop-the-look icon should be placed inside of
+    it's container. 'bottom-left' or 'bottom-right' (optional)
+  - title: {String/Object} (optional)
+  -
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'shop-the-look',
+    product: product,
+    position: position,
+    title: title
+  -%}
+  -------------------------------------------------------------------------------
+  Description
+  Render's a shop the look module that allows the user to see an array of
+  products that might be associated with an image or video on the screen.
+{%- endcomment -%}
+
+{%- liquid
+  assign products = products
+  assign position = position | default: 'bottom-right'
+  assign title = title
+-%}
+
+{%- if products.count > 0 -%}
+  <shop-the-look class="shop-the-look {{ position | prepend: '  shop-the-look--' }}" hidden>
+    <script type="application/json">
+      {{ products | json }}
+    </script>
+
+    <div class="shop-the-look__products scrollbar-hide js-look-products">
+      {%- if title != blank -%}
+        <header class="shop-the-look__header">
+          <p class="font-bold text-md text-grey-10">
+            {{ title }}
+          </p>
+        </header>
+      {%- endif -%}
+
+      {%- for product in products -%}
+        <a href="{{ product.url }}" class="shop-the-look__product group">
+          {%- render 'object-image' with product.featured_image,
+            class: 'shop-the-look__product-image',
+            width: 48,
+            height: 48
+          -%}
+
+          <aside class="shop-the-look__product-details text-md">
+            <p class="font-bold group-hover:underline">
+              {{ product.title }}
+            </p>
+          </aside>
+        </a>
+      {%- endfor -%}
+    </div>
+
+    <button class="shop-the-look__button js-look-button">
+      <span class="shop-the-look__shopping-icon js-look-icon">
+        {%- render 'theme-icons' with 'shopping-bag' -%}
+      </span>
+      <span class="hidden shop-the-look__shopping-icon js-look-icon">
+        {%- render 'theme-icons' with 'close' -%}
+      </span>
+    </button>
+  </shop-the-look>
+{%- endif -%}

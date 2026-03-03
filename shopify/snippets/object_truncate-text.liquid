@@ -1,0 +1,24 @@
+{%- liquid
+  assign trigger_more_text = trigger_more_text | default: 'Read more'
+  assign trigger_less_text = trigger_less_text | default: 'Read less'
+  assign max_lines = max_lines | default: 3
+-%}
+
+{% if text %}
+  <div class="content__text rte grow-0 {{ text_class }}">
+    <div class="js-truncate content__text--truncate is-collapsed" style="--truncate-lines: {{ max_lines }};">
+      <div class="full-content">
+        {{ text | replace: '[highlight]', '<span class="text-highlight">' | replace: '[/highlight]', '</span>' }}
+      </div>
+
+      <button
+        class="js-truncate-toggle mt-2 cursor-pointer text-sm text-highlight underline"
+        data-more-text="{{ trigger_more_text }}"
+        data-less-text="{{ trigger_less_text }}"
+        aria-expanded="false"
+      >
+        {{ trigger_more_text }}
+      </button>
+    </div>
+  </div>
+{% endif %}

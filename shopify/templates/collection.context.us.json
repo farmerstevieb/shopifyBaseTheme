@@ -1,0 +1,90 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "collection.json",
+  "context": {
+    "market": "us"
+  },
+  "sections": {
+    "products": {
+      "settings": {},
+      "blocks": {
+        "banner_VGnwt": {
+          "type": "banner",
+          "disabled": true,
+          "settings": {
+            "banner_width": "single",
+            "order": 7,
+            "paragraph-e0778a7f35778c6cf33da8b692be1afd": null,
+            "content_width": 295,
+            "offset_heading": 0,
+            "header-4857caf0d819c795d22b14816ce4e919": null,
+            "subheading_spacing": 16,
+            "heading_spacing": 16,
+            "overline_spacing": 16,
+            "description_spacing": 16,
+            "header-2940a442e036d35ce461b6866ef60541": null,
+            "subheading_spacing_desktop": 16,
+            "heading_spacing_desktop": 16,
+            "overline_spacing_desktop": 16,
+            "description_spacing_desktop": 16,
+            "cta_sizes": "full",
+            "cta_sizes_dsk": "large",
+            "cta_align": "vertical",
+            "cta_align_desktop": "vertical",
+            "position": "start",
+            "vertical_position": "center",
+            "color": "dark",
+            "subheading_size": "md",
+            "heading_size": "2xl",
+            "overline_size": "md",
+            "text_size": "md",
+            "paragraph-7278ce34ab1105641335c1e9105a78c5": null,
+            "position_desktop": "",
+            "vertical_position_desktop": "center",
+            "subheading_size_desktop": "md",
+            "heading_size_desktop": "4xl",
+            "overline_size_desktop": "md",
+            "text_size_desktop": "",
+            "header-57cff34b23bd0ee0ea6373908937df31": null,
+            "paragraph-4da3f2b1d1b47d1d7c35fd03c4ec4004": null,
+            "subheading": "",
+            "heading": "",
+            "overline": "",
+            "text": "",
+            "text_tranform": "",
+            "text_weight": "",
+            "text_undeline": false,
+            "header-ed4f7ffe1c662f5ec50e633d0c51fc8a": null,
+            "cta_1_text": "",
+            "cta_1_icon": "none",
+            "cta_1_icon_position": "right",
+            "cta_1_link": "",
+            "cta_1_link_style": "primary",
+            "cta_1_target": false,
+            "cta_margin_end": false,
+            "header-09b2d9186237f4ae1be7cf1cf1b0028c": null,
+            "image": "shopify://shop_images/Desktop_-_PLP.jpg",
+            "image_mobile": "shopify://shop_images/Mobile_-_PLP.jpg",
+            "image_fit": "cover",
+            "header-ef05744b891d9384b028e6cf988874e1": null,
+            "video_file": null,
+            "video_url": "",
+            "video_autoplay": true,
+            "video_muted": true
+          }
+        }
+      },
+      "block_order": [
+        "banner_VGnwt"
+      ]
+    }
+  }
+}

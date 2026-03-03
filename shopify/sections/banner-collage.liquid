@@ -1,0 +1,47 @@
+{% liquid
+  render 'theme_assets' with 'section-banner-collage.min.css'
+  render 'section-spacing-and-color'
+
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  <div class="c-banner-collage">
+    {% for block in section.blocks %}
+      <div
+        class="c-banner-collage__block{% if forloop.first %} c-banner-collage__block--{{ section.settings.section_position }}{% endif %}"
+        {{ block.shopify_attributes }}
+      >
+        {% assign aspect_ratio = '448 / 444' %}
+        {% if forloop.first -%}
+          {%- assign aspect_ratio = '936 / 924' -%}
+        {%- endif %}
+
+        {% render 'object-image' with block.settings.desktop_image,
+          mobile_image: block.settings.mobile_image,
+          class: 'c-banner-collage__image',
+          aspect: aspect_ratio
+        %}
+
+        <div class="c-banner-collage__content card--banner-grid-position text-grey-100">
+          {%- render 'object-content',
+            block: block.settings,
+            attributes: block.shopify_attributes,
+            class: 'absolute inset-y-0 inset-x-4'
+          -%}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}

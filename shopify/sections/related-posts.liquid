@@ -1,0 +1,87 @@
+{%- render 'section-spacing-and-color' -%}
+
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {%- assign section_header = section.blocks | where: 'type', 'section_header' | first -%}
+  {%- if section_header -%}
+    {%- render 'object-content',
+      block: section_header.settings,
+      attributes: section_header.shopify_attributes,
+      class: 'section-header mb-9'
+    -%}
+  {%- endif -%}
+
+  <juno-slider
+    class="slider slider--related-posts"
+    enabled="(max-width: 820px)"
+  >
+    <div class="slider__viewport" data-slider="viewport" {{ block.shopify_attributes }}>
+      <ul class="slider__track">
+        {% assign count = 0 %}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'latest' -%}
+              {%- for item in blog.articles limit: 4 -%}
+                {% liquid
+                  if item.handle == article.handle
+                    continue
+                  endif
+                %}
+                <li class="slider__item">
+                  {%- render 'card-article',
+                    article: item,
+                    show_image: true,
+                    show_date: true,
+                    show_author: true,
+                    show_excerpt: true
+                  -%}
+                </li>
+
+                {% liquid
+                  assign count = count | plus: 1
+                  if count == 3
+                    break
+                  endif
+                %}
+              {%- endfor -%}
+
+              {%- break -%}
+
+            {% when 'article' %}
+              {% liquid
+                if count == 3
+                  break
+                endif
+                assign count = count | plus: 1
+              %}
+
+              <li class="slider__item">
+                {%- render 'card-article',
+                  article: block.settings.article,
+                  show_image: true,
+                  show_date: true,
+                  show_author: true,
+                  show_excerpt: true
+                -%}
+              </li>
+          {%- endcase -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </juno-slider>
+{% endif %}

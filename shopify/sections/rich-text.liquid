@@ -1,0 +1,132 @@
+{%- render 'section-spacing-and-color', width: 752 -%}
+
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+
+  # Position
+  assign position = position | default: section.settings.position | default: 'start'
+  assign position_desktop = position_desktop | default: section.settings.position_desktop | default: position
+
+  # Color
+  case section.settings.text_color
+    when 'dark'
+      assign class = 'text-grey-0'
+      assign text_class = 'text-secondary'
+
+    when 'light'
+      assign class = 'text-primaryInverse'
+      assign text_class = 'text-secondaryInverse'
+  endcase
+%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  <div
+    class="content gap-y-6 {{ class }} max-w-[702px]"
+    data-position="{{ position }}"
+    {% if position_desktop != position %}
+      data-position-desktop="{{ position_desktop }}"
+    {% endif %}
+    {% if section.settings.content_width > 0 %}
+      style="max-width: {{section.settings.content_width}}px"
+    {% endif %}
+  >
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'overline' -%}
+          <p class="text-xs uppercase tracking-standard" {{ block.shopify_attributes }}>
+            {{ block.settings.text }}
+          </p>
+
+        {%- when 'heading' -%}
+          {%- liquid
+            assign heading_class = ' text-' | append: block.settings.heading_size
+            if block.settings.heading_size_desktop != blank
+              assign heading_class = ' lg:text-' | append: block.settings.heading_size_desktop | prepend: heading_class
+            endif
+          -%}
+
+          {% liquid
+            assign cms_heading = 'h2'
+            if block.settings.title contains '<h'
+              assign cms_heading = 'div'
+            endif
+          %}
+          <{{ cms_heading }}
+            class="font-semibold leading-1 {{ block.settings.heading_tracking_font }} {{ heading_class }}{% if cms_heading == 'div' %} [&_h1]:!tracking-[inherit] [&_h1]:!text-[inherit] [&_h2]:!tracking-[inherit] [&_h2]:!text-[inherit] [&_h3]:!tracking-[inherit] [&_h3]:!text-[inherit] [&_h4]:!tracking-[inherit] [&_h4]:!text-[inherit] [&_h5]:!tracking-[inherit] [&_h5]:!text-[inherit] [&_h6]:!tracking-[inherit] [&_h6]:!text-[inherit]{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {{
+              block.settings.title
+              | replace: 'p>', 'span>'
+              | replace: '[highlight]', '<span class="text-highlight">'
+              | replace: '[/highlight]', '</span>'
+            }}
+          </{{ cms_heading }}>
+
+        {%- when 'text' -%}
+          {%- liquid
+            assign text_class = ' text-' | append: block.settings.text_size | prepend: text_class
+            if block.settings.text_size_desktop != blank
+              assign text_class = ' lg:text-' | append: block.settings.text_size_desktop | prepend: text_class
+            endif
+          -%}
+
+          <div class="rte {{ text_class }}" {{ block.shopify_attributes }}>
+            {{
+              block.settings.text
+              | replace: '[highlight]', '<span class="text-highlight">'
+              | replace: '[/highlight]', '</span>'
+            }}
+          </div>
+
+        {%- when 'button' -%}
+          {%- if block.settings.cta_label != blank or block.settings.cta_label_2 != blank -%}
+            <div class="buttons flex flex-wrap gap-2 max-lg:w-full">
+              {%- if block.settings.cta_label != blank -%}
+                <a
+                  class="button button--flex-btn button--{{ block.settings.cta_type }}"
+                  {% if block.settings.cta_link == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ block.settings.cta_link }}"
+                  {% endif %}
+                  {%- if block.settings.cta_target -%}
+                    target="_blank" rel="noreferrer"
+                  {%- endif -%}
+                >
+                  {{ block.settings.cta_label }}
+                </a>
+              {%- endif -%}
+              {%- if block.settings.cta_label_2 != blank -%}
+                <a
+                  class="button button--{{ block.settings.cta_type_2 }}"
+                  {% if block.settings.cta_link_2 == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ block.settings.cta_link_2 }}"
+                  {% endif %}
+                  {%- if block.settings.cta_target_2 -%}
+                    target="_blank" rel="noreferrer"
+                  {%- endif -%}
+                >
+                  {{ block.settings.cta_label_2 }}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+{% endif %}

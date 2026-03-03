@@ -1,0 +1,28 @@
+.slider-dots {
+  --dot-size: 10px;
+
+  height: var(--dot-size);
+
+  @apply absolute bottom-0 z-1 flex gap-2 justify-center items-center w-full p-5;
+
+  .shopify-section--banner-hero-split & {
+    @apply justify-end;
+  }
+
+  .shopify-section--banner-grid-carousel & {
+    @apply -bottom-16;
+  }
+
+  > button {
+    width: var(--dot-size);
+    height: var(--dot-size);
+    background-color: #4d3c2f;
+    border-radius: var(--dot-size);
+
+    @apply opacity-50;
+
+    &[aria-current] {
+      @apply opacity-100;
+    }
+  }
+}

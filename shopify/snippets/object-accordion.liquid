@@ -1,0 +1,90 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Object - Accordion
+  -------------------------------------------------------------------------------
+  Accepts
+  - title: {Object/String}
+  - content: {Object/String}
+  - is_mobile: {Boolean}
+  - start_open: {Boolean} starts the accordion open
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'object-accordion',
+    title: social_title,
+    content: content,
+    is_mobile: true,
+    start_open: true
+  -%}
+  -------------------------------------------------------------------------------
+  Description
+  Displays a accordion that can be set to work on all screensizes, or just mobile.
+{%- endcomment -%}
+
+{%- liquid
+  assign is_mobile = is_mobile
+  assign title = title
+  assign content = content
+
+  capture is_mobile_class
+    if is_mobile
+      echo 'o-accordion--mobile js-accordion-mobile'
+    endif
+  endcapture
+
+  capture is_mobile_js_trigger
+    if is_mobile
+      echo 'o-accordion--mobile js-accordion-mobile'
+    endif
+  endcapture
+
+  if class != blank
+    assign class = class
+    assign heading_class = class | append: '--heading'
+    assign icon_class = class | append: '--icon'
+    assign content_class = class | append: '--content'
+  endif
+
+  if custom_class != blank
+    assign custom_class = custom_class
+    assign custom_heading_class = custom_class | append: '--heading'
+    assign custom_content_class = custom_class | append: '--content'
+  endif
+
+  capture start_open_class
+    if start_open
+      echo 'is-open'
+    endif
+  endcapture
+
+  capture start_open_height
+    if start_open
+      echo 'style="max-height: initial"'
+    endif
+  endcapture
+-%}
+
+<div
+  class="o-accordion {{ is_mobile_class }} {{ class }} {{ custom_class }} js-accordion"
+  data-accordion-id="{{ title | append: section.id | sha256 }}"
+>
+  {%- if title -%}
+    <h3 class="o-accordion__heading {{ heading_class }} {{ custom_heading_class }} {{ start_open_class }} js-accordion-trigger {{ is_mobile_js_trigger }}">
+      {{- title -}}
+
+      <span class="o-accordion__heading-icon {{ icon_class }}">
+        {%- render 'theme-icons' with 'chevron-up', width: 16, height: 16 -%}
+      </span>
+    </h3>
+  {%- endif -%}
+
+  <div
+    class="o-accordion__content {{ content_class }}"
+    {{ start_open_height }}
+  >
+    <div class="{{ content_class }}-inner {{ custom_content_class }}-inner">
+      <p>{{- content -}}</p>
+
+      {%- render 'object-ctas', settings: block, class: 'mt-4', size: cta_sizes_class, amount: 2 -%}
+    </div>
+  </div>
+</div>

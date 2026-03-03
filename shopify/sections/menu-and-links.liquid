@@ -1,0 +1,15 @@
+{%- render 'section-spacing-and-color' -%}
+<div class="overflow-hidden border-b border-border-light">
+  <ul class="flex px-row gap-6 lg:gap-10 lg:justify-center max-lg:overflow-auto">
+    {%- for link in linklists[section.settings.main_menu].links -%}
+      <li>
+        <a
+          class="block tracking-wide text-sm font-semibold uppercase py-6 max-lg:whitespace-nowrap border-b-2 border-transparent {% if link.active%}border-grey-0{% endif %}"
+          href="{{link.url}}"
+        >
+          {{- link.title -}}
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>

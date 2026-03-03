@@ -1,0 +1,147 @@
+{
+  "sections": {
+    "global": {
+      "section_settings": {
+        "header": "Section Settings",
+        "spacing_desktop": {
+          "label": "Desktop Spacing",
+          "info": "Adjust spacing below for desktop"
+        },
+        "spacing_mobile": {
+          "label": "Mobile Spacing",
+          "info": "Adjust spacing below for mobile"
+        }
+      }
+    },
+    "card-product": {
+      "name": "Product",
+      "settings": {
+        "quick_shop": {
+          "header": "Quick Shop",
+          "label": "Enable Quick Shop"
+        }
+      }
+    },
+    "main-collection": {
+      "name": "Collections",
+      "settings": {
+        "filtering": {
+          "header": "Filtering",
+          "enable_filtering": {
+            "label": "Enable Filtering"
+          }
+        },
+        "sorting": {
+          "header": "Sorting",
+          "enable_sorting": {
+            "label": "Enable Sorting"
+          },
+          "paragraph": "Individual Sort Options",
+          "sort_manual": {
+            "label": "Sort by Featured"
+          },
+          "sort_best_selling": {
+            "label": "Sort by Best Selling"
+          },
+          "sort_title": {
+            "label": "Sort by Title"
+          },
+          "sort_price": {
+            "label": "Sort by Price"
+          },
+          "sort_created": {
+            "label": "Sort by Created"
+          }
+        },
+        "pagination": {
+          "header": "Pagination",
+          "products_per_page": {
+            "label": "Products Per Page"
+          },
+          "button_text": {
+            "label": "Pagination Button Text"
+          }
+        }
+      }
+    },
+    "swatches": {
+      "name": "Product Swatches",
+      "settings": {
+        "swatches": {
+          "name": "Swatches",
+          "header_1": {
+            "content": "Swatch Colors/Images",
+            "info": "Choose a color OR image to associate with a product option that utilises swatches."
+          },
+          "header_2": {
+            "content": "Swatch #1"
+          },
+          "product_option_name_1": {
+            "label": "Product Option Name",
+            "info": "Match this text to the name of the product option that is utilising a product swatch. If you currently have a swatch with no image or color in it, and that option is titled 'Red', then simply match the text in the box above to 'Red'"
+          },
+          "color_1": {
+            "label": "Use a Swatch Color"
+          },
+          "paragraph_1": {
+            "content": "OR"
+          },
+          "image_1": {
+            "label": "Use a Swatch Image"
+          },
+          "header_3": {
+            "content": "Swatch #2"
+          },
+          "product_option_name_2": {
+            "label": "Product Option Name",
+            "info": "Match this text to the name of the product option that is utilising a product swatch. If you currently have a swatch with no image or color in it, and that option is titled 'Red', then simply match the text in the box above to 'Red'"
+          },
+          "color_2": {
+            "label": "Use a Swatch Color"
+          },
+          "paragraph_2": {
+            "content": "OR"
+          },
+          "image_2": {
+            "label": "Use a Swatch Image"
+          },
+          "paragraph_3": {
+            "content": "If you require more swatches, add another block to this section."
+          }
+        }
+      }
+    },
+    "usps": {
+      "name": "Product USPs",
+      "settings": {
+        "usps": {
+          "name": "USPs",
+          "header_1": {
+            "content": "USP Images",
+            "info": "Associate an image with a tag prefixed with 'usp_'"
+          },
+          "header_2": {
+            "content": "USP #1"
+          },
+          "usp_tag_name_1": {
+            "label": "Associated USP Tag",
+            "info": "Match this text to the name of the usp tag that you want to associate an image with. For instance, if you want all products with the badge 'usp_recycled' to show a image of the recyclcing symbol, then simply match the text in the box above to 'usp_recycled', and upload a image of the symbol"
+          },
+          "image_1": {
+            "label": "USP Image"
+          },
+          "header_3": {
+            "content": "USP #2"
+          },
+          "usp_tag_name_2": {
+            "label": "Associated USP Tag",
+            "info": "Match this text to the name of the usp tag that you want to associate an image with. For instance, if you want all products with the badge 'usp_recycled' to show a image of the recyclcing symbol, then simply match the text in the box above to 'usp_recycled', and upload a image of the symbol"
+          },
+          "image_2": {
+            "label": "USP Image"
+          }
+        }
+      }
+    }
+  }
+}

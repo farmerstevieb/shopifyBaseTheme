@@ -1,0 +1,34 @@
+.c-bundle-hotspots {
+  > ul {
+    &.is-hovered,
+    &:hover {
+      > li {
+        opacity: 0.75;
+      }
+    }
+
+    > li {
+      position: relative;
+      transition: opacity 200ms 50ms;
+
+      &::before {
+        pointer-events: none;
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        box-shadow: 0 1.1px 3.4px rgb(0 0 0 / 10%), 0 6px 14px rgb(0 0 0 / 12%);
+        transition: opacity 200ms 50ms;
+      }
+
+      &.is-hovered,
+      &:hover {
+        opacity: 1;
+
+        &::before {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

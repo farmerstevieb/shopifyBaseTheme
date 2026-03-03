@@ -1,0 +1,52 @@
+<!-- | -->
+<style>
+  [data-sticker] {
+    background-color: var(--_bg, var(--c-highlight));
+    color: var(--_color, var(--c-primary-inverse));
+    box-shadow: inset 0 0 0 1px var(--_border);
+  }
+
+  {%- for block in section.blocks -%}
+    [data-sticker="{{ block.settings.title | handleize | replace: '-', '_' }}"] {
+      --_bg: {{ block.settings.background }};
+      --_color: {{ block.settings.color }};
+      --_border: {{ block.settings.border_color | default: 'rgb(0 0 0 / 0%)' }};
+    }
+  {%- endfor -%}
+</style>
+<!-- | -->
+
+{% schema %}
+{
+  "name": "Product stickers",
+  "blocks": [
+    {
+      "type": "sticker",
+      "name": "Sticker",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "info": "Sticker tag to match, example: New"
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Text color"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

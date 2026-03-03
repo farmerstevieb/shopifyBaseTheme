@@ -1,0 +1,21 @@
+.o-hr {
+  flex-shrink: 0;
+  width: 100%;
+  height: 1px;
+  background-color: theme("colors.border.light");
+  border: none;
+
+  &--vertical {
+    width: 1px;
+    height: auto;
+    min-height: 100%;
+  }
+
+  &--divider {
+    background-color: var(--bg, theme("colors.border.light"));
+  }
+
+  &--dark {
+    background-color: theme("colors.grey.10");
+  }
+}

@@ -1,0 +1,31 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Section - Slider
+  -------------------------------------------------------------------------------
+  Accepts
+  - section: {Object} the section object (required)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- liquid
+    capture media_aspect
+      render 'section-aspect-ratios', section: section
+    endcapture
+  -%}
+  -------------------------------------------------------------------------------
+  Description
+  Keeps consistent aspect ratio settings across the site, use with the
+  ...aspectRatios() part.
+{%- endcomment -%}
+
+{%- liquid
+  case section.settings.image_aspect_ratio
+    when 'square'
+      echo '300 / 384'
+    when 'mobile'
+      echo '2 / 3'
+    when 'landscape'
+      echo '16 / 9'
+    when 'custom'
+      echo section.settings.custom_image_aspect_ratio
+  endcase
+-%}

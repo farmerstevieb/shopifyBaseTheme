@@ -1,0 +1,89 @@
+.modal {
+  transform: translateX(-50%) translateY(-50%);
+
+  @apply fixed top-1/2 left-1/2 z-20 overflow-y-auto max-w-4xl p-5 border-0 bg-white overscroll-y-contain;
+
+  &.no-animation {
+    * {
+      /* stylelint-disable-next-line declaration-no-important */
+      animation: none !important;
+    }
+  }
+
+  &--drawer {
+    height: 100dvh;
+
+    @apply w-full max-w-[414px] p-0 translate-x-full top-0 left-unset right-0;
+
+    transition: {
+      duration: 0.4s;
+      property: opacity, display, transform;
+      timing-function: ease-in-out;
+    }
+
+    &.is-active {
+      @apply translate-x-0;
+    }
+  }
+
+  &--quickshop {
+    top: 60%;
+    width: 100%;
+    max-width: 414px;
+    max-height: 90vh;
+    transition: top 0.2s, opacity 0.2s;
+    transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+
+    @apply p-6 shadow-2 opacity-0 pointer-events-none rounded-0;
+
+    @screen lg {
+      max-width: 830px;
+    }
+
+    &.is-active {
+      @apply top-1/2 opacity-100 pointer-events-auto;
+    }
+  }
+
+  &__close {
+    @apply absolute top-3 right-3 w-5 h-5;
+  }
+
+  &__inner {
+    @apply h-full flex flex-col;
+  }
+
+  &__header {
+    @apply sticky top-0 z-10 flex justify-between items-center py-5 px-6 font-bold border-b border-solid border-border-light;
+  }
+
+  &__content {
+    .modal--drawer & {
+      --mobile-drawer-header-height: 65px;
+      --mobile-drawer-footer-height: 83px;
+      --mobile-drawer-content-height: calc(
+        var(--mobile-drawer-header-height) + var(--mobile-drawer-footer-height)
+      );
+
+      height: calc(100dvh - var(--mobile-drawer-content-height));
+
+      @apply px-7 py-5 overflow-scroll;
+    }
+  }
+
+  &__footer {
+    @apply mt-auto border-t border-solid border-border-light p-6 font-semibold;
+  }
+
+  &__overlay {
+    height: 100dvh;
+    transition: visibility 0.2s, opacity 0.2s;
+    transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+
+    @apply fixed z-20 inset-0 bg-overlay-dark transition-opacity duration-700 opacity-0 pointer-events-none w-screen;
+
+    &.is-active {
+      @apply pointer-events-auto opacity-40;
+    }
+  }
+}

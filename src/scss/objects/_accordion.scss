@@ -1,0 +1,47 @@
+.o-accordion {
+  &__heading {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 24px;
+
+    @screen lg {
+      padding-block-start: 0;
+    }
+
+    &-icon {
+      transform: rotate(180deg);
+      display: flex;
+      transition: transform 0.25s ease-in-out;
+
+      .is-open & {
+        transform: rotate(0deg);
+      }
+    }
+  }
+
+  &__content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.25s ease-in-out;
+  }
+
+  &--mobile {
+    @screen lg {
+      .o-accordion__heading {
+        pointer-events: none;
+        cursor: default;
+        padding-block-start: 0;
+
+        &-icon {
+          display: none;
+        }
+      }
+
+      .o-accordion__content {
+        max-height: initial;
+      }
+    }
+  }
+}

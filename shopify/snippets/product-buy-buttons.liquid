@@ -1,0 +1,187 @@
+{% # theme-check-disable %}
+{% comment %}
+  Renders product buy-buttons.
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} passing the block information.
+  - product_form_id: {String} product form id.
+
+  Usage:
+  {% render 'produt-buy-buttons', block: block, product: product, product_form_id: product_form_id %}
+{% endcomment %}
+
+{%- liquid
+  assign product_form_id = product_form_id
+  assign button_class = 'transition-all border border-transparent bg-brand-claret hover:bg-brand-petal hover:text-brand-sable text-brand-orchid'
+
+  assign is_preorder = false
+  assign variant = product.selected_or_first_available_variant
+
+  if variant.metafields.restockrocket_production.selling_plan_ids != blank
+    assign is_preorder = true
+  endif
+
+  if variant.metafields.restockrocket_production.preorder_enabled.value == true
+    assign is_preorder = true
+  endif
+-%}
+
+<div class="product__details-button" {{ block.shopify_attributes }}>
+  {%- if customer or is_gift_card -%}
+    {%- if product != blank -%}
+      {% # TODO: Handle error %}
+      <div
+        class="flex items-center js-product-form-error-{{ product_form_id }} mb-2 text-sm js-product-form-error gap-x-2"
+        role="alert"
+        hidden
+      >
+        {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+        <span class="js-product-form-error-message-{{ product_form_id }}"></span>
+      </div>
+
+      {% if product.tags contains 'UK-Only' and localization.country.iso_code != 'GB' %}
+        {% assign product_classes = 'flex flex-col gap-y-2 js-uk-only disabled-form js-product-form-section' %}
+      {% else %}
+          {% assign product_classes = 'form js-product-form-section' %}
+      {% endif %}
+
+      {% unless product.selected_or_first_available_variant.available %}
+        {% assign product_classes = product_classes | append: ' hidden' %}
+      {% endunless %}
+
+      {% assign product_url = shop.secure_url | append: product.url %}
+
+      {%- form 'product',
+        product,
+        is: 'product-form',
+        id: product_form_id,
+        class: product_classes,
+        novalidate: 'novalidate',
+        data-type: 'add-to-cart-form',
+        data-variant-price: product.selected_or_first_available_variant.price,
+        data-product-url: product_url,
+        data-product-id: product.id
+      -%}
+        <input
+          type="hidden"
+          name="id"
+          value="{{ product.selected_or_first_available_variant.id }}"
+          disabled
+          class="product-variant-id"
+        >
+        {%- if is_gift_card -%}
+          {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
+        {%- endif -%}
+        <div class="flex relative items-center justify-between max-flex-col-reverse max-gap-y-[11px] px-5 py-[9px] min-h-[42px] {{ button_class }}">
+          <button
+            type="submit"
+            name="add"
+            class="button button--product"
+            data-index="{{ product_form_id }}"
+            {%- liquid
+              assign should_disable = false
+
+              # Check if product is unavailable and not pre-order
+              if product.selected_or_first_available_variant.available == false
+                unless is_preorder
+                  assign should_disable = true
+                endunless
+              endif
+
+              # Check if quantity rule is not met and not pre-order
+              if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity
+                unless is_preorder
+                  assign should_disable = true
+                endunless
+              endif
+
+              # Check if UK-only restriction applies
+              if product.tags contains 'UK-Only' and localization.country.iso_code != 'GB'
+                assign should_disable = true
+              endif
+            -%}
+
+            {% if should_disable %}
+              disabled
+            {% endif %}
+          >
+            <span class="whitespace-nowrap">
+              {%- liquid
+                if product.selected_or_first_available_variant.available
+                  if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity
+                    echo 'products.product.sold_out' | t
+                  else
+                    echo 'general.product.add_to_bag' | t
+                  endif
+                else
+                  echo 'products.product.sold_out' | t
+                endif
+              -%}
+            </span>
+            <span class="invisible loading-overlay">
+              <span class="loading-overlay__spinner">
+                {%- render 'theme-icons' with 'loading' -%}
+              </span>
+            </span>
+          </button>
+
+          <div
+            class="product__details-price flex"
+            id="button-price-{{ section.id }}"
+            role="status"
+          >
+            {%- render 'product-price',
+              product: product,
+              use_variant: true,
+              class: 'text-sm font-semibold flex gap-x-1',
+              is_card: true,
+            -%}
+          </div>
+          {%- if block.settings.show_dynamic_checkout -%}
+            {{ form | payment_button }}
+          {%- endif -%}
+        </div>
+      {%- endform -%}
+      {%- if customer -%}
+        <div class="flex items-center gap-x-3 text-sm pt-4">
+          {% render 'theme-icons' with 'star', width: 20, height: 20 %}
+          <p>Earn {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | round }} Cachet Club points with this item</p>
+        </div>
+      {%- endif -%}
+        <button
+      id="BIS_trigger"
+      type="button"
+      class="bg-black text-white button-notifyme font-secondary text-sm tracking-3 py-3 w-full px-5 border border-solid border-black hover:text-black hover:bg-white justify-center {{ BIS_visibility_class }} {% if product.selected_or_first_available_variant.available %}hidden{% endif %}"
+    >
+      NOTIFY ME WHEN AVAILABLE
+    </button>
+    {%- else -%}
+      <div class="flex">
+        <button
+          type="submit"
+          name="add"
+          class="o-button o-button--full o-button--primary"
+          disabled
+        >
+          {{ 'products.product.sold_out' | t }}
+        </button>
+      </div>
+    {%- endif -%}
+  {%- else -%}
+    {% assign stocklist_url = settings.stocklist_url %}
+    <a
+      href="{{ routes.account_url }}"
+      onclick="return DrawerAccount.show()"
+      class="button button--{{ settings.product_button_style }} button--full"
+    >
+      {{- 'general.product.login_to_view_prices' | t -}}
+    </a>
+
+    <{% if stocklist_url != blank %}a href="{{ stocklist_url }}" {% else %}span{% endif %}
+      class="button button--{{ settings.stocklist_button_style }} button--full mt-2"
+    >
+    {{- 'general.product.stylist' | t -}}
+    </{% if stocklist_url != blank %}a{% else %}span{% endif %}>
+  {%- endif -%}
+</div>
+{% # theme-check-enable %}

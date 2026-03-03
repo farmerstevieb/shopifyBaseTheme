@@ -1,0 +1,126 @@
+.hero {
+  &::after {
+    content: "";
+    background: var(--overlay);
+
+    @apply absolute inset-0 pointer-events-none;
+
+    @screen max-lg {
+      @apply hidden;
+    }
+  }
+
+  &--standard {
+    .shop-the-look {
+      &--bottom-right {
+        right: var(--row-space);
+      }
+
+      &--bottom-left {
+        left: var(--row-space);
+      }
+    }
+  }
+
+  // Arrow Class (Contained Width)
+  .slider--arrows & {
+    /* Add additional spacing to prevent overlap of arrows on text content */
+    padding-inline: calc(
+      var(--row-space) + var(--arrow-size) + theme("spacing.6")
+    );
+
+    @screen md {
+      padding-inline: calc(
+        var(--row-space) + var(--arrow-size) + theme("spacing.12")
+      );
+    }
+  }
+
+  // Arrow Class (Full Width)
+  .slider--arrows.section-spacing--full & {
+    @apply px-0;
+  }
+
+  &__text {
+    --content-gap: theme("spacing.4");
+
+    grid-area: 1 / 1;
+    width: min(100%, 950px + var(--row-space) * 2);
+
+    @apply py-9 z-1 h-full px-row;
+
+    @screen md {
+      --content-gap: theme("spacing.5");
+
+      grid-area: 1 / 1;
+
+      @apply py-12 w-full;
+    }
+
+    /* Banner (Split) */
+    .hero--split & {
+      --inner-padding: 4%;
+
+      grid-area: unset;
+
+      @screen md {
+        grid-area: 1 / 1;
+      }
+
+      @screen md {
+        width: 50%;
+        padding-right: var(--inner-padding);
+      }
+
+      @screen lg {
+        width: calc(25.75% + var(--row-space));
+      }
+    }
+  }
+
+  &__media {
+    grid-area: 1 / 1;
+    aspect-ratio: inherit;
+
+    /* Banner (Split) */
+    .hero--split & {
+      grid-area: unset;
+
+      @screen md {
+        grid-area: 1 / 1;
+        height: 100%;
+      }
+
+      @apply relative;
+
+      @screen lg {
+        width: calc(100% - (25.75% + var(--row-space)));
+        margin-left: auto;
+      }
+
+      .slider-arrows {
+        position: absolute;
+        top: 0;
+      }
+    }
+  }
+
+  &__item {
+    @screen md {
+      order: var(--order);
+    }
+
+    @screen max-md {
+      &-text {
+        order: 10;
+      }
+    }
+  }
+
+  @apply relative grid flex-shrink-0 w-full;
+
+  @screen md {
+    grid-template: 1fr / 1fr;
+    align-items: center;
+  }
+}

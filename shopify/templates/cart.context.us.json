@@ -1,0 +1,26 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "cart.json",
+  "context": {
+    "market": "us"
+  },
+  "sections": {
+    "main": {
+      "settings": {},
+      "blocks": {
+        "f4fa73f0-3e7f-46f2-a22c-19b07d554e72": {
+          "disabled": true,
+          "settings": {}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+.c-product-quickshop {
+  &__columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &__header {
+    padding-block-end: 32px;
+    border-block-end: 1px solid theme("colors.border.light");
+  }
+
+  &__title {
+    margin-block-end: theme("spacing.4");
+    font-size: theme("fontSize.3xl");
+    font-weight: theme("fontWeight.bold");
+    letter-spacing: -0.02em;
+  }
+
+  &__slider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 333px;
+    margin-inline-end: 48px;
+  }
+
+  &__media {
+    position: relative;
+    display: grid;
+    grid-template: 1fr / 1fr;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  .slider__viewport {
+    position: relative;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px theme("colors.border.light");
+  }
+
+  .slider__thumbnails {
+    position: relative;
+    max-width: 333px;
+    margin-inline: auto;
+  }
+
+  .slider__thumbnails-button {
+    min-width: 48px;
+    height: 48px;
+    margin-inline-end: 8px;
+  }
+}

@@ -1,0 +1,41 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-account-details",
+      "blocks": {
+        "helium_customer_fields_app_block_bBhaAD": {
+          "type": "shopify://apps/helium-customer-fields/blocks/app-block/bab58598-3e6a-4377-aaaa-97189b15f131",
+          "settings": {
+            "form_id": "v3tp13",
+            "width": 2000,
+            "vertical_spacing": 55,
+            "horizontal_spacing": 0
+          }
+        }
+      },
+      "block_order": [
+        "helium_customer_fields_app_block_bBhaAD"
+      ],
+      "settings": {
+        "spacing": "lg",
+        "spacing_desktop": "lg",
+        "padding": "contained",
+        "apply_content": false,
+        "section_max_width": 770,
+        "background_color": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

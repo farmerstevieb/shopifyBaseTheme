@@ -1,0 +1,23 @@
+<predictive-search class="c-search__container">
+  <form action="/search" class="c-search__form  js-search-form" method="get" role="search">
+    <input name="type" type="hidden" value="product">
+    <input
+      name="q"
+      type="search"
+      class="c-search__input  {%- if settings.predictive_search_enabled -%}js-search-input{%- endif -%}"
+      placeholder="{{ "general.search.placeholder" | t }}"
+      value="{{ search.terms | escape | remove_first: '*' }}"
+      aria-label="Site Search Input Field"
+      {%- if settings.predictive_search_enabled -%}
+        role="combobox" aria-expanded="false" aria-owns="predictive-search-results-list"
+        aria-controls="predictive-search-results-list" aria-haspopup="listbox" aria-autocomplete="list"
+        autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false"
+      {%- endif -%}
+    >
+    <button aria-label="Search" class="c-search__submit" type="submit">
+      {% render 'theme-icons', icon: 'search', class: 'o-icon--search-input' %}
+    </button>
+  </form>
+
+  <div class="c-search__form-results  js-search-results"></div>
+</predictive-search>

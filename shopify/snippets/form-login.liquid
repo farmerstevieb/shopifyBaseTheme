@@ -1,0 +1,109 @@
+{%- liquid
+  assign class = class | prepend: 'form ' | strip
+
+  if title contains ' | t'
+    assign title = title | replace: ' | t' | t
+  endif
+
+  if text contains ' | t'
+    assign text = text | replace: ' | t' | t
+  endif
+-%}
+
+{%- form 'customer_login', class: class, id: 'LoginForm' -%}
+  {%- if title or text -%}
+    <header class="form__header">
+      {%- if title -%}
+        <h2 class="{% if request.page_type contains 'customers' %}text-2xl {% endif %} font-semibold text-md text-primary mb-2">
+          {{ title }}
+        </h2>
+      {%- endif -%}
+
+      {%- if text -%}
+        <p class="text-grey-25 {% unless request.page_type contains 'customers' %} text-md text-secondary{% endunless %}">
+          {%- if text_link -%}
+            <a href="{{ text_link }}" class="underline hover:no-underline">{{ text }}</a>
+          {%- else -%}
+            {{ text }}
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+    </header>
+  {%- endif -%}
+
+  <div class="form__fields">
+    <label class="o-input{%- if form.errors %} has-error{%- endif -%}" data-field="input">
+      <span class="{% unless request.page_type contains 'customers' %}sr-only{% endunless %} text-md font-semibold mb-2 text-left">
+        {{- 'customer.login.form.email_label' | t -}}
+        *
+      </span>
+      {% if no-redirect %}
+        <input class="js-return-to" hidden name="return_to" value="{{ request.path }}">
+      {% endif %}
+      <input
+        class="o-input__field"
+        name="customer[email]"
+        value="{{ form.email }}"
+        type="email"
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="email"
+        required
+        aria-required="true"
+        {% if form.errors %}
+          aria-invalid="true"
+          aria-describedby="LoginEmail-error"
+        {% endif %}
+        placeholder="{{ 'customer.login.form.email' | t }}"
+      >
+
+      {%- if form.errors -%}
+        <small id="LoginEmail-error" class="o-input__error">
+          {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+          {{ form.errors | default_errors }}
+        </small>
+      {%- endif -%}
+    </label>
+
+    <label class="o-input{%- if form.errors %} has-error{%- endif -%}" data-field="input">
+      <span class="{% unless request.page_type contains 'customers' %}sr-only{% endunless %} text-md font-semibold mb-2 text-left">
+        {{- 'customer.login.form.password_label' | t -}}
+      </span>
+
+      <input
+        class="o-input__field"
+        name="customer[password]"
+        value="{{ form.password }}"
+        type="password"
+        autocomplete="current-password"
+        required
+        aria-required="true"
+        {% if form.errors %}
+          aria-invalid="true"
+          aria-describedby="LoginPassword-error"
+        {% endif %}
+        placeholder="{{ 'customer.login.form.password' | t }}"
+      >
+
+      {%- if form.errors -%}
+        <small id="LoginPassword-error" class="o-input__error">
+          {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
+          {{ form.errors | default_errors }}
+        </small>
+      {%- endif -%}
+    </label>
+
+    <div class="form__footer mt-5">
+      <button class="button button--primary button--full" type="submit">
+        {{ 'customer.login.form.submit' | t }}
+      </button>
+      <a
+        class="button button--underline text-md text-center"
+        href="#recover"
+        onclick="return Shopify.theme.showRecoverForm();"
+      >
+        {{ 'customer.login.form.cancel' | t }}
+      </a>
+    </div>
+  </div>
+{%- endform -%}
