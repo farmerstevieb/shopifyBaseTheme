@@ -105,7 +105,7 @@ module.exports = (env = {}) => {
           {
             from: "shopify",
             to: path.resolve(__dirname, "dist"),
-            globOptions: { ignore: ["**/.DS_Store"] },
+            globOptions: { ignore: ["**/.DS_Store", "**/sections/schema/**"] },
             transform(content, absoluteFilename) {
               if (absoluteFilename.endsWith(".json")) {
                 // Strip leading /* ... */ block comment added by Shopify admin

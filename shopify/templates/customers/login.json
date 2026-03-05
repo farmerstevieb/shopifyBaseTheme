@@ -9,18 +9,6 @@
  */
 {
   "sections": {
-    "c3a61938-c7f1-445a-bfec-5a9a6b780148": {
-      "type": "breadcrumbs",
-      "disabled": true,
-      "settings": {
-        "spacing": "lg",
-        "spacing_dsk": "lg",
-        "padding": "contained",
-        "background_color": "transparent",
-        "color_spacing": false,
-        "text_color": "dark"
-      }
-    },
     "main": {
       "type": "main-login",
       "settings": {
@@ -45,7 +33,6 @@
     }
   },
   "order": [
-    "c3a61938-c7f1-445a-bfec-5a9a6b780148",
     "main",
     "main-recover"
   ]
