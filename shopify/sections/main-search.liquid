@@ -1,0 +1,59 @@
+{%- liquid
+  render 'section-spacing-and-color'
+
+  assign display_section = 'true'
+
+  capture media_aspect
+    render 'section-aspect-ratios', section: section
+  endcapture
+
+  render 'section-grid', section: section
+
+  assign product_per_page = section.settings.pagination_amount
+-%}
+
+{%- if display_section == 'true' -%}
+  {%- capture product_grid -%}
+  <div class="js-paginatable js-products max-lg:mb-4" section="{{ section.id }}">
+    {%- paginate search.results by product_per_page -%}
+      <product-grid class="block mb-[40px] js-product-grid">
+        {%- if search.results.size == 0 -%}
+          <h2 class="text-center pt-17 font-heading">
+            {{- 'templates.search.results.none' | t -}}
+          </h2>
+        {%- else -%}
+          <ul class="grid section-grid js-paginatable-list">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                <li class="js-paginatable-item">
+                  {%- render 'card-product',
+                    product: item,
+                    product_index: forloop.index,
+                    aspect_ratio: media_aspect,
+                    collection_style: true,
+                    class: 'card'
+                  -%}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </product-grid>
+
+      {%- liquid
+        assign pagination_visibility = settings.pagination_visibility | plus: 0
+        if paginate.pages > pagination_visibility
+          case section.settings.pagination_style
+            when 'text'
+              render 'pagination', paginate: paginate, items_per_page: product_per_page, show_text: true
+            when 'dynamic'
+              render 'pagination-dynamic', paginate: paginate, items_per_page: product_per_page, show_text: true
+          endcase
+        endif
+      -%}
+    {%- endpaginate -%}
+  </div>
+  {%- endcapture -%}
+
+  {{- product_grid -}}
+{%- endif -%}

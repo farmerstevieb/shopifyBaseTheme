@@ -42,24 +42,17 @@
               endcase
             %}
 
-            {% if block.settings.gorgias_form_uid != blank %}
-              <div class="h-full w-full [&>*]:text-left [&>*]:self-start">
-                <script defer src="https://contact.gorgias.help/api/contact-forms/loader.js?v=3" data-gorgias-loader-contact-form data-gorgias-contact-form-uid="{{ block.settings.gorgias_form_uid }}"></script>
-              </div>
-            {% else %}
-              <!-- Original Shopify Form -->
-              {% capture text %}
-                {{ block.settings.text }}
-                {%- render 'form-contact', require_phone: true -%}
-              {% endcapture %}
+            {% capture text %}
+              {{ block.settings.text }}
+              {%- render 'form-contact', require_phone: true -%}
+            {% endcapture %}
 
-              {%- render 'object-content',
-                block: block.settings,
-                class: 'w-full [&>*]:text-left [&>*]:self-start',
-                text: text,
-                heading_font_weight: 'font-medium'
-              -%}
-            {% endif %}
+            {%- render 'object-content',
+              block: block.settings,
+              class: 'w-full [&>*]:text-left [&>*]:self-start',
+              text: text,
+              heading_font_weight: 'font-medium'
+            -%}
           </div>
 
         {%- when 'find_us' -%}

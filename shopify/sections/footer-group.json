@@ -27,10 +27,8 @@
         "footer_link_bottom": "footer-bottom",
         "footer_bottom_text": "Remi Cachet is a trading name of Additional Lengths Ltd. Registered in England. No. 06069925 - VAT No. 804146851",
         "show_newsletter": true,
-        "use_klaviyo_form": "no",
-        "klaviyo_form_embed": "",
-        "heading_newsletter": "Stay up to date with Remi Cachet",
-        "text_newsletter": "Sign up to our newsletter to stay up to date on the latest news, events and promotions at Remi Cachet.",
+        "heading_newsletter": "Stay in the loop",
+        "text_newsletter": "Sign up to our newsletter to stay up to date on the latest news, events and promotions.",
         "button_style": "tertiary"
       }
     }

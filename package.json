@@ -1,8 +1,8 @@
 {
-  "name": "ima-base-theme",
+  "name": "ecomplete-theme",
   "version": "1.0.0",
   "private": true,
-  "description": "IMA Shopify Base Theme — white-label foundation for client projects",
+  "description": "Ecomplete Shopify Base Theme — white-label foundation for client projects",
   "sideEffects": [
     "src/js/utils/public-path.ts",
     "**/*.scss"
@@ -52,8 +52,6 @@
   },
   "dependencies": {
     "@floating-ui/dom": "1.6.10",
-    "@nosto/nosto-js": "2.0.0",
-    "@nosto/search-js": "2.8.1",
     "@radix-ui/react-dialog": "1.1.6",
     "@radix-ui/react-slider": "1.2.3",
     "@radix-ui/react-visually-hidden": "1.1.2",

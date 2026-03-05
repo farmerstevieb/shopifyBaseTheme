@@ -8,14 +8,6 @@
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
 
-    {% capture pandectes-rules %}
-      {% render 'pandectes-rules' %}
-    {% endcapture %}
-
-    {% unless pandectes-rules contains 'error' %}
-      {{ pandectes-rules }}
-    {% endunless %}
-
     {% liquid
       # theme-check-disable
       echo content_for_header

@@ -44,13 +44,6 @@ module.exports = {
           id: "background_color",
           label: "Background Color",
         },
-        {
-          type: "text",
-          id: "gorgias_form_uid",
-          label: "Gorgias Form UID",
-          info: "Enter the Gorgias contact form UID (e.g., tx9bir5o)",
-          default: "tx9bir5o",
-        },
         ...content(),
       ],
     },

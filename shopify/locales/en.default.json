@@ -98,37 +98,7 @@
     },
     "faqs": "faqs"
   },
-  "snippets": {
-    "nosto": {
-      "predictive_search": {
-        "results": {
-          "found": "There were {{ amount }} results found for “{{ terms }}”.",
-          "empty": "No results found for “{{ terms }}”. Check the spelling or use a different word or phrase."
-        },
-        "open": "Open Search",
-        "close": "Close Search",
-        "form": {
-          "submit": "Search",
-          "input": {
-            "placeholder": "Search Remi Catchet..."
-          }
-        },
-        "headings": {
-          "collections": "Collections",
-          "pages": "Pages",
-          "products": "Products",
-          "suggestions": "Suggestions",
-          "popular": "Popular Searches"
-        },
-        "search_for": "Search for “{{ terms }}”",
-        "mobile_toggles": {
-          "products": "Products",
-          "pages": "Pages"
-        }
-      }
-    }
-  },
-  "sections": {
+  “sections”: {
     "header": {
       "trade": "Trade",
       "accounts": {
@@ -705,96 +675,6 @@
       "message_label": "Enter your gift message",
       "message": "Gift message",
       "max_characters": "{{ max_chars }} characters max"
-    }
-  },
-  "nosto": {
-    "serp": {
-      "breadcrumbs": {
-        "prompt": "Enter a search term",
-        "search_for": "Search results for “{{ terms }}”"
-      },
-      "facets": {
-        "clear_all": "Clear All",
-        "apply_filters": "Apply Filters",
-        "no_results": "Please adjust your filters, no results could be found.",
-        "filters": {
-          "selected": {
-            "one": "{{ count }} selected",
-            "other": "{{ count }} selected",
-            "price": "The highest price is {{ max }}",
-            "reset": "Reset"
-          },
-          "terms": {
-            "remove": "Remove filter"
-          }
-        },
-        "sort": {
-          "label": "Sort by:"
-        },
-        "dialog": {
-          "title": "Filters",
-          "accessibility": {
-            "title": "Filters",
-            "description": "Expands a panel on the left hand side of screen that manages the search landing page facets"
-          }
-        }
-      },
-      "results": {
-        "prompt": "Enter a term to search",
-        "found": "Search results for “{{ terms }}”",
-        "none": {
-          "title": "Search results for “{{ terms }}” did not return any results.",
-          "text": "Please feel free to search again in the search bar."
-        }
-      },
-      "input": {
-        "placeholder": "Search...",
-        "accessibility": {
-          "input": "Enter a query to search with here...",
-          "submit": "Press this to submit your query"
-        }
-      }
-    },
-    "category": {
-      "facets": {
-        "no_results": "Please adjust your filters, no results could be found."
-      }
-    },
-    "products": {
-      "card": {
-        "quick_shop": "Quick shop",
-        "from_price": "From {{ price }}",
-        "stickers": {
-          "on_sale": "Sale",
-          "sold_out": "Out of stock"
-        },
-        "variants": {
-          "more": "+{{ amount }} Colours"
-        },
-        "button": {
-          "login": "Login to see prices",
-          "shop_now": "Shop now",
-          "add_to_cart": "Add to bag",
-          "sold_out": "Sold out"
-        }
-      }
-    },
-    "pagination": {
-      "results": "{{ number }} Results",
-      "results_current_total": "Showing {{ current }} of {{ total }} results",
-      "dynamic": {
-        "load_more": "Load more",
-        "loaded": "All Products Loaded"
-      },
-      "text": {
-        "label": "Pagination",
-        "previous": "Previous",
-        "next": "Next",
-        "page": {
-          "go_to": "Go to page {{ number }}",
-          "current": "You're currently on this page, page {{ number }}"
-        }
-      }
     }
   }
 }

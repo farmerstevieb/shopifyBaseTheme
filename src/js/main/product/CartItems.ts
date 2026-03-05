@@ -147,7 +147,6 @@ export class CartItems extends HTMLElement {
         }
 
         this.disableLoading();
-        window.loyaltylion?.ui?.refresh();
       });
   }
 

@@ -1,5 +1,3 @@
-import type { NostojsCallback } from "@nosto/nosto-js/client";
-
 // Fix TS checker error on importing .scss files
 declare module "*.scss";
 
@@ -238,158 +236,12 @@ interface ShopifyExtended extends Shopify {
 
 declare global {
   interface Window {
-    // Available when loaded within Tryzens mobile app
-    webkit?: {
-      messageHandlers?: {
-        webViewBridge?: {
-          postMessage: (string: string) => void;
-        };
-      };
-    };
-    webViewBridge?: {
-      postMessage: (string: string) => void;
-    };
     // Third parties
     YT: unknown;
     Vimeo: {
       Player: unknown;
     };
     onYouTubeIframeAPIReady: () => void;
-
-    // Yotpo
-    yotpoWidgetsContainer?: {
-      initWidgets: () => void;
-    };
-
-    // Nosto
-    nostojs: (callback: NostojsCallback) => Promise<unknown>;
-    _Nosto: {
-      i18n: {
-        serp: {
-          breadcrumbs: {
-            prompt: string;
-            search_for: string;
-          };
-          facets: {
-            clear_all: string;
-            apply_filters: string;
-            no_results: string;
-            filters: {
-              selected: {
-                one: string;
-                other: string;
-                price: string;
-                reset: string;
-              };
-              terms: {
-                remove: string;
-              };
-            };
-            sort: {
-              label: string;
-            };
-            dialog: {
-              title: string;
-              accessibility: {
-                title: string;
-                description: string;
-              };
-            };
-          };
-          results: {
-            prompt: string;
-            found: string;
-            none: {
-              title: string;
-              text: string;
-            };
-          };
-          input: {
-            placeholder: string;
-            accessibility: {
-              input: string;
-              submit: string;
-            };
-          };
-        };
-        category: {
-          facets: {
-            no_results: string;
-          };
-        };
-        products: {
-          card: {
-            quick_shop: string;
-            from_price: string;
-            stickers: {
-              on_sale: string;
-              sold_out: string;
-            };
-            variants: {
-              more: string;
-            };
-            button: {
-              login: string;
-              shop_now: string;
-              add_to_cart: string;
-              sold_out: string;
-            };
-          };
-        };
-        pagination: {
-          results: string;
-          results_current_total: string;
-          dynamic: {
-            load_more: string;
-            loaded: string;
-          };
-          text: {
-            label: string;
-            previous: string;
-            next: string;
-            page: {
-              go_to: string;
-              current: string;
-            };
-          };
-        };
-      };
-    };
-    nosto?: {
-      Window: {
-        _targetWindow: Window;
-        reload: (n: unknown) => void;
-        waitFor: (e: unknown, t: unknown) => void;
-      };
-    };
-    nostoTemplatesConfig?: {
-      merchant: string;
-      defaultCurrency: string;
-    };
-    nostoTemplatesLoaded?: boolean;
-    Nosto?: {
-      addBundleToCartWithDiscount: (e: unknown, t: unknown) => Promise<void>;
-      addMultipleProductsToCart: (e: unknown, t: unknown) => Promise<void>;
-      addProductToCart: (e: unknown, t: unknown, n: unknown) => Promise<void>;
-      addSkuToCart: (e: unknown, t: unknown, n: unknown) => Promise<void>;
-      fetchPresentmentPrice: (
-        e: unknown,
-        t: unknown,
-        n: unknown,
-      ) => Promise<unknown>;
-      migrateToShopifyMarket: (e: unknown) => void;
-      reloadCart: (e: unknown, t: unknown) => Promise<void>;
-      reloadCartWithFlags: (e: unknown, t: unknown) => Promise<void>;
-      sendCartToken: (e: unknown) => void;
-      setPresentmentPrices: (e: unknown, t: unknown) => void;
-      setPresentmentPricesUrl: (
-        e: unknown,
-        t: unknown,
-        n: unknown,
-        r: unknown,
-      ) => void;
-      shopifyScript: boolean;
-    };
 
     // Shopify
     BOOMR: BOOMR;

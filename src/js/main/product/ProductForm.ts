@@ -124,30 +124,6 @@ export class ProductForm extends HTMLFormElement {
     this.abortController.abort();
     this.abortController = new AbortController();
 
-     // Record add to cart via Nosto if we're on the search page and in Quick Shop
-    if (location.pathname.includes("/search") || document.referrer.includes("/search")) {
-      var productId = this.element.getAttribute("data-product-id");
-      var productUrl = this.element.dataset.productUrl as string;
-
-      void window.nostojs((api) => {
-        api.recordSearchAddToCart("serp", {
-          productId: productId,
-          url: productUrl,
-        });
-      });
-    }
-
-    if (location.pathname.includes("/collections") || document.referrer.includes("/collections")) {
-      var productId = this.element.getAttribute("data-product-id");
-      var productUrl = this.element.dataset.productUrl as string;
-      void window.nostojs((api) => {
-        api.recordSearchAddToCart ("category", {
-          productId: productId,
-          url: productUrl,
-        });
-      });
-    }
-
     fetch(Shopify.routes.cartAddUrl, {
       method: "POST",
       headers: {
@@ -172,13 +148,11 @@ export class ProductForm extends HTMLFormElement {
 
           return;
         } else if (!this.cartDrawer) {
-           this.triggerNostoEvents();
           window.location.href = Shopify.routes.cartUrl;
           return;
         }
 
         this.error = false;
-         this.triggerNostoEvents();
         DrawerCart.renderContents(response);
       })
       .catch((error) => {
@@ -269,26 +243,6 @@ export class ProductForm extends HTMLFormElement {
     }
 
     localStorage.setItem(productHistoryName, JSON.stringify(productHistory));
-  }
-  /**
-   * Serp and PLP ATC nosto events
-   * ATC nosto events
-   */
-  triggerNostoEvents() {
-    window.Nosto.reloadCart();
-
-    if (
-      location.pathname.includes("/search") ||
-      location.pathname.includes("/collections")
-    ) {
-      var dataProductID = this.element.getAttribute("data-product-id");
-      void window.nostojs((api) => {
-        api
-          .createRecommendationRequest()
-          .setProducts([{ product_id: dataProductID }])
-          .load({ skipPageViews: true });
-      });
-    }
   }
 }
 

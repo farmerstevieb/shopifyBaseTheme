@@ -13,8 +13,6 @@ export class DrawerCart extends Dialog {
     this.getElements();
     this.setupVariables();
 
-    window.loyaltylion?.ui?.refresh();
-
     const productRecommendations = get("product-recommendations", this);
     productRecommendations?.addEventListener(
       "ProductRecommendations:Loaded",

@@ -312,16 +312,6 @@
         {%- case block.type -%}
           {%- when '@app' -%}
             {%- render block -%}
-          {%- when 'loyalty-points' -%}
-            {% render 'loyalty_cart-points',
-              cart: cart,
-              class: 'justify-center py-6 mb-9 border-b border-border-focus',
-              logged_in_link: section.settings.logged_in_link,
-              logged_in_link_text: section.settings.logged_in_link_text,
-              guest_link: section.settings.guest_link,
-              guest_link_text: section.settings.guest_link_text
-            %}
-
           {%- when 'subtotal' -%}
             <div class="flex flex-col mb-6 gap-y-2 text-md">
               <div class="flex flex-wrap justify-between gap-y-1" role="status">

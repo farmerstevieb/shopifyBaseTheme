@@ -148,7 +148,7 @@
       <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
         {{- divider_span -}}
         <meta itemprop="position" content="2">
-        <span itemprop="name">{{- 'nosto.serp.breadcrumbs.prompt' | t -}}</span>
+        <span itemprop="name">{{- 'general.breadcrumbs.search' | t | default: 'Search' -}}</span>
       </li>
     {%- elsif request.page_type contains 'account' -%}
       <li class="inline" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">

@@ -1517,20 +1517,6 @@
     ]
   },
   {
-    "name": "Nosto",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Predictive Search"
-      },
-      {
-        "type": "richtext",
-        "id": "nosto_predictive_search_links",
-        "label": "Nosto Predictive Search Links"
-      }
-    ]
-  },
-  {
     "name": "Custom scripts",
     "settings": [
       {

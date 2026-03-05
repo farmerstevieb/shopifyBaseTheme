@@ -103,11 +103,6 @@ module.exports = {
         limit: 1,
       },
       {
-        type: "loyalty-points",
-        name: "Total Loyalty Points",
-        limit: 1,
-      },
-      {
         type: "delivery-countdown",
         name: "Delivery Countdown",
         limit: 1,
@@ -152,32 +147,4 @@ module.exports = {
       },
     ],
   }),
-  settings: [
-    {
-      type: "header",
-      content: "Loyalty Link Settings",
-    },
-    {
-      type: "text",
-      id: "logged_in_link_text",
-      label: "Logged in Link text",
-      default: "View your Cachet Club account",
-    },
-    {
-      type: "url",
-      id: "logged_in_link",
-      label: "Logged in Link",
-    },
-    {
-      type: "text",
-      id: "guest_link_text",
-      label: "Guest Link text",
-      default: "Log into your Cachet Club account",
-    },
-    {
-      type: "url",
-      id: "guest_link",
-      label: "Guest Link",
-    },
-  ]
 };

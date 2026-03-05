@@ -1,5 +1,5 @@
 /**
- * IMA Base Theme — Tailwind Configuration
+ * Ecomplete Base Theme — Tailwind Configuration
  *
  * HOW TO CUSTOMISE FOR A NEW CLIENT:
  * 1. Update the `brand` colour palette below with client hex values

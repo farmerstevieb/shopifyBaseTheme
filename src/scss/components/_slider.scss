@@ -438,27 +438,6 @@
       }
     }
 
-    // Trustpilot carousel
-    :where(.slider--trustpilot-carousel) & {
-      --col-gap: 1.25rem;
-      --slides: 1.2;
-
-      @screen md {
-        --slides: 2.32;
-        --col-gap: 1.5rem;
-      }
-
-      @screen lg {
-        --slides: 3.32;
-        --col-gap: 1.5rem;
-      }
-
-      @screen 2xl {
-        --slides: 4.32;
-        --col-gap: 2rem;
-      }
-    }
-
     // Disable
     :where(.slider--disable) & {
       @screen max-md {

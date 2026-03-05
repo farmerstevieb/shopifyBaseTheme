@@ -82,38 +82,17 @@ module.exports = {
       default: true,
     },
     {
-      label: "Use Klaviyo form",
-      id: "use_klaviyo_form",
-      type: "radio",
-      options: [
-        {
-          value: "no",
-          label: "No",
-        },
-        {
-          value: "yes",
-          label: "Yes",
-        },
-      ],
-      default: "no",
-    },
-    {
-      label: "Klaviyo form embed",
-      id: "klaviyo_form_embed",
-      type: "html",
-    },
-    {
       label: "Newsletter Title",
       type: "inline_richtext",
       id: "heading_newsletter",
-      default: "Stay up to date with remi cachet",
+      default: "Stay up to date",
     },
     {
       label: "Newsletter Text",
       type: "inline_richtext",
       id: "text_newsletter",
       default:
-        "Sign up to our newsletter to stay up to date on the latest news, events and promotions at Remi Cachet.",
+        "Sign up to our newsletter to stay up to date on the latest news, events and promotions.",
     },
     {
       type: "select",

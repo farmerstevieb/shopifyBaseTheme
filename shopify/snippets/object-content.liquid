@@ -321,11 +321,6 @@
   assign section_header_style = content_style
 -%}
 {%- if overline != blank or heading != blank or text != blank or cta_1_text != blank or cta_2_text != blank -%}
-  {%- if block.show_trustpilot_stats -%}
-    {% liquid
-      assign content_class = content_class | append: ' max-lg:!flex-col max-lg:!items-start'
-    %}
-  {% endif %}
   <div
     class="h-full {{ class }}"
     {% if data_block_id %}
@@ -426,12 +421,6 @@
             {{- text | replace: '[highlight]', '<span class="text-highlight">' | replace: '[/highlight]', '</span>' -}}
           </div>
         {% endif %}
-      {%- endif -%}
-
-      {%- if block.show_trustpilot_stats -%}
-        <div class="c-trustpilot__business--stats-container ">
-          {%- render 'trustpilot-business-stats' -%}
-        </div>
       {%- endif -%}
 
       {%- if published != blank or content_tag != blank -%}

@@ -27,23 +27,6 @@
   endcapture
 -%}
 
-{% if use_klaviyo == 'yes' and klaviyo_form != blank %}
-  <div class="form__header">
-    {%- if title != blank -%}
-      <h3 class="mb-2 text-sm font-semibold pointer-events-none leading-base tracking-standard form__header-title">
-        {{- title -}}
-      </h3>
-    {%- endif -%}
-
-    {%- if text != blank -%}
-      <p class="pb-6 form__header-text text-smd leading-base">
-        {{- text -}}
-      </p>
-    {%- endif -%}
-  </div>
-  {{ klaviyo_form }}
-
-{% else %}
   {%- form 'customer', class: classes, id: form_id -%}
     <div class="form__header">
       {%- if title != blank -%}
@@ -134,4 +117,3 @@
       </div>
     {%- endif -%}
   {%- endform -%}
-{% endif %}

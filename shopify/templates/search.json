@@ -21,7 +21,7 @@
       }
     },
     "main": {
-      "type": "nosto-search-template",
+      "type": "main-search",
       "settings": {
         "spacing": "lg",
         "spacing_dsk": "lg",

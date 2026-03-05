@@ -543,15 +543,6 @@
                 hidden
               {% endif %}
             >
-          {%- when 'loyalty-points' -%}
-            {% render 'loyalty_cart-points',
-              cart: cart,
-              class: 'pt-3',
-              logged_in_link: section.settings.logged_in_link,
-              logged_in_link_text: section.settings.logged_in_link_text,
-              guest_link: section.settings.guest_link,
-              guest_link_text: section.settings.guest_link_text
-            %}
           {%- when 'cart-totals' -%}
             {%- if cart != empty -%}
               {%- assign header_class = 'capitalize text-smd text-grey-0' -%}

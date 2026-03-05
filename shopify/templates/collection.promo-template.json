@@ -37,7 +37,7 @@
       }
     },
     "products": {
-      "type": "nosto-collection-template",
+      "type": "main-collection-products",
       "blocks": {
         "banner_VbhGpy": {
           "type": "banner",

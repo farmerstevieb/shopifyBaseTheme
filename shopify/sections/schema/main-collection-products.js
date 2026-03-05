@@ -8,10 +8,9 @@ const image = require("./parts/image");
 const video = require("./parts/video");
 
 module.exports = {
-  name: "Nosto Search Template",
-  class: "shopify-section--nosto-collection-template o-row",
+  name: "Collection Products",
+  class: "shopify-section--main-collection-products o-row",
   tag: "section",
-  presets: [{ name: "Nosto Search Template" }],
   enabled_on: {
     templates: ["collection"],
   },
@@ -38,22 +37,10 @@ module.exports = {
           id: "banner_width",
           label: "Banner width",
           options: [
-            {
-              value: "single",
-              label: "Single",
-            },
-            {
-              value: "double",
-              label: "Double",
-            },
-            {
-              value: "triple",
-              label: "Triple",
-            },
-            {
-              value: "full",
-              label: "Full",
-            },
+            { value: "single", label: "Single" },
+            { value: "double", label: "Double" },
+            { value: "triple", label: "Triple" },
+            { value: "full", label: "Full" },
           ],
           default: "single",
         },
@@ -71,11 +58,7 @@ module.exports = {
   presets: [
     {
       name: "Collection Products",
-      blocks: [
-        {
-          type: "banner",
-        },
-      ],
+      blocks: [{ type: "banner" }],
     },
   ],
 };
