@@ -100,7 +100,7 @@
             <small class="text-sm font-semibold cursor-default">
               {%- liquid
                 assign year = 'now' | date: '%Y'
-                echo 'sections.footer.copyright' | t: date: year
+                echo 'sections.footer.copyright' | t: date: year, shop_name: shop.name
               -%}
             </small>
           </div>

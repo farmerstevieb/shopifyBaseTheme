@@ -3,7 +3,7 @@ const brand_colours = require("./brand_colours");
 module.exports = ({
   id = "brand_logo",
   label = "Brand Logo",
-  default_logo = "remi-cachet-logo-text-horizontal",
+  default_logo = "none",
 } = {}) => {
   return [
     {
@@ -17,28 +17,28 @@ module.exports = ({
           label: "None",
         },
         {
-          value: "remi-cachet-logo",
-          label: "Remi Cachet Logo Only",
+          value: "logo",
+          label: "Logo Only",
         },
         {
-          value: "remi-cachet-primary-logo",
-          label: "Remi Cachet Primary Logo Only",
+          value: "primary-logo",
+          label: "Primary Logo Only",
         },
         {
-          value: "remi-cachet-primary-logo-dark",
-          label: "Remi Cachet Primary Logo Dark Only",
+          value: "primary-logo-dark",
+          label: "Primary Logo Dark Only",
         },
         {
-          value: "remi-cachet-secondary-logo",
-          label: "Remi Cachet Secondary Logo Only",
+          value: "secondary-logo",
+          label: "Secondary Logo Only",
         },
         {
-          value: "remi-cachet-logo-text-horizontal",
-          label: "Remi Cachet Logo & Text (Horizontal)",
+          value: "logo-text-horizontal",
+          label: "Logo & Text (Horizontal)",
         },
         {
-          value: "remi-cachet-logo-text-stacked",
-          label: "Remi Cachet Logo & Text (Stacked)",
+          value: "logo-text-stacked",
+          label: "Logo & Text (Stacked)",
         },
       ],
     },

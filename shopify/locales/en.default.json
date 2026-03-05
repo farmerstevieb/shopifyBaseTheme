@@ -107,14 +107,14 @@
         "register": "Trade"
       },
       "search_form": {
-        "placeholder": "Search Remi Cachet...",
+        "placeholder": "Search...",
         "submit": "Search",
         "open": "Open Search",
         "close": "Close Search"
       }
     },
     "footer": {
-      "copyright": "&copy; Remi Cachet {{ date }} All Rights Reserved.",
+      "copyright": "&copy; {{ shop_name }} {{ date }}. All Rights Reserved.",
       "socials": {
         "title": "Follow us"
       },
@@ -658,7 +658,7 @@
       "qr_image_alt": "QR code — scan to redeem gift card",
       "copy_code": "Copy gift card code",
       "expiration_date": "Expires {{ expires_on }}",
-      "received_gift_message": "You have received a Remi Cachet E-gift Card",
+      "received_gift_message": "You have received an E-gift Card",
       "copy_code_success": "Code copied successfully",
       "expired": "Expired"
     }

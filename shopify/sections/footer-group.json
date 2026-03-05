@@ -16,7 +16,7 @@
       "settings": {
         "background_color": "#222222",
         "text_color": "light",
-        "brand_logo": "remi-cachet-logo",
+        "brand_logo": "none",
         "logo_colour": "#f8ede9",
         "word_one_colour": "#E6427A",
         "word_two_colour": "#EB80A8",
@@ -25,7 +25,7 @@
         "footer_menu": "footer-menu",
         "show_social": true,
         "footer_link_bottom": "footer-bottom",
-        "footer_bottom_text": "Remi Cachet is a trading name of Additional Lengths Ltd. Registered in England. No. 06069925 - VAT No. 804146851",
+        "footer_bottom_text": "",
         "show_newsletter": true,
         "heading_newsletter": "Stay in the loop",
         "text_newsletter": "Sign up to our newsletter to stay up to date on the latest news, events and promotions.",

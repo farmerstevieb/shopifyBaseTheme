@@ -60,7 +60,7 @@ module.exports = {
       id: "footer_bottom_text",
       label: "Bottom Text",
       default:
-        "Remi Cachet is a trading name of Additional Lengths Ltd. Registered in England. No. 06069925 - VAT No. 804146851",
+        "",
     },
     {
       type: "header",
