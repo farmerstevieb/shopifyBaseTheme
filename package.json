@@ -11,7 +11,7 @@
     "shopify:dev": "wait-on dist && shopify theme dev -e local",
     "shopify:sync": "mkdir __sync && shopify theme pull -e local --path __sync --only */*.json && shopify theme push -e local --path __sync --nodelete && rimraf ./__sync",
     "webpack:dev": "webpack --progress --watch",
-    "webpack:build": "rimraf ./dist && webpack --progress --env production && node scripts/flatten-snippets.js",
+    "webpack:build": "rimraf ./dist && webpack --progress --env production && node scripts/flatten-snippets.js && node scripts/inject-schemas.js",
     "dev": "rimraf ./dist && npm-run-all --parallel webpack:dev shopify:dev",
     "format": "prettier --write . --ignore-path='.gitignore'",
     "lint:css": "stylelint **/*.scss",
