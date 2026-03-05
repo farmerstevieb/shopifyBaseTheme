@@ -98,6 +98,8 @@ module.exports = (env = {}) => {
       }),
 
       // Copy Shopify theme files to dist/
+      // JSON files have their /* comment */ headers stripped (Shopify adds these
+      // automatically but they make the JSON invalid for theme push/check)
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -105,6 +107,14 @@ module.exports = (env = {}) => {
             to: path.resolve(__dirname, "dist"),
             globOptions: {
               ignore: ["**/.DS_Store"],
+            },
+            transform(content, absoluteFilename) {
+              if (absoluteFilename.endsWith(".json")) {
+                const str = content.toString();
+                // Strip leading /* ... */ block comment added by Shopify admin
+                return str.replace(/^\/\*[\s\S]*?\*\/\s*/m, "").trim();
+              }
+              return content;
             },
           },
         ],
