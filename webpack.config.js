@@ -104,19 +104,8 @@ module.exports = (env = {}) => {
         patterns: [
           {
             from: "shopify",
-            to({ absoluteFilename }) {
-              const rel = path.relative(
-                path.resolve(__dirname, "shopify"),
-                absoluteFilename,
-              );
-              // Flatten subfoldered snippets: snippets/dir/_name.liquid → snippets/dir_name.liquid
-              // The source uses directories for organisation; Shopify requires flat snippets/
-              const flatRel = rel.replace(
-                /^(snippets)[/\\]([^/\\]+)[/\\]_?([^/\\]+)$/,
-                "$1/$2_$3",
-              );
-              return path.resolve(__dirname, "dist", flatRel);
-            },
+            to: path.resolve(__dirname, "dist"),
+            globOptions: { ignore: ["**/.DS_Store"] },
             transform(content, absoluteFilename) {
               if (absoluteFilename.endsWith(".json")) {
                 // Strip leading /* ... */ block comment added by Shopify admin
