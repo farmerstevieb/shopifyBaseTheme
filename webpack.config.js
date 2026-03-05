@@ -53,7 +53,7 @@ module.exports = (env = {}) => {
               presets: [
                 ["@babel/preset-env", { targets: "> 0.5%, last 2 versions, Firefox ESR, not dead, iOS >= 16" }],
                 "@babel/preset-typescript",
-                ["@babel/plugin-transform-react-jsx", { runtime: "automatic" }],
+                ["@babel/preset-react", { runtime: "automatic" }],
               ],
               plugins: ["@babel/plugin-transform-runtime"],
             },

@@ -51,10 +51,10 @@ const baseThemePreset = {
       highlight: "var(--c-highlight)",
 
       // Semantic colours — driven by Shopify theme settings (CSS vars set in theme/_head.liquid)
-      primary: "var(--c-primary-1)",
-      primaryInverse: "var(--c-primary-2)",
-      secondary: "var(--c-primary-1)",
-      secondaryInverse: "var(--c-primary-2)",
+      primary: "var(--c-primary-claret)",
+      primaryInverse: "var(--c-primary-petal)",
+      secondary: "var(--c-secondary-bramble)",
+      secondaryInverse: "var(--c-secondary-moss)",
       primaryButtonHover: "var(--buttons-primary-border-hover)",
 
       // Pricing
@@ -65,26 +65,29 @@ const baseThemePreset = {
 
       /**
        * CLIENT BRAND COLOURS
-       * Replace CSS var names below with client hex values OR keep as vars
-       * that map to settings_schema.json colour pickers.
-       *
-       * Naming convention:
-       *   brand.1 = primary brand colour
-       *   brand.2 = primary light tint
-       *   brand.3 = primary lighter tint
-       *   brand.accent1 = secondary/accent colour
-       *   brand.accent2 = tertiary accent
-       *   brand.surface1 = primary surface (light bg)
-       *   brand.surface2 = secondary surface
+       * All map to CSS variables set in theme/_head.liquid via settings_schema.json.
+       * Named tokens match schema naming convention; numeric aliases for generic use.
        */
       brand: {
-        1: "var(--c-brand-primary)",
-        2: "var(--c-brand-primary-light)",
-        3: "var(--c-brand-primary-lighter)",
-        accent1: "var(--c-brand-accent-1)",
-        accent2: "var(--c-brand-accent-2)",
-        surface1: "var(--c-brand-surface-1)",
-        surface2: "var(--c-brand-surface-2)",
+        // Primary palette
+        claret: "var(--c-primary-claret)",   // Primary brand colour (darkest)
+        petal: "var(--c-primary-petal)",     // Primary light tint
+        carrara: "var(--c-primary-carrara)", // Primary lighter tint
+        orchid: "var(--c-primary-orchid)",   // Primary accent light
+        sable: "var(--c-primary-sable)",     // Near-black
+        // Secondary palette
+        bramble: "var(--c-secondary-bramble)", // Secondary brand / accent
+        moss: "var(--c-secondary-moss)",       // Secondary mid
+        sage: "var(--c-secondary-sage)",       // Secondary light
+        kelime: "var(--c-secondary-kelime)",   // Secondary lighter
+        // Generic numeric aliases (preferred for new code)
+        1: "var(--c-primary-claret)",
+        2: "var(--c-primary-petal)",
+        3: "var(--c-primary-carrara)",
+        accent1: "var(--c-secondary-bramble)",
+        accent2: "var(--c-secondary-moss)",
+        surface1: "var(--c-primary-carrara)",
+        surface2: "var(--c-primary-orchid)",
       },
 
       border: {
