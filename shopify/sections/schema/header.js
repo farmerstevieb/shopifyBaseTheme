@@ -6,7 +6,7 @@ module.exports = {
   tag: "section",
   class: "o-row header js-header",
   enabled_on: {
-    section_groups: ["header-group"],
+    groups: ["header"],
   },
   settings: [
     {

@@ -4,7 +4,7 @@ module.exports = {
   name: "Footer",
   class: "o-row shopify-section--footer footer",
   enabled_on: {
-    section_groups: ["footer-group"],
+    groups: ["footer"],
   },
   tag: "footer",
   settings: [
