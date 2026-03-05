@@ -3,6 +3,9 @@ const brand_logo = require("./parts/brand_logo");
 module.exports = {
   name: "Footer",
   class: "o-row shopify-section--footer footer",
+  enabled_on: {
+    section_groups: ["footer-group"],
+  },
   tag: "footer",
   settings: [
     {
@@ -59,8 +62,6 @@ module.exports = {
       type: "inline_richtext",
       id: "footer_bottom_text",
       label: "Bottom Text",
-      default:
-        "",
     },
     {
       type: "header",

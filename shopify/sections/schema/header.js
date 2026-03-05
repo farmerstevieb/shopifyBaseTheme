@@ -5,13 +5,16 @@ module.exports = {
   name: "Header",
   tag: "section",
   class: "o-row header js-header",
+  enabled_on: {
+    section_groups: ["header-group"],
+  },
   settings: [
     {
       type: "header",
       content: "Content",
     },
     ...brand_logo({
-      default_logo: "remi-cachet-logo-text-stacked",
+      default_logo: "none",
     }),
     {
       type: "header",
