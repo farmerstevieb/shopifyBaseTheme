@@ -1,7 +1,22 @@
 {
   "sections": {
     "main": {
-      "type": "main-page",
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": { "heading": "Page not found" }
+        },
+        "text": {
+          "type": "text",
+          "settings": { "text": "<p>The page you were looking for does not exist.</p>" }
+        },
+        "button": {
+          "type": "button",
+          "settings": { "button_label": "Continue shopping", "button_link": "/" }
+        }
+      },
+      "block_order": ["heading", "text", "button"],
       "settings": {}
     }
   },
