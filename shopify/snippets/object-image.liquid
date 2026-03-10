@@ -25,6 +25,7 @@
 {%- liquid
   assign image = image | default: object-image
   assign mobile_image = mobile_image | default: object-image
+  assign alt_text = alt_text | default: image.alt | default: ''
   assign preload = preload | default: false
   assign width = width | default: image.width
   assign height = height | default: image.height
@@ -71,7 +72,7 @@
       endif
 
       if image
-        echo image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths, sizes: sizes, preload: preload, class: img_class
+        echo image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths, sizes: sizes, preload: preload, class: img_class, alt: alt_text
       else
         echo '<img class="[class]" width="[w]" height="[h]" src="[src]"/>' | replace: '[w]', width | replace: '[h]', height | replace: '[src]', placeholder_shopify | replace: '[class]', img_class
       endif
@@ -80,7 +81,7 @@
 
       # Ensure srcset is used rather than src when SVG's are ingested as the image object.
       if mobile_image
-        assign mobile_image_html = mobile_image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths | replace: '<img', '<source media="(max-width: 640px)"'
+        assign mobile_image_html = mobile_image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths, alt: alt_text | replace: '<img', '<source media="(max-width: 640px)"'
         if mobile_image_html contains 'srcset='
           assign image_splitter = mobile_image | image_url: width: width, height: height, crop: crop | escape | prepend: 'src="' | append: '"'
           assign mobile_image_html_array = mobile_image_html | split: image_splitter
@@ -92,7 +93,7 @@
       endif
 
       if image
-        echo image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths, sizes: 'auto', loading: 'eager', class: img_class | replace: 'src=', placeholder_loading | replace: 'srcset=', 'data-srcset='
+        echo image | image_url: width: width, height: height, crop: crop | image_tag: width: width, height: height, widths: widths, sizes: 'auto', loading: 'eager', class: img_class, alt: alt_text | replace: 'src=', placeholder_loading | replace: 'srcset=', 'data-srcset='
       else
         echo '<img class="[class]" width="[w]" height="[h]" src="[src]"/>' | replace: '[w]', width | replace: '[h]', height | replace: '[src]', placeholder_shopify | replace: '[class]', img_class
       endif

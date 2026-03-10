@@ -41,6 +41,7 @@ const baseThemePreset = {
       "max-4xl": { max: "1680px" },
       "4xl": "1680px",
       "md-lg": { min: "768px", max: "1023px" },
+      "max-stock-mob": { max: "639px" },
       coarse: { raw: "(pointer: coarse)" },
       fine: { raw: "(pointer: fine)" },
     },

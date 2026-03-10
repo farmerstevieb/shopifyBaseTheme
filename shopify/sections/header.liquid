@@ -2,6 +2,8 @@
   <button
     type="button"
     class="header__burger js-nav-open"
+    aria-expanded="false"
+    aria-controls="site-nav"
   >
     {%- render 'theme-icons' with 'burger-menu', width: 32, height: 32, classes: 'stroke-primary' -%}
     <span class="sr-only">{{- 'general.drawers.open' | t -}}</span>
@@ -39,7 +41,6 @@
       <button
         class="header__search-open js-header-search-open"
         type="button"
-        aria-hidden="false"
       >
         {%- render 'theme-icons' with 'search-dark', width: 28, height: 28 -%}
         <span class="sr-only">{{ 'sections.header.search_form.open' | t }}</span>
@@ -94,7 +95,7 @@
     </a>
 
     {% # Cart %}
-    <a href="{{ routes.cart_url }}" onclick="return DrawerCart.show();" class="header__cart">
+    <a href="{{ routes.cart_url }}" onclick="return DrawerCart.show();" class="header__cart" aria-label="{{ 'sections.header.cart_label' | t }}">
       {%- render 'theme-icons' with 'shopping-bag', width: 28, height: 28, classes: 'stroke-primary' -%}
       <div class="cart-count">
         <span class="js-cart-item-count">

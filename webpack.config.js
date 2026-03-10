@@ -27,6 +27,22 @@ module.exports = (env = {}) => {
         "./src/js/index.ts",
         "./src/scss/main.scss",
       ],
+      // Per-section CSS chunks — loaded on demand by each section via render 'theme_assets'
+      "section-article.min":                  "./src/scss/sections/article.scss",
+      "section-banner-collage.min":           "./src/scss/sections/banner-collage.scss",
+      "section-banner-grid.min":              "./src/scss/sections/banner-grid.scss",
+      "section-before-after.min":             "./src/scss/sections/before-after.scss",
+      "section-bundle-hotspots.min":          "./src/scss/sections/bundle-hotspots.scss",
+      "section-content-cards-collection.min": "./src/scss/sections/content-cards-collection.scss",
+      "section-content-cards.min":            "./src/scss/sections/content-cards.scss",
+      "section-customer-addresses.min":       "./src/scss/sections/customer-addresses.scss",
+      "section-customer.min":                 "./src/scss/sections/customer.scss",
+      "section-faqs.min":                     "./src/scss/sections/faqs.scss",
+      "section-hero.min":                     "./src/scss/sections/hero.scss",
+      "section-main-stocklist.min":           "./src/scss/sections/main-stocklist.scss",
+      "section-order.min":                    "./src/scss/sections/order.scss",
+      "section-product.min":                  "./src/scss/sections/product.scss",
+      "section-text-media.min":               "./src/scss/sections/text-media.scss",
     },
 
     output: {

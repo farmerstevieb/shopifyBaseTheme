@@ -277,11 +277,11 @@
           {% for img in variant_images %}
             {% assign v = img.variants | where: 'available', true | first | default: img.variants.first %}
             <li class="h-6 w-6">
-              <button type="button" class="js-product-card-variant" data-variant-id="{{ v.id }}">
+              <button type="button" class="js-product-card-variant" data-variant-id="{{ v.id }}" aria-label="{{ v.title }}">
                 {{
                   v.featured_image
                   | image_url: width: 60, height: 60
-                  | image_tag: width: 60, height: 60, loading: 'lazy', sizes: '60px', class: 'js-lazyload'
+                  | image_tag: width: 60, height: 60, loading: 'lazy', sizes: '60px', class: 'js-lazyload', alt: v.title
                   | replace: 'src=', placeholder
                   | replace: 'srcset=', 'data-srcset='
                 }}

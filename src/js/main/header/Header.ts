@@ -218,9 +218,13 @@ export class Header {
    */
   handleNavigation() {
     for (const submenu of this.elSubmenus) {
+      const trigger = submenu.querySelector(".js-submenu-open") as HTMLElement | null;
+
       submenu.addEventListener("mouseover", () => {
-        if (window.innerWidth > 1024)
+        if (window.innerWidth > 1024) {
           this.elGlobalOverlay.classList.add("main-overlay--visible");
+          trigger?.setAttribute("aria-expanded", "true");
+        }
 
         if (this.elSearch.classList.contains("header__search--active"))
           this.closeSearch();
@@ -230,8 +234,10 @@ export class Header {
         if (
           window.innerWidth > 1024 &&
           !this.elSearch.classList.contains("header__search--active")
-        )
+        ) {
           this.elGlobalOverlay.classList.remove("main-overlay--visible");
+          trigger?.setAttribute("aria-expanded", "false");
+        }
       });
     }
   }

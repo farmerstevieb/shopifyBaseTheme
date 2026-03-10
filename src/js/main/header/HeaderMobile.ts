@@ -11,6 +11,7 @@ export function setup(elHeader: HTMLElement, elNav: HTMLElement) {
 
   const openMenu = () => {
     elOpenButton?.classList.add("opacity-0", "pointer-events-none");
+    elOpenButton?.setAttribute("aria-expanded", "true");
     elCloseButton?.classList.remove("opacity-0", "pointer-events-none");
     elOverlay?.classList.add("main-overlay--visible");
   };
@@ -20,6 +21,7 @@ export function setup(elHeader: HTMLElement, elNav: HTMLElement) {
 
     elCloseButton?.classList.add("opacity-0", "pointer-events-none");
     elOpenButton?.classList.remove("opacity-0", "pointer-events-none");
+    elOpenButton?.setAttribute("aria-expanded", "false");
     elOverlay?.classList.remove("main-overlay--visible");
   };
 
@@ -55,6 +57,7 @@ export function setup(elHeader: HTMLElement, elNav: HTMLElement) {
       document.body.classList.remove("util-mobile-nav-open");
       elCloseButton?.classList.add("opacity-0", "pointer-events-none");
       elOpenButton?.classList.remove("opacity-0", "pointer-events-none");
+      elOpenButton?.setAttribute("aria-expanded", "false");
       elOverlay?.classList.remove("main-overlay--visible");
     }
   });
@@ -63,7 +66,8 @@ export function setup(elHeader: HTMLElement, elNav: HTMLElement) {
     const elSubmenuTrigger = get(".js-submenu-open", elSubmenu);
     elSubmenuTrigger?.addEventListener("click", () => {
       if (window.matchMedia("(pointer: fine)").matches) return;
-      toggleSubmenu(elSubmenu);
+      const isOpen = toggleSubmenu(elSubmenu);
+      elSubmenuTrigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
   }
 
@@ -79,6 +83,8 @@ async function toggleMobileNavigation(el: HTMLElement) {
 function closeSubmenus(elSubmenus: HTMLElement[]) {
   elSubmenus.forEach((el) => {
     el.classList.remove("has-nav-open");
+    const trigger = el.querySelector(".js-submenu-open");
+    trigger?.setAttribute("aria-expanded", "false");
   });
 }
 

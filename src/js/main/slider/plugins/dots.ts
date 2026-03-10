@@ -22,7 +22,7 @@ function createPagination(slideCount: number) {
   for (let i = 0; i < slideCount; i++) {
     elPagination.insertAdjacentHTML(
       "beforeend",
-      `<button type="button" data-index="${i}"><span class="sr-only">Slide ${i}</span></button>`
+      `<button type="button" data-index="${i}"><span class="sr-only">Slide ${i + 1}</span></button>`
     );
   }
 
@@ -87,7 +87,7 @@ export function Pagination(
     const previous = slider.previousScrollSnap();
     const selected = slider.selectedScrollSnap();
     elDots[previous].removeAttribute("aria-current");
-    elDots[selected].setAttribute("aria-current", "step");
+    elDots[selected].setAttribute("aria-current", "true");
   }
 
   return {

@@ -5,6 +5,9 @@
     id="DrawerCart"
     data-id="{{- section.id -}}"
     hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="drawer-cart-title"
     {% if section.settings.testing %}
       data-testing
     {% endif %}
@@ -14,7 +17,7 @@
       data-a11y-dialog-hide
     ></div>
 
-    <div role="document">
+    <div>
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'header-open' -%}
@@ -22,7 +25,7 @@
           {%- when 'header-controls' -%}
             <div class="mb-1 flex w-full items-center justify-between">
               <div class="flex items-center gap-x-2">
-                <h2 class="text-base font-semibold">
+                <h2 id="drawer-cart-title" class="text-base font-semibold">
                   {{- block.settings.title -}}
                 </h2>
                 <p class="text-xs font-normal text-grey-25">
@@ -63,7 +66,7 @@
           {%- when 'main-open' -%}
             <div id="main-drawer-cart" data-dialog-element="main">
           {%- when 'free-delivery' -%}
-            <label class="delivery-progress js-delivery-progress flex flex-col text-sm">
+            <div class="delivery-progress js-delivery-progress flex flex-col text-sm">
               {%- liquid
                 assign remaining = localization.market.metafields.custom.delivery_threshold | minus: cart.total_price
                 if remaining > 0
@@ -77,8 +80,9 @@
               <progress
                 max="{{- localization.market.metafields.custom.delivery_threshold -}}"
                 value="{{- cart.total_price -}}"
+                aria-label="{{ 'general.free_delivery.progress_label' | t | default: 'Free delivery progress' }}"
               ></progress>
-            </label>
+            </div>
 
           {%- when 'cart-items' -%}
             {%- if cart == empty -%}
@@ -548,7 +552,7 @@
               {%- assign header_class = 'capitalize text-smd text-grey-0' -%}
               <div class="my-6 flex flex-col gap-y-2 text-smd">
                 <div class="flex flex-wrap justify-between gap-y-1" role="status">
-                  <h2 class="{{ header_class }}">{{- 'sections.cart.subtotal' | t -}}</h2>
+                  <p class="{{ header_class }}">{{- 'sections.cart.subtotal' | t -}}</p>
                   <p class="font-semibold">{{- cart.total_price | money -}}</p>
 
                   {%- if cart.cart_level_discount_applications.size > 0 -%}
@@ -580,12 +584,12 @@
                 -%}
 
                 <div class="flex justify-between">
-                  <h2 class="{{ header_class }}">{{- 'sections.cart.headings.shipping' | t -}}</h2>
+                  <p class="{{ header_class }}">{{- 'sections.cart.headings.shipping' | t -}}</p>
                   <p>{{- shipping -}}</p>
                 </div>
 
                 <div class="flex justify-between">
-                  <h2 class="{{ header_class }}">{{- 'sections.cart.headings.tax' | t -}}</h2>
+                  <p class="{{ header_class }}">{{- 'sections.cart.headings.tax' | t -}}</p>
                   <p>{{- tax -}}</p>
                 </div>
               </div>
@@ -600,7 +604,7 @@
                 nextdaylabel="{{- 'general.delivery_estimate.nextday_delivery_html' | t: time: '[time]', date: '[date]' -}}"
                 nextweeklabel="{{- 'general.delivery_estimate.weekday_delivery_html' | t: day: '[day]' -}}"
               >
-                <svg width="20" height="20" fill="currentcolor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <svg width="20" height="20" fill="currentcolor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" aria-hidden="true">
                   <path d="M10 1.667c-4.596 0-8.334 3.738-8.334 8.333 0 4.595 3.738 8.333 8.333 8.333 4.595 0 8.334-3.738 8.334-8.333 0-4.595-3.739-8.333-8.334-8.333Zm0 15A6.674 6.674 0 0 1 3.332 10a6.674 6.674 0 0 1 6.666-6.667A6.674 6.674 0 0 1 16.666 10a6.674 6.674 0 0 1-6.667 6.667Z" />
                   <path d="M10.833 5.833H9.166v4.512l2.744 2.744 1.178-1.178-2.255-2.256V5.833Z" />
                 </svg>

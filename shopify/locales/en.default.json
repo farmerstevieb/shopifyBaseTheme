@@ -102,6 +102,8 @@
   "sections": {
     "header": {
       "trade": "Trade",
+      "cart_label": "Shopping bag",
+      "search_label": "Search",
       "wishlist": "Wishlist",
       "accounts": {
         "log_in": "Log in",

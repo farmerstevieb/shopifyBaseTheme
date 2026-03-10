@@ -61,6 +61,7 @@
       data-filtering="{{ section.settings.filtering }}"
       data-sorting="{{ section.settings.filtering }}"
       id="Facets"
+      aria-label="{{ 'general.facets.filter_and_sort' | t | default: 'Filter and sort products' }}"
     >
       {%- # Filters -%}
       {%- if results.terms -%}
