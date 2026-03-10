@@ -49,7 +49,7 @@
                 <form
                   class=""
                   method="post"
-                  action="/account/addresses/{{ address.id }}"
+                  action="{{ routes.account_addresses_url }}/{{ address.id }}"
                 >
                   <input type="hidden" name="_method" value="delete">
                   <button
@@ -211,7 +211,7 @@
           </div>
         </div>
       {% endfor %}
-      <a class="flex items-center gap-1" href="/account">
+      <a class="flex items-center gap-1" href="{{ routes.account_url }}">
         {%- render 'theme-icons' with 'arrow-left' -%}
         <span class="text-sm trancking-[1.44px] uppercase font-semibold">Back</span>
       </a>

@@ -30,6 +30,12 @@ module.exports = {
       type: "header",
       content: "Trade button",
     },
+    {
+      type: "checkbox",
+      id: "show_trade_button",
+      label: "Show trade button",
+      default: true,
+    },
     ...icon({
       id: "trade_button_icon",
       label: "Trade Icon",
@@ -53,6 +59,16 @@ module.exports = {
         { value: "link", label: "Link" },
       ],
       default: "primary",
+    },
+    {
+      type: "header",
+      content: "Wishlist",
+    },
+    {
+      type: "url",
+      id: "wishlist_url",
+      label: "Wishlist page URL",
+      info: "Leave blank to hide the wishlist icon",
     },
   ],
   blocks: [

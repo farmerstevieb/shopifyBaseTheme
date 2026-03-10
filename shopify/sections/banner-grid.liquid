@@ -29,6 +29,12 @@
 
   <ul class="flex flex-wrap banner-grid md:grid md:grid-cols-12">
     {%- assign blocks = section.blocks | where: 'type', 'card' -%}
+    {%- liquid
+      assign is_first_section = true
+      if section.index != blank and section.index > 1
+        assign is_first_section = false
+      endif
+    -%}
     {%- for block in blocks -%}
       <li class="banner-grid__item {{ block.settings.width }}" {{ block.shopify_attributes }}>
         <div class="card card--banner-grid {% if section.settings.content_position != blank %} card--banner-grid-position {% endif %}">
@@ -54,8 +60,12 @@
               if block.settings.image_mobile
                 assign play_video_on_mobile = false
               endif
+              assign should_preload = false
+              if forloop.first and is_first_section
+                assign should_preload = true
+              endif
               capture placeholder
-                render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: forloop.first, class: 'o-video__image js-video-image', img_class: image_class
+                render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: should_preload, class: 'o-video__image js-video-image', img_class: image_class
               endcapture
               render 'object-video' with video_src, placeholder: placeholder, autoplay: block.settings.video_autoplay, muted: block.settings.video_muted, loop: true, fit: 'cover', class: 'card__media', play_on_mobile: play_video_on_mobile
             endif

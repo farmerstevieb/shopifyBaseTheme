@@ -33,6 +33,12 @@ assign display_section = display_section_snippet | strip
     <div class="viewport" data-slider="viewport">
       <ul class="content-cards content-cards--carousel">
         {%- assign blocks = section.blocks | where: 'type', 'card' -%}
+        {%- liquid
+          assign is_first_section = true
+          if section.index != blank and section.index > 1
+            assign is_first_section = false
+          endif
+        -%}
         {%- for block in blocks -%}
           <li class="flex-grow" {{ block.shopify_attributes }}>
             <div class="card">
@@ -45,8 +51,12 @@ assign display_section = display_section_snippet | strip
                   if block.settings.image_mobile
                     assign play_video_on_mobile = false
                   endif
+                  assign should_preload = false
+                  if forloop.first and is_first_section
+                    assign should_preload = true
+                  endif
                   capture placeholder
-                    render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: forloop.first, class: 'o-video__image js-video-image', img_class: image_class
+                    render 'object-image' with block.settings.image, mobile_image: block.settings.image_mobile, preload: should_preload, class: 'o-video__image js-video-image', img_class: image_class
                   endcapture
                   render 'object-video' with video_src, placeholder: placeholder, autoplay: block.settings.video_autoplay, muted: block.settings.video_muted, loop: true, fit: 'cover', aspect: '326 / 444', play_on_mobile: play_video_on_mobile
                 else

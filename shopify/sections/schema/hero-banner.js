@@ -8,5 +8,6 @@ module.exports = {
       has_arrows: false,
     },
     mobile_sources: true,
+    multiple_ctas: true,
   }),
 };

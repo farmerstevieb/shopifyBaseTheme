@@ -57,6 +57,12 @@
       data-slider="viewport"
     >
       <ul class="slider__track">
+        {%- liquid
+          assign is_first_section = true
+          if section.index != blank and section.index > 1
+            assign is_first_section = false
+          endif
+        -%}
         {%- for block in section.blocks -%}
           <li
             class="hero hero--{{ section.settings.height }} hero--columns {% if section.settings.padding == 'padded' %} hero--padded{% endif%}"
@@ -84,6 +90,11 @@
                     assign image_class = 'o-img--' | append: block.settings[image_fit_key]
                     assign video_src = block.settings[video_file_key] | default: block.settings[video_url_key]
 
+                    assign should_preload = false
+                    if forloop.first and is_first_section
+                      assign should_preload = true
+                    endif
+
                     if video_src
                       assign play_video_on_mobile = true
 
@@ -92,12 +103,12 @@
                       endif
 
                       capture placeholder
-                        render 'object-image' with block.settings[image_key], mobile_image: block.settings[image_mobile_key], preload: forloop.first, class: 'o-video__image js-video-image', img_class: image_class, visible_placeholder: false
+                        render 'object-image' with block.settings[image_key], mobile_image: block.settings[image_mobile_key], preload: should_preload, class: 'o-video__image js-video-image', img_class: image_class, visible_placeholder: false
                       endcapture
 
                       render 'object-video' with video_src, placeholder: placeholder, autoplay: block.settings[video_autoplay_key], muted: block.settings[video_muted_key], loop: true, fit: 'cover', class: media_class, play_on_mobile: play_video_on_mobile, aspect: aspect_ratio_dsk, aspect_mobile: aspect_ratio_mob
                     else
-                      render 'object-image' with block.settings[image_key], mobile_image: block.settings[image_mobile_key], preload: forloop.first, class: media_class, img_class: image_class, visible_placeholder: false, aspect: aspect_ratio_dsk, aspect_mobile: aspect_ratio_mob
+                      render 'object-image' with block.settings[image_key], mobile_image: block.settings[image_mobile_key], preload: should_preload, class: media_class, img_class: image_class, visible_placeholder: false, aspect: aspect_ratio_dsk, aspect_mobile: aspect_ratio_mob
                     endif
                   -%}
                   {%- if forloop.last -%}

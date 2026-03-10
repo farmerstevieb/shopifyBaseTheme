@@ -3,7 +3,9 @@ const sectionSettings = require("./parts/sectionSettings");
 module.exports = {
   name: "Addresses",
   class: "o-row",
-  templates: ["customers/addresses"],
+  enabled_on: {
+    templates: ["customers/addresses"],
+  },
   settings: [
     {
       type: "header",

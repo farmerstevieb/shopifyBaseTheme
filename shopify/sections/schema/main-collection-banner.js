@@ -4,7 +4,9 @@ module.exports = {
   name: "Collection banner",
   class: "o-row",
   tag: "section",
-  templates: ["collection"],
+  enabled_on: {
+    templates: ["collection"],
+  },
   settings: [
     {
       type: "header",

@@ -189,6 +189,13 @@ export class Header {
     document.documentElement.style.setProperty("--header-offset", "0px");
 
     const onScroll = throttle(() => {
+      // Toggle scrolled class for colour-state changes (e.g. dark → white)
+      if (scrollY > 10) {
+        this.elHeader.classList.add("header--scrolled");
+      } else {
+        this.elHeader.classList.remove("header--scrolled");
+      }
+
       if (scrollY > offset) {
         if (state == "hidden") return;
         document.documentElement.style.setProperty(

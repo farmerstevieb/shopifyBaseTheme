@@ -6,7 +6,9 @@ const { type } = require("os");
 module.exports = {
   name: "Main register",
   class: "o-row",
-  templates: ["customers/register"],
+  enabled_on: {
+    templates: ["customers/register"],
+  },
   presets: [
     {
       name: "Main register",

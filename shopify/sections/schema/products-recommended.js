@@ -4,7 +4,9 @@ const sectionSettings = require("./parts/sectionSettings");
 module.exports = {
   name: "Cart Product feed",
   class: "o-row",
-  templates: ["cart"],
+  enabled_on: {
+    templates: ["cart"],
+  },
   presets: [
     {
       name: "Cart Product feed",

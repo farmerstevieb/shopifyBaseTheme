@@ -11,7 +11,7 @@
         {% capture text_header %}text-md font-semibold leading-[1.5] tracking-[2.1px] uppercase{% endcapture %}
         <div class="flex justify-between w-full pb-8 mb-6 border-b border-grey-80">
           <h6 class="{{ text_header }}">Order {{ order.name }}</h6>
-          <a class="flex items-center gap-1" href="/account">
+          <a class="flex items-center gap-1" href="{{ routes.account_url }}">
             {%- render 'theme-icons' with 'arrow-left' -%}
             <span class="text-sm trancking-[1.44px] uppercase font-semibold">Back</span>
           </a>

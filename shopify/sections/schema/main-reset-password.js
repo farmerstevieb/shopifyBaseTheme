@@ -4,7 +4,9 @@ const sectionSettings = require("./parts/sectionSettings");
 module.exports = {
   name: "Main reset password",
   class: "o-row",
-  templates: ["customers/reset_password"],
+  enabled_on: {
+    templates: ["customers/reset_password"],
+  },
   presets: [
     {
       name: "Main reset password",

@@ -19,6 +19,12 @@
 {% if display_section == 'true' %}
   {%- paginate blog.articles by section.settings.limit -%}
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-9 gap-y-12 lg:gap-y-14">
+      {%- liquid
+        assign is_first_section = true
+        if section.index != blank and section.index > 1
+          assign is_first_section = false
+        endif
+      -%}
       {%- for article in blog.articles -%}
         {% liquid
           capture hr
@@ -43,6 +49,12 @@
 
         {{ hr }}
         <div class="{% if is_large %} lg:col-span-3{% endif %}">
+          {%- liquid
+            assign should_preload = false
+            if forloop.first and is_first_section
+              assign should_preload = true
+            endif
+          -%}
           {%- render 'card-article',
             article: article,
             class: card_class,
@@ -52,7 +64,7 @@
             show_author: section.settings.show_author,
             show_tags: section.settings.show_tags,
             show_excerpt: true,
-            preload: forloop.first
+            preload: should_preload
           -%}
         </div>
         {{ hr }}

@@ -177,11 +177,15 @@
       {{- 'general.product.login_to_view_prices' | t -}}
     </a>
 
-    <{% if stocklist_url != blank %}a href="{{ stocklist_url }}" {% else %}span{% endif %}
-      class="button button--{{ settings.stocklist_button_style }} button--full mt-2"
-    >
-    {{- 'general.product.stylist' | t -}}
-    </{% if stocklist_url != blank %}a{% else %}span{% endif %}>
+    {%- if stocklist_url != blank -%}
+      <a href="{{ stocklist_url }}" class="button button--{{ settings.stocklist_button_style }} button--full mt-2">
+        {{- 'general.product.stylist' | t -}}
+      </a>
+    {%- else -%}
+      <span class="button button--{{ settings.stocklist_button_style }} button--full mt-2">
+        {{- 'general.product.stylist' | t -}}
+      </span>
+    {%- endif -%}
   {%- endif -%}
 </div>
 {% # theme-check-enable %}

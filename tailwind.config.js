@@ -309,6 +309,6 @@ const baseThemePreset = {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*", "./shopify/**/*", "!./shopify/**/theme-head.liquid"],
+  content: ["./src/**/*", "./shopify/**/*", "../shopify/**/*", "!./shopify/**/theme-head.liquid"],
   presets: [baseThemePreset],
 };

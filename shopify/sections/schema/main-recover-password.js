@@ -4,7 +4,9 @@ const sectionSettings = require("./parts/sectionSettings");
 module.exports = {
   name: "Recover password",
   class: "o-row js-main-recover",
-  templates: ["customers/login"],
+  enabled_on: {
+    templates: ["customers/login"],
+  },
   settings: [
     {
       type: "header",

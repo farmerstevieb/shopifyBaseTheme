@@ -3,7 +3,9 @@ const spacing = require("./parts/spacing");
 module.exports = {
   name: "Account Details",
   class: "o-row",
-  templates: ["page"],
+  enabled_on: {
+    templates: ["page"],
+  },
   settings: [
     {
       type: "header",

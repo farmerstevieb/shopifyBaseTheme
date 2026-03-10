@@ -22,6 +22,7 @@ module.exports = ({
   section_settings = [],
   slide_settings = [],
   mobile_sources = false,
+  multiple_ctas = false,
 } = {}) => {
   return {
     name: name,
@@ -73,7 +74,7 @@ module.exports = ({
           ...content({
             spread_content: true,
             default_content_width: 350,
-            multiple_ctas: false,
+            multiple_ctas: multiple_ctas,
             default_heading: "Heading",
           }),
           ...slide_settings,

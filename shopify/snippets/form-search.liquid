@@ -1,5 +1,5 @@
 <predictive-search class="c-search__container">
-  <form action="/search" class="c-search__form  js-search-form" method="get" role="search">
+  <form action="{{ routes.search_url }}" class="c-search__form  js-search-form" method="get" role="search">
     <input name="type" type="hidden" value="product">
     <input
       name="q"

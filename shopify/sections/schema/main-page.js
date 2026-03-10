@@ -3,7 +3,9 @@ const sectionSettings = require("./parts/sectionSettings");
 module.exports = {
   name: "Main page",
   class: "o-row",
-  templates: ["page", "password"],
+  enabled_on: {
+    templates: ["page", "password"],
+  },
   presets: [
     {
       name: "Main page",

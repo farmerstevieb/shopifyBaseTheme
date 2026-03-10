@@ -1393,6 +1393,17 @@
     "settings": [
       {
         "type": "header",
+        "content": "Price visibility"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_prices_to_all",
+        "label": "Show prices & Add to Cart to all visitors",
+        "info": "When enabled, all visitors see prices and can add to cart. When disabled, customers must log in (trade/wholesale mode).",
+        "default": true
+      },
+      {
+        "type": "header",
         "content": "Product page login button"
       },
       {

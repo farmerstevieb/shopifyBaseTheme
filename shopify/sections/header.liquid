@@ -3,7 +3,7 @@
     type="button"
     class="header__burger js-nav-open"
   >
-    {%- render 'theme-icons' with 'burger-menu', width: 32, height: 32, stroke: "#222222" -%}
+    {%- render 'theme-icons' with 'burger-menu', width: 32, height: 32, classes: 'stroke-primary' -%}
     <span class="sr-only">{{- 'general.drawers.open' | t -}}</span>
   </button>
 
@@ -16,22 +16,23 @@
   </div>
 
   <div class="header__functions">
-    {% # Trade %}
-    <a
-      class="header__trade button button--{{ section.settings.trade_button_style }}"
-      href="
-        {%- liquid
-          if customer
-            echo routes.account_url
-          else
-            echo routes.account_register_url
-          endif
-        -%}
-      "
-    >
-      {%- render 'theme-icons' with section.settings.trade_button_icon, width: 16, height: 16 -%}
-      {{- 'sections.header.trade' | t -}}
-    </a>
+    {%- if section.settings.show_trade_button -%}
+      <a
+        class="header__trade button button--{{ section.settings.trade_button_style }}"
+        href="
+          {%- liquid
+            if customer
+              echo routes.account_url
+            else
+              echo routes.account_register_url
+            endif
+          -%}
+        "
+      >
+        {%- render 'theme-icons' with section.settings.trade_button_icon, width: 16, height: 16 -%}
+        {{- 'sections.header.trade' | t -}}
+      </a>
+    {%- endif -%}
 
     {% # Search %}
     <div class="header__search-triggers">
@@ -60,6 +61,18 @@
       </div>
     </div>
 
+    {% # Wishlist %}
+    {%- if section.settings.wishlist_url != blank -%}
+      <a
+        class="header__wishlist"
+        href="{{ section.settings.wishlist_url }}"
+        aria-label="{{ 'sections.header.wishlist' | t }}"
+      >
+        {%- render 'theme-icons' with 'heart', width: 28, height: 28, classes: 'stroke-primary' -%}
+        <span class="sr-only">{{ 'sections.header.wishlist' | t }}</span>
+      </a>
+    {%- endif -%}
+
     {% # Accounts %}
     <a
       class="header__accounts"
@@ -68,7 +81,7 @@
         onclick="return DrawerAccount.show()"
       {%- endif -%}
     >
-      {%- render 'theme-icons' with 'user', width: 28, height: 28, stroke: "#222222" -%}
+      {%- render 'theme-icons' with 'user', width: 28, height: 28, classes: 'stroke-primary' -%}
       <span class="sr-only">
         {%- liquid
           if customer
@@ -81,15 +94,13 @@
     </a>
 
     {% # Cart %}
-    {%- if customer -%}
-      <a href="{{ routes.cart_url }}" onclick="return DrawerCart.show();" class="header__cart">
-        {%- render 'theme-icons' with 'shopping-bag', width: 28, height: 28, stroke: "#222" -%}
-        <div class="cart-count">
-          <span class="js-cart-item-count">
-            {{ cart.item_count }}
-          </span>
-        </div>
-      </a>
-    {%- endif -%}
+    <a href="{{ routes.cart_url }}" onclick="return DrawerCart.show();" class="header__cart">
+      {%- render 'theme-icons' with 'shopping-bag', width: 28, height: 28, classes: 'stroke-primary' -%}
+      <div class="cart-count">
+        <span class="js-cart-item-count">
+          {{ cart.item_count }}
+        </span>
+      </div>
+    </a>
   </div>
 </div>

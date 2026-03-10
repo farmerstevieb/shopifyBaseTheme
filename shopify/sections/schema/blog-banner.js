@@ -7,7 +7,9 @@ module.exports = {
   name: "Blog banner",
   class: "o-row",
   tag: "section",
-  templates: ["blog"],
+  enabled_on: {
+    templates: ["blog"],
+  },
   presets: [
     {
       name: "Blog banner",

@@ -4,7 +4,9 @@ const sectionSettings = require("./parts/sectionSettings");
 module.exports = {
   name: "Activate Account",
   class: "o-row",
-  templates: ["customers/activate_account"],
+  enabled_on: {
+    templates: ["customers/activate_account"],
+  },
   settings: [
     {
       type: "header",

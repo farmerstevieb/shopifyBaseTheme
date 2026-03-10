@@ -5,7 +5,9 @@ const cta = require("./parts/cta");
 module.exports = {
   name: "Account",
   class: "o-row",
-  templates: ["customers/account"],
+  enabled_on: {
+    templates: ["customers/account"],
+  },
   settings: [
     {
       type: "header",

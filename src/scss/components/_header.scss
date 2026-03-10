@@ -1,14 +1,10 @@
 .header {
   top: var(--promo-bar-height, 0);
   translate: 0 var(--header-offset, 0);
-  box-shadow: 0 1px 0 0 #4d3c2f;
+  box-shadow: 0 1px 0 0 var(--c-border-light, #e9e9e9);
   transition: translate 200ms cubic-bezier(0.37, 0, 0.63, 1);
 
-  @apply sticky z-header bg-[#F0EBE6] text-primaryInverse;
-
-  @screen lg {
-    @apply bg-white;
-  }
+  @apply sticky z-header bg-white text-primary;
 
   &__main {
     grid-template: "burger logo functions" / 19% 1fr 19%;
@@ -145,6 +141,16 @@
 
     @include hover {
       @apply opacity-75;
+    }
+  }
+
+  &__wishlist {
+    @screen max-lg {
+      @apply hidden;
+    }
+
+    @screen large-mobile {
+      @apply hidden;
     }
   }
 

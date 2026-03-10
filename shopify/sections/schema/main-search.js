@@ -8,7 +8,9 @@ module.exports = {
   name: "Search Results",
   class: "shopify-section--main-search o-row",
   tag: "section",
-  templates: ["search"],
+  enabled_on: {
+    templates: ["search"],
+  },
   settings: [
     ...sectionSettings({
       width: false,

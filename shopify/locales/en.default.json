@@ -34,7 +34,8 @@
     },
     "continue_shopping": "Continue shopping",
     "breadcrumbs": {
-      "home": "Home"
+      "home": "Home",
+      "search": "Search"
     },
     "product": {
       "quick_shop": "Quick shop",
@@ -101,6 +102,7 @@
   "sections": {
     "header": {
       "trade": "Trade",
+      "wishlist": "Wishlist",
       "accounts": {
         "log_in": "Log in",
         "view_account": "View account",
