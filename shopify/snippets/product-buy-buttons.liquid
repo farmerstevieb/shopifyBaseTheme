@@ -27,7 +27,7 @@
 -%}
 
 <div class="product__details-button" {{ block.shopify_attributes }}>
-  {%- if customer or is_gift_card -%}
+  {%- if settings.show_prices_to_all or customer or is_gift_card -%}
     {%- if product != blank -%}
       {% # TODO: Handle error %}
       <div
@@ -111,7 +111,7 @@
                   if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity
                     echo 'products.product.sold_out' | t
                   else
-                    echo 'general.product.add_to_bag' | t
+                    echo 'products.product.add_to_cart' | t
                   endif
                 else
                   echo 'products.product.sold_out' | t
@@ -142,12 +142,6 @@
           {%- endif -%}
         </div>
       {%- endform -%}
-      {%- if customer -%}
-        <div class="flex items-center gap-x-3 text-sm pt-4">
-          {% render 'theme-icons' with 'star', width: 20, height: 20 %}
-          <p>Earn {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | round }} Cachet Club points with this item</p>
-        </div>
-      {%- endif -%}
         <button
       id="BIS_trigger"
       type="button"
