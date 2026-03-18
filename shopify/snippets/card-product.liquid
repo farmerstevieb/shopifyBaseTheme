@@ -77,7 +77,7 @@
       href="{{ product.url }}"
       aria-hidden="true"
     ></a>
-    {%- if customer -%}
+    {%- if settings.show_prices_to_all or customer -%}
       {%- if settings.enable_quick_shop -%}
         {% assign product_url = product.url | split: '?' | first %}
         <div class="coarse:hidden pointer-events-none absolute bottom-0 w-full opacity-0 transition-all group-hover:pointer-events-auto group-hover:-translate-y-4 group-hover:opacity-100 max-md:hidden">
@@ -159,7 +159,7 @@
       {%- render 'theme-icons' with 'error', width: 16, height: 16 -%}
       <span class="js-product-form-error-message-{{ product_form_id }}"></span>
     </div>
-    {%- if customer -%}
+    {%- if settings.show_prices_to_all or customer -%}
       <div class="mt-auto">
         <div
           class="product__details-price flex md:hidden"
