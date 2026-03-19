@@ -1,0 +1,8 @@
+# Shopify CLI Configuration
+# The dev server reads this for store connection.
+# Theme ID is managed by scripts/dev.js via .dev-theme-id
+
+[environments.development]
+store = "YOUR-STORE"
+path = "./dist"
+theme-editor-sync = true

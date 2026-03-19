@@ -1,0 +1,5 @@
+dist/
+node_modules/
+.dev-theme-id
+.DS_Store
+*.md

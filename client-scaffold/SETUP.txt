@@ -1,0 +1,49 @@
+eComplete Client Theme — Setup Guide
+=====================================
+
+1. CREATE THE CLIENT REPO
+   - Copy this entire client-scaffold/ directory as your new repo root
+   - Add the base theme as a git submodule:
+     git submodule add <base-theme-repo-url> base
+
+2. CONFIGURE
+   - Edit scripts/dev.js:
+       STORE = 'client-store.myshopify.com'
+       STAGING_THEME = 'theme-id-from-shopify-admin'
+   - Edit package.json:
+       "name": "client-name-stores"
+   - Edit shopify.theme.toml:
+       store = "client-store"
+
+3. CREATE CLIENT OVERLAY
+   - Create shopify/ directory
+   - Add your client-specific overrides:
+       shopify/assets/       (CSS, JS, fonts)
+       shopify/sections/     (custom sections)
+       shopify/snippets/     (custom snippets)
+       shopify/templates/    (JSON templates)
+       shopify/config/       (settings_data.json)
+       shopify/locales/      (translations)
+
+4. DEV
+   npm run dev              First run creates your personal theme
+                            Copy the theme ID into .dev-theme-id
+                            Run npm run dev again — hot reload starts
+
+5. DAILY WORKFLOW
+   npm run dev              Edit shopify/ files, see changes live
+   git commit + push        Push to feature branch
+   Open PR                  Team reviews, merge to main
+
+6. COMMANDS
+   npm run dev              Build + hot reload
+   npm run push             Build + push to default theme
+   npm run push:theme -- ID Build + push to specific theme
+   npm run build            Rebuild base theme + merge
+   npm run update:base      Pull latest base theme + rebuild
+
+FILES
+  shopify/    Your client overrides (EDIT THIS)
+  base/       eComplete base theme (DON'T EDIT — use update:base)
+  dist/       Merged output (AUTO-GENERATED — gitignored)
+  scripts/    Dev pipeline (cross-platform Node scripts)
