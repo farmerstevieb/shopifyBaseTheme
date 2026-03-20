@@ -1,28 +1,26 @@
 #!/usr/bin/env node
 /**
  * Dev server — auto-creates personal theme on first run, reuses after.
- * Cross-platform — works on Mac, Windows, Linux.
  *
- * CONFIG: Update these two values for each client project.
+ * First run:  clones staging theme → saves ID to .dev-theme-id → starts dev
+ * After that: reuses saved theme ID → starts dev
+ *
+ * Change STAGING_THEME when the theme ID changes.
  */
 
 const { execSync } = require('child_process');
 const fs = require('fs');
 
-// ─── CLIENT CONFIG (update per project) ───────────────────────
-const STORE = 'YOUR-STORE.myshopify.com';   // ← Change this
-const STAGING_THEME = 'YOUR_THEME_ID';       // ← Change this
-// ───────────────────────────────────────────────────────────────
-
+const STORE = 'YOUR-STORE.myshopify.com';
+const STAGING_THEME = 'YOUR_THEME_ID';
 const ID_FILE = '.dev-theme-id';
 
 function run(cmd) {
   execSync(cmd, { stdio: 'inherit' });
 }
 
-if (STORE === 'YOUR-STORE.myshopify.com' || STAGING_THEME === 'YOUR_THEME_ID') {
-  console.error('\n  ERROR: Update STORE and STAGING_THEME in scripts/dev.js\n');
-  process.exit(1);
+function runCapture(cmd) {
+  return execSync(cmd, { encoding: 'utf-8' });
 }
 
 let theme;
@@ -33,15 +31,18 @@ if (fs.existsSync(ID_FILE)) {
 } else {
   console.log('\nFirst run — creating your personal dev theme...\n');
 
+  // Pull settings from staging into dist
   console.log('Pulling settings from staging theme...');
   run(`shopify theme pull --path dist --theme ${STAGING_THEME} --store ${STORE} --only "config/settings_data.json"`);
 
+  // Push as unpublished theme
   console.log('\nCreating your theme (this takes ~60s)...\n');
   run(`shopify theme push --path dist --store ${STORE} --unpublished`);
 
+  // Ask dev to enter their theme ID
   console.log('\n========================================');
   console.log('Copy the theme ID from the output above');
-  console.log('and save it:');
+  console.log('and paste it into .dev-theme-id:');
   console.log('');
   console.log('  echo THEME_ID > .dev-theme-id');
   console.log('');
@@ -50,13 +51,15 @@ if (fs.existsSync(ID_FILE)) {
   process.exit(0);
 }
 
-// Sync settings silently
+// Sync settings from staging before starting
 try {
   execSync(
     `shopify theme pull --path dist --theme ${STAGING_THEME} --store ${STORE} --only "config/settings_data.json"`,
     { stdio: 'pipe' }
   );
-} catch (e) { /* continue with local settings */ }
+} catch (e) {
+  // Silent fail — local settings still work
+}
 
 console.log(`Preview: https://${STORE}/?preview_theme_id=${theme}\n`);
 run(`shopify theme dev --path dist --theme ${theme} --store ${STORE}`);
