@@ -4,8 +4,16 @@
  * Cross-platform — works on Mac, Windows, Linux.
  */
 
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+
+// Auto-init submodules if base/dist is empty or missing
+const baseDist = path.join('base', 'dist');
+if (!fs.existsSync(baseDist) || fs.readdirSync(baseDist).length === 0) {
+  console.log('Base theme not found — initialising submodules...');
+  execSync('git submodule update --init --recursive', { stdio: 'inherit' });
+}
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -21,10 +29,12 @@ function copyDir(src, dest) {
   }
 }
 
+// Clean dist
 if (fs.existsSync('dist')) {
   fs.rmSync('dist', { recursive: true, force: true });
 }
 
+// Copy base then overlay
 console.log('Building dist/...');
 copyDir(path.join('base', 'dist'), 'dist');
 copyDir('shopify', 'dist');
