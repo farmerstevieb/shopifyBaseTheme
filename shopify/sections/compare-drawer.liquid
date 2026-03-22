@@ -1,0 +1,84 @@
+{% render 'section-spacing-and-color' %}
+
+{%- liquid
+  assign max_items = section.settings.max_items | default: 4
+  assign show_price = section.settings.show_price
+  assign show_availability = section.settings.show_availability
+-%}
+
+<compare-drawer
+  class="compare-drawer modal modal--drawer"
+  id="compare-drawer"
+  aria-hidden="true"
+  aria-label="{{ 'products.compare.drawer_title' | t | default: 'Compare products' }}"
+  data-max-items="{{ max_items }}"
+  data-show-price="{{ show_price }}"
+  data-show-availability="{{ show_availability }}"
+>
+  <div class="modal__inner">
+    <div class="modal__header" data-dialog-element="header">
+      <h2 class="text-base font-bold">
+        {{ 'products.compare.drawer_title' | t | default: 'Compare products' }}
+        <compare-count class="compare-drawer__count-badge"></compare-count>
+      </h2>
+      <button
+        class="modal__close compare-drawer__close"
+        type="button"
+        aria-label="{{ 'general.accessibility.close' | t }}"
+        data-compare-drawer-close
+      >
+        {%- render 'icon-close' -%}
+      </button>
+    </div>
+
+    <div class="modal__content compare-drawer__content" data-dialog-element="main" data-compare-drawer-content>
+      {{- 'products.compare.empty' | t | default: 'No products selected for comparison.' -}}
+    </div>
+
+    <div class="modal__footer compare-drawer__footer">
+      <button
+        class="button button--ghost button--sm compare-drawer__clear"
+        type="button"
+        data-compare-drawer-clear
+      >
+        {{ 'products.compare.clear_all' | t | default: 'Clear all' }}
+      </button>
+
+      {%- if section.settings.compare_page != blank -%}
+        <a
+          class="button button--primary button--sm compare-drawer__view-all"
+          href="{{ section.settings.compare_page }}"
+          data-compare-drawer-view-all
+        >
+          {{ 'products.compare.view_full' | t | default: 'View full comparison' }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</compare-drawer>
+
+{%- comment -%} Floating compare bar — visible when items are in the compare list {%- endcomment -%}
+<compare-bar class="compare-bar" data-compare-bar aria-hidden="true">
+  <div class="compare-bar__inner">
+    <span class="compare-bar__label">
+      {{ 'products.compare.comparing' | t | default: 'Comparing' }}
+      <compare-count class="compare-bar__count"></compare-count>
+      {{ 'products.compare.items' | t | default: 'items' }}
+    </span>
+    <button
+      class="button button--primary button--sm"
+      type="button"
+      data-compare-bar-open
+    >
+      {{ 'products.compare.open_drawer' | t | default: 'Compare' }}
+    </button>
+    <button
+      class="compare-bar__clear button button--ghost button--sm"
+      type="button"
+      data-compare-bar-clear
+    >
+      {{ 'products.compare.clear_all' | t | default: 'Clear all' }}
+    </button>
+  </div>
+</compare-bar>
+

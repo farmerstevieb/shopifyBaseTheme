@@ -1,0 +1,74 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Wishlist Button
+  -------------------------------------------------------------------------------
+  Accepts:
+  - product: {Object} Shopify product object (required)
+  - variant: {Object} Shopify variant object (optional, defaults to first available)
+  - size: {String} 'sm' | 'lg' — defaults to 'sm' for cards, use 'lg' for PDP
+  - classes: {String} Additional classes (optional)
+  -------------------------------------------------------------------------------
+  Usage:
+    {%- render 'wishlist-button',
+      product: product,
+      variant: product.selected_or_first_available_variant,
+      size: 'sm'
+    -%}
+  -------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- liquid
+  assign btn_variant = variant | default: product.selected_or_first_available_variant
+  assign btn_size = size | default: 'sm'
+  assign btn_price = btn_variant.price | default: product.price
+  assign btn_image = product.featured_image | image_url: width: 400
+-%}
+
+<wishlist-button
+  class="wishlist-button wishlist-button--{{ btn_size }}{% if classes %} {{ classes }}{% endif %}"
+  data-product-id="{{ product.id }}"
+  data-variant-id="{{ btn_variant.id }}"
+  data-product-handle="{{ product.handle }}"
+  data-product-title="{{ product.title | escape }}"
+  data-product-price="{{ btn_price }}"
+  data-product-image="{{ btn_image }}"
+  aria-label="{{ 'wishlist.button.add' | t }}"
+  role="button"
+  tabindex="0"
+>
+  {%- comment -%} Outlined heart — shown when NOT wishlisted {%- endcomment -%}
+  <span class="wishlist-button__icon wishlist-button__icon--outline" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="{{ btn_size == 'lg' ? 28 : 20 }}"
+      height="{{ btn_size == 'lg' ? 28 : 20 }}"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      focusable="false"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </span>
+
+  {%- comment -%} Filled heart — shown when wishlisted {%- endcomment -%}
+  <span class="wishlist-button__icon wishlist-button__icon--filled" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="{{ btn_size == 'lg' ? 28 : 20 }}"
+      height="{{ btn_size == 'lg' ? 28 : 20 }}"
+      fill="currentColor"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      focusable="false"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </span>
+</wishlist-button>

@@ -680,5 +680,51 @@
       "message": "Gift message",
       "max_characters": "{{ max_chars }} characters max"
     }
+  },
+  "wishlist": {
+    "button": {
+      "add": "Add to wishlist",
+      "remove": "Remove from wishlist"
+    },
+    "page": {
+      "title": "My Wishlist",
+      "empty_text": "Your wishlist is empty.",
+      "empty_cta": "Continue shopping",
+      "add_to_cart": "Add to bag",
+      "add_all_to_cart": "Add all to bag",
+      "share": "Share wishlist",
+      "share_copied": "Wishlist link copied to clipboard",
+      "remove": "Remove from wishlist",
+      "loading": "Loading your wishlist..."
+    }
+  },
+  "notify_me": {
+    "sold_out_label": "This item is currently out of stock.",
+    "email_label": "Email address",
+    "email_placeholder": "Enter your email address",
+    "submit": "Notify me when available",
+    "submit_logged_in": "Notify me when available",
+    "success": "You're on the list! We'll email you when this item is back in stock.",
+    "error": "Something went wrong. Please try again."
+  },
+  "sections": {
+    "countdown_timer": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "offer_ended": "This offer has ended."
+    }
+  },
+  "snippets": {
+    "cookie_consent": {
+      "aria_label": "Cookie consent",
+      "default_text": "We use cookies to improve your experience on our site. By continuing to browse, you agree to our use of cookies.",
+      "privacy_policy": "Privacy Policy",
+      "accept": "Accept",
+      "decline": "Decline",
+      "accept_aria": "Accept all cookies",
+      "decline_aria": "Decline non-essential cookies"
+    }
   }
 }

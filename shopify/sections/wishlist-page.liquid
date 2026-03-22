@@ -1,0 +1,179 @@
+{%- liquid
+  render 'section-spacing-and-color'
+  assign display_section = 'true'
+-%}
+
+{%- if display_section == 'true' -%}
+<section
+  class="wishlist-page o-row"
+  data-section-id="{{ section.id }}"
+  data-section-type="wishlist-page"
+>
+  <div class="page-width">
+
+    {%- comment -%} Page heading {%- endcomment -%}
+    <div class="wishlist-page__header">
+      <h1 class="wishlist-page__title">{{- 'wishlist.page.title' | t -}}</h1>
+      <div class="wishlist-page__actions wishlist-page__actions--top js-wishlist-top-actions" hidden>
+        <button
+          type="button"
+          class="button button--secondary js-wishlist-add-all"
+          aria-label="{{ 'wishlist.page.add_all_to_cart' | t }}"
+        >
+          {{- 'wishlist.page.add_all_to_cart' | t -}}
+        </button>
+        <button
+          type="button"
+          class="button button--secondary js-wishlist-share"
+          aria-label="{{ 'wishlist.page.share' | t }}"
+        >
+          {{- 'wishlist.page.share' | t -}}
+        </button>
+      </div>
+    </div>
+
+    {%- comment -%} Share confirmation toast {%- endcomment -%}
+    <div
+      class="wishlist-page__share-toast js-wishlist-share-toast"
+      role="status"
+      aria-live="polite"
+      hidden
+    >
+      {{- 'wishlist.page.share_copied' | t -}}
+    </div>
+
+    {%- comment -%} Empty state {%- endcomment -%}
+    <div class="wishlist-page__empty js-wishlist-empty">
+      <p class="wishlist-page__empty-text">
+        {{- section.settings.empty_text | default: 'wishlist.page.empty_text' | t -}}
+      </p>
+      {%- if section.settings.empty_cta_link != blank -%}
+        <a
+          href="{{ section.settings.empty_cta_link }}"
+          class="button button--primary"
+        >
+          {{- section.settings.empty_cta_label | default: 'wishlist.page.empty_cta' | t -}}
+        </a>
+      {%- else -%}
+        <a href="{{ routes.collections_url }}" class="button button--primary">
+          {{- 'wishlist.page.empty_cta' | t -}}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Product grid — populated by JS {%- endcomment -%}
+    <div
+      class="wishlist-page__grid js-wishlist-grid"
+      data-columns="{{ section.settings.columns }}"
+      style="--wishlist-columns: {{ section.settings.columns }};"
+      hidden
+    ></div>
+
+    {%- comment -%} Loading skeleton — visible while JS initialises {%- endcomment -%}
+    <div class="wishlist-page__loading js-wishlist-loading" aria-busy="true" aria-label="{{ 'wishlist.page.loading' | t }}">
+      <span class="sr-only">{{- 'wishlist.page.loading' | t -}}</span>
+    </div>
+
+  </div>
+</section>
+
+{%- comment -%} Product card template — cloned by JS for each wishlist item {%- endcomment -%}
+<template id="wishlist-item-template">
+  <div class="wishlist-page__item js-wishlist-item" data-variant-id="">
+    <div class="wishlist-page__item-image">
+      <a class="wishlist-page__item-image-link js-wishlist-item-link" href="#">
+        <img
+          class="wishlist-page__item-img js-wishlist-item-img"
+          src=""
+          alt=""
+          width="400"
+          height="400"
+          loading="lazy"
+        >
+      </a>
+    </div>
+    <div class="wishlist-page__item-info">
+      <p class="wishlist-page__item-title">
+        <a class="js-wishlist-item-title-link" href="#"></a>
+      </p>
+      <p class="wishlist-page__item-price js-wishlist-item-price"></p>
+    </div>
+    <div class="wishlist-page__item-actions">
+      <a
+        href="#"
+        class="button button--primary js-wishlist-item-atc"
+      >
+        {{- 'wishlist.page.add_to_cart' | t -}}
+      </a>
+      <button
+        type="button"
+        class="wishlist-page__item-remove js-wishlist-item-remove"
+        aria-label="{{ 'wishlist.page.remove' | t }}"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          <path d="M10 11v6"/>
+          <path d="M14 11v6"/>
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+        <span class="sr-only">{{- 'wishlist.page.remove' | t -}}</span>
+      </button>
+    </div>
+  </div>
+</template>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Wishlist Page",
+  "tag": "div",
+  "class": "shopify-section--wishlist-page",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "options": [
+        { "value": "2", "label": "2 columns" },
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "header",
+      "content": "Empty State"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty state message",
+      "default": "Your wishlist is empty."
+    },
+    {
+      "type": "text",
+      "id": "empty_cta_label",
+      "label": "Empty state button label",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "empty_cta_link",
+      "label": "Empty state button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wishlist Page"
+    }
+  ]
+}
+{% endschema %}

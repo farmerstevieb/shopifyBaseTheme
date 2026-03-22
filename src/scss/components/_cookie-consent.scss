@@ -1,0 +1,64 @@
+/* stylelint-disable custom-property-pattern */
+
+.c-cookie-consent {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: theme("zIndex.dialog");
+  background-color: var(--c-bg-white, #ffffff);
+  border-top: 1px solid theme("colors.border.light");
+  box-shadow: 0 -4px 24px rgb(0 0 0 / 0.08);
+
+  // Banner is hidden by default; the web component removes [hidden] if consent
+  // has not yet been recorded. This prevents any flash of the banner on return
+  // visits.
+  &[hidden] {
+    display: none;
+  }
+
+  &__inner {
+    @apply mx-auto flex max-w-screen-xl flex-col items-start gap-4 px-row py-5 md:flex-row md:items-center md:gap-8 md:py-4;
+  }
+
+  &__body {
+    @apply flex-1;
+  }
+
+  &__text {
+    @apply text-sm leading-relaxed text-grey-20;
+
+    > a {
+      @apply text-primary underline;
+
+      &:hover {
+        @apply no-underline;
+      }
+    }
+  }
+
+  &__privacy-link {
+    @apply ml-1 whitespace-nowrap;
+  }
+
+  &__actions {
+    @apply flex shrink-0 flex-wrap gap-3;
+  }
+
+  &__btn {
+    @apply cursor-pointer whitespace-nowrap text-sm;
+
+    &--accept {
+      // .btn --primary styles inherited
+    }
+
+    &--decline {
+      // .btn --secondary styles inherited
+      @apply border-grey-80 text-grey-20;
+
+      &:hover {
+        @apply border-grey-40 text-primary;
+      }
+    }
+  }
+}

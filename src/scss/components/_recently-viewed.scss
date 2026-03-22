@@ -1,0 +1,91 @@
+/* stylelint-disable custom-property-pattern */
+
+.c-recently-viewed {
+  display: block;
+
+  &__inner {
+    // hidden attribute removes from flow until JS populates content
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  &__title {
+    @apply mb-8 text-center text-2xl font-medium md:mb-12;
+  }
+
+  &__grid {
+    display: grid;
+    gap: theme("spacing.5");
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    // Column count driven by data-columns attribute set by JS / section setting
+    &[data-columns="2"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &[data-columns="3"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      @screen md {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    &[data-columns="4"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      @screen md {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    &[data-columns="5"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      @screen md {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      @screen lg {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+  }
+
+  &__item {
+    @apply relative flex w-full flex-col;
+  }
+
+  // ── CDN fallback card styles ──────────────────────────────────────────────
+
+  &__link {
+    @apply flex flex-col gap-3 no-underline;
+
+    &:hover .c-recently-viewed__img {
+      opacity: 0.85;
+    }
+  }
+
+  &__img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: opacity 200ms ease;
+    aspect-ratio: 300 / 384;
+  }
+
+  &__card-info {
+    @apply flex flex-col gap-1;
+  }
+
+  &__card-title {
+    @apply text-sm font-medium text-primary;
+  }
+
+  &__card-price {
+    @apply text-sm text-grey-40;
+  }
+}

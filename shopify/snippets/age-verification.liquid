@@ -1,0 +1,106 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Age Verification Modal
+  -------------------------------------------------------------------------------
+  Description
+  Full-screen age gate modal. Checks sessionStorage on load — if the visitor
+  has already verified, the modal is not rendered at all.
+  -------------------------------------------------------------------------------
+  Accepts
+  - No parameters. Controlled by theme setting `enable_age_verification`.
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'age-verification' -%}
+  -------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- if settings.enable_age_verification -%}
+  {%- assign redirect_url = settings.age_verification_redirect_url | default: 'https://www.google.com' -%}
+
+  <div
+    class="age-verification"
+    id="age-verification"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="age-verification-heading"
+    data-redirect-url="{{ redirect_url | escape }}"
+    hidden
+  >
+    <div class="age-verification__inner">
+      {%- if settings.brand_logo != blank -%}
+        <div class="age-verification__logo">
+          {{
+            settings.brand_logo
+            | image_url: width: 200
+            | image_tag: loading: 'eager', alt: shop.name
+          }}
+        </div>
+      {%- else -%}
+        <div class="age-verification__logo age-verification__logo--text">
+          {{ shop.name }}
+        </div>
+      {%- endif -%}
+
+      <h2 class="age-verification__heading" id="age-verification-heading">
+        {{ 'age_verification.heading' | t: default: 'Are you 18 or older?' }}
+      </h2>
+
+      <p class="age-verification__subtext">
+        {{ 'age_verification.subtext' | t: default: 'You must be of legal age to enter this site.' }}
+      </p>
+
+      <div class="age-verification__actions">
+        <button
+          class="button button--primary age-verification__btn age-verification__btn--yes"
+          id="age-verification-yes"
+          type="button"
+        >
+          {{ 'age_verification.yes' | t: default: 'Yes, I am 18+' }}
+        </button>
+
+        <button
+          class="button button--secondary age-verification__btn age-verification__btn--no"
+          id="age-verification-no"
+          type="button"
+        >
+          {{ 'age_verification.no' | t: default: 'No, take me away' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var STORAGE_KEY = 'ecomplete_age_verified';
+      var modal = document.getElementById('age-verification');
+
+      if (!modal) return;
+
+      // If already verified this session, do nothing
+      if (sessionStorage.getItem(STORAGE_KEY) === 'true') return;
+
+      // Show modal and lock scroll
+      modal.removeAttribute('hidden');
+      document.body.classList.add('age-verification-open');
+
+      // Prevent escape key from bypassing
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+
+      document.getElementById('age-verification-yes').addEventListener('click', function () {
+        sessionStorage.setItem(STORAGE_KEY, 'true');
+        modal.setAttribute('hidden', '');
+        document.body.classList.remove('age-verification-open');
+      });
+
+      document.getElementById('age-verification-no').addEventListener('click', function () {
+        var redirectUrl = modal.dataset.redirectUrl || 'https://www.google.com';
+        window.location.href = redirectUrl;
+      });
+    })();
+  </script>
+{%- endif -%}

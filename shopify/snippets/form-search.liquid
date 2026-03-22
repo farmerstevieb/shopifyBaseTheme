@@ -1,23 +1,37 @@
-<predictive-search class="c-search__container">
-  <form action="{{ routes.search_url }}" class="c-search__form  js-search-form" method="get" role="search">
-    <input name="type" type="hidden" value="product">
-    <input
-      name="q"
-      type="search"
-      class="c-search__input  {%- if settings.predictive_search_enabled -%}js-search-input{%- endif -%}"
-      placeholder="{{ "general.search.placeholder" | t }}"
-      value="{{ search.terms | escape | remove_first: '*' }}"
-      aria-label="Site Search Input Field"
-      {%- if settings.predictive_search_enabled -%}
-        role="combobox" aria-expanded="false" aria-owns="predictive-search-results-list"
-        aria-controls="predictive-search-results-list" aria-haspopup="listbox" aria-autocomplete="list"
-        autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false"
-      {%- endif -%}
-    >
-    <button aria-label="Search" class="c-search__submit" type="submit">
-      {% render 'theme-icons', icon: 'search', class: 'o-icon--search-input' %}
-    </button>
-  </form>
+{%- comment -%}
+  form-search.liquid
+  ──────────────────
+  Renders the header search bar. When eComplete Search is enabled in theme
+  settings the enhanced <ecomplete-search> component is used instead of the
+  native Shopify predictive search. If the ecomplete-search app is not installed
+  the JS module falls back to /search/suggest.json automatically, so native
+  functionality is always preserved.
+{%- endcomment -%}
 
-  <div class="c-search__form-results  js-search-results"></div>
-</predictive-search>
+{%- if settings.enable_ecomplete_search -%}
+  {%- render 'ecomplete-search' -%}
+{%- else -%}
+  <predictive-search class="c-search__container">
+    <form action="{{ routes.search_url }}" class="c-search__form  js-search-form" method="get" role="search">
+      <input name="type" type="hidden" value="product">
+      <input
+        name="q"
+        type="search"
+        class="c-search__input  {%- if settings.predictive_search_enabled -%}js-search-input{%- endif -%}"
+        placeholder="{{ "general.search.placeholder" | t }}"
+        value="{{ search.terms | escape | remove_first: '*' }}"
+        aria-label="Site Search Input Field"
+        {%- if settings.predictive_search_enabled -%}
+          role="combobox" aria-expanded="false" aria-owns="predictive-search-results-list"
+          aria-controls="predictive-search-results-list" aria-haspopup="listbox" aria-autocomplete="list"
+          autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false"
+        {%- endif -%}
+      >
+      <button aria-label="Search" class="c-search__submit" type="submit">
+        {% render 'theme-icons', icon: 'search', class: 'o-icon--search-input' %}
+      </button>
+    </form>
+
+    <div class="c-search__form-results  js-search-results"></div>
+  </predictive-search>
+{%- endif -%}

@@ -1,0 +1,517 @@
+/**
+ * _ecomplete-search.scss
+ * ───────────────────────
+ * Styles for the <ecomplete-search> web component.
+ *
+ * BEM root: .c-esearch
+ *
+ * Structure:
+ *   .c-esearch                   — web component host (position: relative)
+ *   .c-esearch__form             — <form> wrapper (flex row)
+ *   .c-esearch__input            — text input
+ *   .c-esearch__actions          — submit + chat-toggle group
+ *   .c-esearch__submit           — search submit button
+ *   .c-esearch__chat-toggle      — opens chat panel
+ *   .c-esearch__dropdown         — results panel (absolute, full-width)
+ *     .c-esearch__results        — <ul> of product results
+ *       .c-esearch__result       — single product <li>
+ *         .c-esearch__result-img — product thumbnail
+ *         .c-esearch__result-body— text content column
+ *         .c-esearch__result-title
+ *         .c-esearch__result-vendor
+ *         .c-esearch__result-pricing
+ *         .c-esearch__result-price
+ *         .c-esearch__result-compare
+ *     .c-esearch__view-all       — "View all results for …" row
+ *     .c-esearch__popular        — popular searches block
+ *       .c-esearch__popular-label
+ *       .c-esearch__popular-list
+ *         .c-esearch__popular-pill
+ *     .c-esearch__error          — error message
+ *   .c-esearch__chat             — AI chat side/below panel
+ *     .c-esearch__chat-messages  — scrollable message history
+ *     .c-esearch__chat-bubble    — individual message
+ *     .c-esearch__chat-form      — input row
+ *     .c-esearch__chat-input     — chat text field
+ *     .c-esearch__chat-send      — chat send button
+ *     .c-esearch__chat-products  — inline product suggestions from chat
+ *     .c-esearch__chat-product   — single chat product card
+ *   .c-esearch__highlight        — highlighted matching text in result titles
+ */
+
+// ─── Variables ─────────────────────────────────────────────────────────────────
+
+$esearch-bg:             var(--c-bg, #ffffff);
+$esearch-border:         var(--c-border-light, #e9e9e9);
+$esearch-shadow:         0 8px 24px rgb(0 0 0 / 12%);
+$esearch-radius:         4px;
+$esearch-thumb-size:     60px;
+$esearch-z:              200;
+$esearch-transition:     150ms ease;
+
+// ─── Host ──────────────────────────────────────────────────────────────────────
+
+.c-esearch {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+// ─── Form row ─────────────────────────────────────────────────────────────────
+
+.c-esearch__form {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// ─── Input ─────────────────────────────────────────────────────────────────────
+
+.c-esearch__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 0.75rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+
+  // Hide browser's native clear / search decoration buttons
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  &::placeholder {
+    color: var(--c-text-muted, #999);
+  }
+
+  // Apply base header input styles already defined in _header.scss
+  @apply text-md font-semibold uppercase leading-zero tracking-wide text-grey-20 text-opacity-50 transition-opacity;
+
+  .header__search--active & {
+    @apply opacity-100;
+  }
+}
+
+// ─── Actions (submit + chat toggle) ────────────────────────────────────────────
+
+.c-esearch__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.c-esearch__submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.75rem;
+  height: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  transition: opacity $esearch-transition;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.c-esearch__chat-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid $esearch-border;
+  border-radius: 50%;
+  cursor: pointer;
+  color: inherit;
+  transition: background $esearch-transition, color $esearch-transition;
+
+  &:hover,
+  &[aria-expanded="true"] {
+    background: var(--c-primary, #1c1c1c);
+    color: var(--c-primary-inverse, #ffffff);
+    border-color: var(--c-primary, #1c1c1c);
+  }
+}
+
+// ─── Loading indicator ─────────────────────────────────────────────────────────
+
+.c-esearch--loading .c-esearch__submit::after {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: esearch-spin 0.6s linear infinite;
+  margin-left: 0.25rem;
+}
+
+@keyframes esearch-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ─── Dropdown ──────────────────────────────────────────────────────────────────
+
+.c-esearch__dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  z-index: $esearch-z;
+  background: $esearch-bg;
+  border: 1px solid $esearch-border;
+  border-radius: $esearch-radius;
+  box-shadow: $esearch-shadow;
+  overflow: hidden;
+  max-height: 70vh;
+  overflow-y: auto;
+
+  // Hidden by default via the [hidden] attribute; this handles the
+  // CSS-side transition when the class is also present.
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity $esearch-transition, transform $esearch-transition;
+  pointer-events: none;
+
+  &--visible,
+  &:not([hidden]) {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  // Mobile: full-screen overlay
+  @media (max-width: 639px) {
+    position: fixed;
+    top: var(--header-group-height, 0);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: none;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+// ─── Results list ──────────────────────────────────────────────────────────────
+
+.c-esearch__results {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+// ─── Single result item ────────────────────────────────────────────────────────
+
+.c-esearch__result {
+  display: block;
+  cursor: pointer;
+  transition: background $esearch-transition;
+
+  &:hover,
+  &--active {
+    background: var(--c-bg-hover, #f5f5f5);
+  }
+}
+
+.c-esearch__result-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+// ─── Product thumbnail ─────────────────────────────────────────────────────────
+
+.c-esearch__result-img {
+  flex-shrink: 0;
+  width: $esearch-thumb-size;
+  height: $esearch-thumb-size;
+  object-fit: cover;
+  border-radius: $esearch-radius;
+  background: var(--c-bg-secondary, #f0f0f0);
+
+  &--placeholder {
+    background: var(--c-bg-secondary, #f0f0f0);
+  }
+}
+
+// ─── Text content column ───────────────────────────────────────────────────────
+
+.c-esearch__result-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.c-esearch__result-vendor {
+  font-size: 0.6875rem;
+  line-height: 1;
+  color: var(--c-text-muted, #999);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.c-esearch__result-title {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--c-text, #1c1c1c);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c-esearch__result-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  margin-top: 0.125rem;
+}
+
+.c-esearch__result-price {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text, #1c1c1c);
+}
+
+.c-esearch__result-compare {
+  font-size: 0.75rem;
+  color: var(--c-text-muted, #999);
+  text-decoration: line-through;
+}
+
+// ─── Highlight ─────────────────────────────────────────────────────────────────
+
+.c-esearch__highlight {
+  background: transparent;
+  color: inherit;
+  font-weight: 700;
+}
+
+// ─── View all link ─────────────────────────────────────────────────────────────
+
+.c-esearch__view-all {
+  padding: 0.625rem 1rem;
+  border-top: 1px solid $esearch-border;
+}
+
+.c-esearch__view-all-link {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--c-text-muted, #666);
+  text-decoration: none;
+  transition: color $esearch-transition;
+
+  &:hover {
+    color: var(--c-primary, #1c1c1c);
+  }
+
+  strong {
+    color: var(--c-text, #1c1c1c);
+  }
+}
+
+// ─── Popular searches ──────────────────────────────────────────────────────────
+
+.c-esearch__popular {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid $esearch-border;
+}
+
+.c-esearch__popular-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c-text-muted, #999);
+  margin-bottom: 0.5rem;
+}
+
+.c-esearch__popular-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.c-esearch__popular-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8125rem;
+  background: var(--c-bg-secondary, #f0f0f0);
+  color: var(--c-text, #1c1c1c);
+  border: 1px solid $esearch-border;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background $esearch-transition, border-color $esearch-transition;
+
+  &:hover {
+    background: var(--c-primary, #1c1c1c);
+    border-color: var(--c-primary, #1c1c1c);
+    color: var(--c-primary-inverse, #ffffff);
+  }
+}
+
+// ─── Error state ───────────────────────────────────────────────────────────────
+
+.c-esearch__error {
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--c-text-muted, #999);
+  text-align: center;
+}
+
+// ─── Chat panel ────────────────────────────────────────────────────────────────
+
+.c-esearch__chat {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  z-index: $esearch-z;
+  background: $esearch-bg;
+  border: 1px solid $esearch-border;
+  border-radius: $esearch-radius;
+  box-shadow: $esearch-shadow;
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+
+  @media (max-width: 639px) {
+    position: fixed;
+    top: var(--header-group-height, 0);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: none;
+    border-radius: 0;
+  }
+}
+
+.c-esearch__chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.c-esearch__chat-bubble {
+  padding: 0.5rem 0.75rem;
+  border-radius: $esearch-radius;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-width: 80%;
+
+  &--user {
+    align-self: flex-end;
+    background: var(--c-primary, #1c1c1c);
+    color: var(--c-primary-inverse, #ffffff);
+  }
+
+  &--assistant {
+    align-self: flex-start;
+    background: var(--c-bg-secondary, #f0f0f0);
+    color: var(--c-text, #1c1c1c);
+  }
+}
+
+.c-esearch__chat-products {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+.c-esearch__chat-product {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 80px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.6875rem;
+  text-align: center;
+
+  img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: $esearch-radius;
+    background: var(--c-bg-secondary, #f0f0f0);
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.c-esearch__chat-form {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid $esearch-border;
+  padding: 0.5rem 0.75rem;
+  gap: 0.5rem;
+}
+
+.c-esearch__chat-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  font: inherit;
+  font-size: 0.875rem;
+  background: transparent;
+  color: inherit;
+
+  &::placeholder {
+    color: var(--c-text-muted, #999);
+  }
+}
+
+.c-esearch__chat-send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  flex-shrink: 0;
+  background: var(--c-primary, #1c1c1c);
+  color: var(--c-primary-inverse, #ffffff);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity $esearch-transition;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

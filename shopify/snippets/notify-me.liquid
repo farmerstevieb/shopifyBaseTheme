@@ -1,0 +1,96 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Notify Me (Back-in-Stock)
+  -------------------------------------------------------------------------------
+  Renders a back-in-stock notification form when a variant is sold out.
+
+  Accepts:
+  - variant: {Object} Shopify variant object (required)
+  - product: {Object} Shopify product object (required)
+  - api_url: {String} ecomplete API base URL — reads from body[data-wishlist-api-url]
+              if not provided (optional)
+  -------------------------------------------------------------------------------
+  Usage (inside a product section, conditionally on sold-out state):
+    {%- unless variant.available -%}
+      {%- render 'notify-me', variant: variant, product: product -%}
+    {%- endunless -%}
+  -------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- liquid
+  assign notify_variant = variant | default: product.selected_or_first_available_variant
+-%}
+
+{%- unless notify_variant.available -%}
+<div
+  class="notify-me js-notify-me"
+  data-variant-id="{{ notify_variant.id }}"
+  data-product-id="{{ product.id }}"
+  data-product-title="{{ product.title | escape }}"
+>
+  <p class="notify-me__label">
+    {{- 'notify_me.sold_out_label' | t -}}
+  </p>
+
+  <form class="notify-me__form js-notify-me-form" novalidate>
+    <input type="hidden" name="variant_id" value="{{ notify_variant.id }}">
+    <input type="hidden" name="product_id" value="{{ product.id }}">
+    <input type="hidden" name="product_title" value="{{ product.title | escape }}">
+    <input type="hidden" name="product_handle" value="{{ product.handle }}">
+    {%- if customer -%}
+      <input type="hidden" name="email" value="{{ customer.email }}">
+    {%- endif -%}
+
+    <div class="notify-me__fields">
+      {%- unless customer -%}
+        <label class="sr-only" for="notify-me-email-{{ notify_variant.id }}">
+          {{- 'notify_me.email_label' | t -}}
+        </label>
+        <input
+          id="notify-me-email-{{ notify_variant.id }}"
+          class="notify-me__input js-notify-me-email"
+          type="email"
+          name="email"
+          placeholder="{{ 'notify_me.email_placeholder' | t }}"
+          autocomplete="email"
+          required
+        >
+      {%- endunless -%}
+
+      <button
+        type="submit"
+        class="notify-me__submit button button--primary js-notify-me-submit"
+      >
+        <span class="js-notify-me-btn-text">
+          {%- if customer -%}
+            {{- 'notify_me.submit_logged_in' | t -}}
+          {%- else -%}
+            {{- 'notify_me.submit' | t -}}
+          {%- endif -%}
+        </span>
+        <span class="notify-me__spinner loading-overlay--collection invisible" aria-hidden="true">
+          <span class="loading-overlay__spinner"></span>
+        </span>
+      </button>
+    </div>
+
+    <div
+      class="notify-me__state notify-me__state--success js-notify-me-success"
+      role="status"
+      aria-live="polite"
+      hidden
+    >
+      {{- 'notify_me.success' | t -}}
+    </div>
+
+    <div
+      class="notify-me__state notify-me__state--error js-notify-me-error"
+      role="alert"
+      aria-live="assertive"
+      hidden
+    >
+      {{- 'notify_me.error' | t -}}
+    </div>
+  </form>
+</div>
+{%- endunless -%}

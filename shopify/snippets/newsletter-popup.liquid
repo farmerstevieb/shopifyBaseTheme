@@ -1,0 +1,143 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Snippet - Newsletter Popup
+  -------------------------------------------------------------------------------
+  Description
+  A modal newsletter signup popup. Triggered by JS after a delay or on exit
+  intent. Reads settings from the section that renders it.
+  -------------------------------------------------------------------------------
+  Accepts
+  - popup_id: {String} Unique ID for the popup (defaults to 'newsletter-popup')
+  - heading: {String}
+  - body_text: {String}
+  - button_text: {String}
+  - image: {Image object, optional}
+  - delay: {Number} seconds before showing (default 5)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'newsletter-popup',
+    popup_id: 'newsletter-popup',
+    heading: section.settings.heading,
+    body_text: section.settings.body_text,
+    button_text: section.settings.button_text,
+    image: section.settings.image,
+    delay: section.settings.delay
+  -%}
+  -------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- liquid
+  assign popup_id = popup_id | default: 'newsletter-popup'
+  assign delay = delay | default: 5
+  assign button_text = button_text | default: 'Subscribe'
+-%}
+
+<div
+  class="newsletter-popup"
+  id="{{ popup_id }}"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="{{ popup_id }}-heading"
+  aria-hidden="true"
+  data-newsletter-popup
+  data-delay="{{ delay }}"
+>
+  <div class="newsletter-popup__backdrop" data-newsletter-popup-backdrop></div>
+
+  <div class="newsletter-popup__dialog">
+    <button
+      class="newsletter-popup__close"
+      type="button"
+      aria-label="{{ 'general.accessibility.close' | t }}"
+      data-newsletter-popup-close
+    >
+      {%- render 'icon-close' -%}
+    </button>
+
+    <div class="newsletter-popup__inner {% if image != blank %}newsletter-popup__inner--has-image{% endif %}">
+      {%- if image != blank -%}
+        <div class="newsletter-popup__media">
+          {{-
+            image
+            | image_url: width: 600
+            | image_tag:
+              loading: 'lazy',
+              class: 'newsletter-popup__image',
+              widths: '300, 400, 600',
+              sizes: '(min-width: 768px) 300px, 100vw'
+          -}}
+        </div>
+      {%- endif -%}
+
+      <div class="newsletter-popup__content">
+        {%- if heading != blank -%}
+          <h2 class="newsletter-popup__heading" id="{{ popup_id }}-heading">
+            {{- heading -}}
+          </h2>
+        {%- endif -%}
+
+        {%- if body_text != blank -%}
+          <div class="newsletter-popup__body rte">
+            {{- body_text -}}
+          </div>
+        {%- endif -%}
+
+        <div class="newsletter-popup__form-wrap">
+          {%- form 'customer',
+            class: 'form form--newsletter newsletter-popup__form',
+            id: 'newsletter-popup-form'
+          -%}
+            {{- form.errors | default_errors -}}
+
+            {%- if form.posted_successfully? -%}
+              <div class="newsletter-popup__success" data-newsletter-popup-success>
+                <p class="form__state form__state--success">
+                  {{- 'customer.newsletter_form.success' | t -}}
+                </p>
+              </div>
+            {%- else -%}
+              <input name="contact[tags]" type="hidden" value="newsletter">
+
+              <div class="newsletter-popup__fields">
+                <label class="o-input" data-field="input">
+                  <input
+                    class="o-input__field o-input__field--newsletter"
+                    required
+                    type="email"
+                    name="contact[email]"
+                    id="{{ popup_id }}-email"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    autocomplete="email"
+                    aria-label="{{ 'customer.newsletter_form.email' | t }}"
+                    placeholder="{{ 'customer.newsletter_form.email' | t }} *"
+                    value="{% if customer %}{{ customer.email }}{% endif %}"
+                    {% if form.errors %}
+                      autofocus
+                      aria-invalid="true"
+                    {% endif %}
+                  >
+                </label>
+
+                <button
+                  class="button button--primary button--full button--tall"
+                  type="submit"
+                  name="subscribe"
+                >
+                  {{- button_text -}}
+                </button>
+              </div>
+
+              {%- if form.errors -%}
+                <p class="form__state form__state--error">
+                  {{- form.errors.translated_fields.email | capitalize }}
+                  {{ form.errors.messages.email -}}
+                </p>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

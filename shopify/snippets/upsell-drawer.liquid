@@ -1,0 +1,86 @@
+{%- comment -%}
+  Upsell Drawer Snippet
+  ─────────────────────
+  Slide-in drawer triggered after add-to-cart.
+  Rendered once in theme.liquid; the <upsell-drawer> web component
+  takes care of fetching recommendations and opening on cart events.
+
+  Parameters (passed via render tag):
+  - section_id        : parent section id for cache-busting
+  - api_base_url      : optional override for ecomplete API base URL
+{%- endcomment -%}
+
+<upsell-drawer
+  id="upsell-drawer"
+  aria-hidden="true"
+  aria-label="You might also like"
+  data-api-base="{{ api_base_url | default: '/apps/ecompleteSearch/api' }}"
+  data-track-enabled="true"
+>
+  {%- comment -%} Backdrop {%- endcomment -%}
+  <div class="upsell-drawer__backdrop" data-upsell-backdrop tabindex="-1" aria-hidden="true"></div>
+
+  {%- comment -%} Panel {%- endcomment -%}
+  <div
+    class="upsell-drawer__panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="upsell-drawer-heading"
+  >
+    <div class="upsell-drawer__header">
+      <h2 id="upsell-drawer-heading" class="upsell-drawer__heading">
+        {{ 'sections.upsell.drawer_heading' | t | default: 'You might also like' }}
+      </h2>
+      <button
+        class="upsell-drawer__close"
+        type="button"
+        data-upsell-close
+        aria-label="{{ 'accessibility.close' | t | default: 'Close' }}"
+      >
+        {%- render 'theme-icons' with 'close', width: 20, height: 20 -%}
+      </button>
+    </div>
+
+    {%- comment -%} Progressive discount banner — shown when discountPercent is set on the rule {%- endcomment -%}
+    <div class="upsell-drawer__discount-banner" data-upsell-discount-banner hidden>
+      <span class="upsell-drawer__discount-text" data-upsell-discount-text></span>
+    </div>
+
+    {%- comment -%} Progressive discount counter {%- endcomment -%}
+    <div class="upsell-drawer__threshold" data-upsell-threshold hidden>
+      <div class="upsell-drawer__threshold-bar">
+        <div class="upsell-drawer__threshold-progress" data-upsell-threshold-progress></div>
+      </div>
+      <p class="upsell-drawer__threshold-label" data-upsell-threshold-label></p>
+    </div>
+
+    {%- comment -%} Product list — populated by JS {%- endcomment -%}
+    <div class="upsell-drawer__body" data-upsell-body>
+      <ul class="upsell-drawer__list" data-upsell-list aria-live="polite">
+        {%- comment -%} Items injected by upsell.ts {%- endcomment -%}
+      </ul>
+
+      {%- comment -%} Loading skeleton {%- endcomment -%}
+      <div class="upsell-drawer__loading" data-upsell-loading hidden>
+        {%- for i in (1..4) -%}
+          <div class="upsell-drawer__skeleton">
+            <div class="upsell-drawer__skeleton-img"></div>
+            <div class="upsell-drawer__skeleton-text"></div>
+            <div class="upsell-drawer__skeleton-text upsell-drawer__skeleton-text--short"></div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} Empty state {%- endcomment -%}
+      <p class="upsell-drawer__empty" data-upsell-empty hidden>
+        {{ 'sections.upsell.no_recommendations' | t | default: 'No recommendations available.' }}
+      </p>
+    </div>
+
+    <div class="upsell-drawer__footer">
+      <a href="{{ routes.cart_url }}" class="button button--secondary button--full">
+        {{ 'sections.cart.view_cart' | t | default: 'View cart' }}
+      </a>
+    </div>
+  </div>
+</upsell-drawer>

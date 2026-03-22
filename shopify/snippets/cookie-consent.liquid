@@ -1,0 +1,79 @@
+{%- liquid
+  assign consent_text = settings.cookie_consent_text
+  assign privacy_url = settings.cookie_privacy_url
+  assign accept_label = settings.cookie_accept_label
+  assign decline_label = settings.cookie_decline_label
+-%}
+
+{%- comment -%}
+  Cookie Consent Banner
+  ─────────────────────
+  Rendered from layout/theme.liquid. The <cookie-consent-banner> web component
+  reads localStorage on DOMContentLoaded and hides itself if consent has already
+  been recorded. Rendering is always done server-side so it is immediately
+  available without a flash of unstyled content on first visit.
+
+  Settings are pulled from Global Theme Settings (settings_schema.json).
+  The component dispatches:
+    • consent:accepted  — user clicked Accept
+    • consent:declined  — user clicked Decline
+  These events bubble up to window for GTM / analytics listeners.
+{%- endcomment -%}
+
+<cookie-consent-banner
+  class="c-cookie-consent"
+  role="dialog"
+  aria-modal="false"
+  aria-label="{{ 'snippets.cookie_consent.aria_label' | t }}"
+  aria-live="polite"
+>
+  <div class="c-cookie-consent__inner">
+    <div class="c-cookie-consent__body">
+      <p class="c-cookie-consent__text">
+        {%- if consent_text != blank -%}
+          {{ consent_text }}
+        {%- else -%}
+          {{ 'snippets.cookie_consent.default_text' | t }}
+        {%- endif -%}
+        {%- if privacy_url != blank -%}
+          <a
+            href="{{ privacy_url }}"
+            class="c-cookie-consent__privacy-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{- 'snippets.cookie_consent.privacy_policy' | t -}}
+          </a>
+        {%- endif -%}
+      </p>
+    </div>
+
+    <div class="c-cookie-consent__actions">
+      <button
+        type="button"
+        class="c-cookie-consent__btn c-cookie-consent__btn--accept btn btn--primary"
+        data-action="accept"
+        aria-label="{{ 'snippets.cookie_consent.accept_aria' | t }}"
+      >
+        {%- if accept_label != blank -%}
+          {{ accept_label | escape }}
+        {%- else -%}
+          {{ 'snippets.cookie_consent.accept' | t }}
+        {%- endif -%}
+      </button>
+
+      <button
+        type="button"
+        class="c-cookie-consent__btn c-cookie-consent__btn--decline btn btn--secondary"
+        data-action="decline"
+        aria-label="{{ 'snippets.cookie_consent.decline_aria' | t }}"
+      >
+        {%- if decline_label != blank -%}
+          {{ decline_label | escape }}
+        {%- else -%}
+          {{ 'snippets.cookie_consent.decline' | t }}
+        {%- endif -%}
+      </button>
+    </div>
+  </div>
+</cookie-consent-banner>

@@ -1,0 +1,112 @@
+{%- comment -%}
+  ecomplete-search.liquid
+  ───────────────────────
+  Enhanced search form powered by the ecomplete/ecomplete-search Shopify app.
+
+  Renders an <ecomplete-search> web component when settings.enable_ecomplete_search
+  is true. The component fetches instant results from the ecompleteSearch storefront
+  API and renders a live dropdown. Falls back to native Shopify search on any API
+  error or if the app is not installed.
+
+  Data attributes consumed by ecomplete-search.ts:
+    data-shop             — shop permanent domain (required for all API calls)
+    data-search-url       — fesearch endpoint
+    data-track-url        — track-click endpoint
+    data-chat-url         — chat endpoint
+    data-limit            — max results to fetch (from settings)
+    data-show-popular     — whether to show popular searches section
+    data-show-chat        — whether to show the chat toggle button
+    data-search-page-url  — /search?q=… URL for "View all results" link
+{%- endcomment -%}
+
+<ecomplete-search
+  class="c-esearch  js-ecomplete-search"
+  data-shop="{{ shop.permanent_domain }}"
+  data-search-url="/apps/ecompleteSearch/api/fesearch"
+  data-track-url="/apps/ecompleteSearch/api/track-click"
+  data-chat-url="/apps/ecompleteSearch/api/chat"
+  data-limit="{{ settings.ecomplete_search_results_limit | default: 8 }}"
+  data-show-popular="{{ settings.ecomplete_search_show_popular | default: true }}"
+  data-show-chat="{{ settings.ecomplete_search_show_chat | default: false }}"
+  data-search-page-url="{{ routes.search_url }}"
+>
+  <form
+    action="{{ routes.search_url }}"
+    class="c-esearch__form  js-esearch-form"
+    method="get"
+    role="search"
+  >
+    <input name="type" type="hidden" value="product">
+
+    <input
+      name="q"
+      type="search"
+      class="c-esearch__input  js-esearch-input"
+      placeholder="{{ 'general.search.placeholder' | t }}"
+      value="{{ search.terms | escape | remove_first: '*' }}"
+      aria-label="{{ 'general.search.placeholder' | t }}"
+      role="combobox"
+      aria-expanded="false"
+      aria-owns="ecomplete-search-results"
+      aria-controls="ecomplete-search-results"
+      aria-haspopup="listbox"
+      aria-autocomplete="list"
+      autocorrect="off"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+    >
+
+    <div class="c-esearch__actions">
+      <button
+        aria-label="{{ 'general.search.submit' | t | default: 'Search' }}"
+        class="c-esearch__submit"
+        type="submit"
+      >
+        {%- render 'theme-icons', icon: 'search', class: 'o-icon--search-input' -%}
+      </button>
+
+      {%- if settings.ecomplete_search_show_chat -%}
+        <button
+          type="button"
+          class="c-esearch__chat-toggle  js-esearch-chat-toggle"
+          aria-label="Open AI chat assistant"
+          aria-expanded="false"
+        >
+          {%- render 'theme-icons', icon: 'chat', class: 'o-icon--chat' -%}
+        </button>
+      {%- endif -%}
+    </div>
+  </form>
+
+  {{- /* Live results dropdown — populated by JS */ -}}
+  <div
+    id="ecomplete-search-results"
+    class="c-esearch__dropdown  js-esearch-dropdown"
+    role="listbox"
+    aria-label="Search suggestions"
+    hidden
+  ></div>
+
+  {{- /* Chat panel — populated by JS when show-chat is enabled */ -}}
+  {%- if settings.ecomplete_search_show_chat -%}
+    <div
+      class="c-esearch__chat  js-esearch-chat"
+      aria-label="AI chat assistant"
+      hidden
+    >
+      <div class="c-esearch__chat-messages  js-esearch-chat-messages"></div>
+      <form class="c-esearch__chat-form  js-esearch-chat-form">
+        <input
+          type="text"
+          class="c-esearch__chat-input  js-esearch-chat-input"
+          placeholder="Ask a question…"
+          autocomplete="off"
+        >
+        <button type="submit" class="c-esearch__chat-send" aria-label="Send">
+          {%- render 'theme-icons', icon: 'arrow-right', class: 'o-icon--chat-send' -%}
+        </button>
+      </form>
+    </div>
+  {%- endif -%}
+</ecomplete-search>

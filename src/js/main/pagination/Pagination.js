@@ -33,6 +33,26 @@ class Pagination {
     this.trigger.addEventListener("click", () => {
       this.paginate();
     });
+
+    if (this.element.hasAttribute("data-infinite-scroll")) {
+      this.initInfiniteScroll();
+    }
+  }
+
+  initInfiniteScroll() {
+    const threshold = this.element.dataset.infiniteScrollThreshold || "200px";
+
+    this.infiniteObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !this.trigger.disabled) {
+          this.infiniteObserver.disconnect();
+          this.paginate().then(() => this.initInfiniteScroll());
+        }
+      },
+      { rootMargin: `0px 0px ${threshold} 0px` }
+    );
+
+    this.infiniteObserver.observe(this.trigger);
   }
 
   updateCount() {
@@ -59,8 +79,8 @@ class Pagination {
   }
 
   paginate() {
-    if (this.pagination == null) return;
-    this.handleTriggerClick();
+    if (this.pagination == null) return Promise.resolve();
+    return this.handleTriggerClick();
   }
 
   async handleTriggerClick() {

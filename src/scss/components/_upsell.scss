@@ -1,0 +1,528 @@
+// ---------------------------------------------------------------------------
+// Upsell Drawer
+// ---------------------------------------------------------------------------
+
+upsell-drawer,
+.upsell-drawer {
+  // Drawer is a fixed full-screen container; the panel slides in from the right.
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  pointer-events: none;
+  visibility: hidden;
+
+  &.is-active {
+    pointer-events: auto;
+    visibility: visible;
+  }
+}
+
+.upsell-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 250ms ease;
+  cursor: pointer;
+
+  .upsell-drawer.is-active & {
+    opacity: 1;
+  }
+}
+
+.upsell-drawer__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(420px, 100vw);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateX(100%);
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+
+  .upsell-drawer.is-active & {
+    transform: translateX(0);
+  }
+}
+
+.upsell-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  flex-shrink: 0;
+}
+
+.upsell-drawer__heading {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text, #1c1c1c);
+}
+
+.upsell-drawer__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  color: var(--color-text, #1c1c1c);
+  border-radius: 50%;
+  transition: background 150ms ease;
+
+  &:hover {
+    background: var(--color-grey-95, #f5f5f5);
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+// Discount banner
+
+.upsell-drawer__discount-banner {
+  padding: 10px 24px;
+  background: var(--color-accent, #c8202d);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+// Progressive discount threshold bar
+
+.upsell-drawer__threshold {
+  padding: 12px 24px;
+  background: var(--color-grey-97, #f9f9f9);
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  flex-shrink: 0;
+}
+
+.upsell-drawer__threshold-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-grey-90, #e8e8e8);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.upsell-drawer__threshold-progress {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--color-accent, #c8202d);
+  width: 0;
+  transition: width 400ms ease;
+
+  .upsell-drawer__threshold.is-complete & {
+    background: var(--color-success, #1a7f4b);
+  }
+}
+
+.upsell-drawer__threshold-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted, #6b6b6b);
+  text-align: center;
+}
+
+// Body / product list
+
+.upsell-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+  overscroll-behavior: contain;
+}
+
+.upsell-drawer__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  @media (max-width: 360px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Individual product card
+
+.upsell-drawer__product {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.upsell-drawer__product-image-link {
+  display: block;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-grey-95, #f5f5f5);
+  position: relative;
+  aspect-ratio: 4 / 5;
+}
+
+.upsell-drawer__product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 300ms ease;
+
+  .upsell-drawer__product:hover & {
+    transform: scale(1.04);
+  }
+}
+
+.upsell-drawer__product-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--color-grey-90, #e8e8e8);
+}
+
+// Discount badge overlay
+
+.upsell-drawer__badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: var(--color-accent, #c8202d);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
+.upsell-drawer__product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.upsell-drawer__product-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text, #1c1c1c);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.upsell-drawer__product-price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.upsell-drawer__price--original {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #6b6b6b);
+}
+
+.upsell-drawer__price--discounted {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-accent, #c8202d);
+}
+
+.upsell-drawer__price--current {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text, #1c1c1c);
+}
+
+.upsell-drawer__quick-add {
+  margin-top: auto;
+  width: 100%;
+
+  &.is-added {
+    background: var(--color-success, #1a7f4b);
+    border-color: var(--color-success, #1a7f4b);
+    color: #fff;
+    pointer-events: none;
+  }
+}
+
+.upsell-drawer__sold-out {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #6b6b6b);
+  font-style: italic;
+}
+
+// Loading skeleton
+
+.upsell-drawer__loading {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.upsell-drawer__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.upsell-drawer__skeleton-img {
+  aspect-ratio: 4 / 5;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: upsell-shimmer 1.5s infinite;
+}
+
+.upsell-drawer__skeleton-text {
+  height: 12px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: upsell-shimmer 1.5s infinite;
+
+  &--short {
+    width: 60%;
+  }
+}
+
+// Empty state
+
+.upsell-drawer__empty {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--color-text-muted, #6b6b6b);
+  font-size: 0.875rem;
+}
+
+// Footer
+
+.upsell-drawer__footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-border, #e0e0e0);
+  flex-shrink: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Product Upsell Section (PDP — Complete the Look / Frequently Bought Together)
+// ---------------------------------------------------------------------------
+
+.upsell-section__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--upsell-columns, 4), 1fr);
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.upsell-section__item {
+  list-style: none;
+}
+
+.upsell-section__add-all {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.upsell-section__add-all-total {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+// ---------------------------------------------------------------------------
+// Cart Upsell Section
+// ---------------------------------------------------------------------------
+
+.c-cart-upsell {
+  display: block;
+}
+
+.c-cart-upsell__list {
+  display: grid;
+  grid-template-columns: repeat(var(--cart-upsell-columns, 4), 1fr);
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.c-cart-upsell__item {
+  list-style: none;
+}
+
+.c-cart-upsell__card {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--color-grey-98, #fafafa);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.c-cart-upsell__image-link {
+  flex-shrink: 0;
+  display: block;
+  width: 72px;
+  height: 90px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--color-grey-95, #f5f5f5);
+}
+
+.c-cart-upsell__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.c-cart-upsell__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.c-cart-upsell__title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text, #1c1c1c);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.c-cart-upsell__price--current,
+.c-cart-upsell__price--original,
+.c-cart-upsell__price--compare {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text, #1c1c1c);
+}
+
+.c-cart-upsell__price--original,
+.c-cart-upsell__price--compare {
+  text-decoration: line-through;
+  color: var(--color-text-muted, #6b6b6b);
+  font-weight: 400;
+}
+
+.c-cart-upsell__add {
+  margin-top: auto;
+
+  &.is-added {
+    background: var(--color-success, #1a7f4b);
+    border-color: var(--color-success, #1a7f4b);
+    color: #fff;
+    pointer-events: none;
+  }
+}
+
+.c-cart-upsell__sold-out {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #6b6b6b);
+  font-style: italic;
+}
+
+// Loading skeleton
+
+.c-cart-upsell__loading {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.c-cart-upsell__skeleton {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--color-grey-98, #fafafa);
+  border-radius: 4px;
+}
+
+.c-cart-upsell__skeleton-img {
+  width: 72px;
+  height: 90px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: upsell-shimmer 1.5s infinite;
+}
+
+.c-cart-upsell__skeleton-text {
+  flex: 1;
+  height: 12px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: upsell-shimmer 1.5s infinite;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+// ---------------------------------------------------------------------------
+// Shared animation
+// ---------------------------------------------------------------------------
+
+@keyframes upsell-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}

@@ -1,0 +1,78 @@
+// Blog Subscribe — Inline newsletter form for article pages
+
+.blog-subscribe {
+  @apply py-8 border-t border-solid border-border-light mt-8;
+
+  &__inner {
+    @apply flex flex-col gap-6;
+
+    @screen lg {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  &__content {
+    @screen lg {
+      max-width: 360px;
+    }
+  }
+
+  &__heading {
+    @apply text-xl font-bold mb-2;
+  }
+
+  &__subtext {
+    @apply text-smd text-gray-600;
+  }
+
+  &__form-wrap {
+    @screen lg {
+      flex-shrink: 0;
+      width: min(480px, 100%);
+    }
+  }
+
+  &__form {
+    width: 100%;
+  }
+
+  &__input-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  &__input {
+    flex: 1 1 auto;
+    min-width: 0; // prevent flex overflow
+  }
+
+  &__submit {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  &__state {
+    @apply text-sm mb-3;
+
+    &--success {
+      @apply text-green-600;
+    }
+
+    &--error {
+      @apply text-red-600;
+    }
+  }
+
+  &__label {
+    // visually hidden but accessible
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}

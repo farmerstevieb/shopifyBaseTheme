@@ -1,0 +1,178 @@
+/* stylelint-disable custom-property-pattern */
+
+// ─── Compare Button (on product cards) ────────────────────────────────────────
+
+compare-button,
+.compare-button {
+  display: block;
+}
+
+.compare-button {
+  &__label {
+    @apply flex items-center gap-2 cursor-pointer select-none text-xs;
+  }
+
+  &__checkbox {
+    @apply w-4 h-4 cursor-pointer accent-current;
+  }
+
+  &__text {
+    @apply leading-none;
+  }
+}
+
+// ─── Compare Bar (floating bottom bar) ────────────────────────────────────────
+
+compare-bar,
+.compare-bar {
+  display: block;
+}
+
+.compare-bar {
+  @apply fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-solid border-border-light
+         translate-y-full transition-transform duration-300 ease-in-out;
+
+  &.is-active {
+    @apply translate-y-0;
+  }
+
+  &__inner {
+    @apply flex items-center gap-4 px-6 py-4 max-w-screen-xl mx-auto;
+  }
+
+  &__label {
+    @apply text-sm font-medium flex-1;
+  }
+
+  compare-count,
+  &__count {
+    @apply inline-flex items-center justify-center
+           min-w-[1.6rem] h-6 px-1 rounded-full bg-grey-10 text-xs font-bold;
+  }
+}
+
+// ─── <compare-count> badge ───────────────────────────────────────────────────
+
+compare-count {
+  display: inline-block;
+}
+
+// ─── Compare Drawer ───────────────────────────────────────────────────────────
+
+compare-drawer,
+.compare-drawer {
+  display: block;
+}
+
+.compare-drawer {
+  &__count-badge {
+    @apply inline-flex items-center justify-center
+           min-w-[2rem] h-6 px-2 ml-2 rounded-full bg-grey-10 text-xs font-bold;
+  }
+
+  &__content {
+    @apply flex-1 overflow-auto px-6 py-5;
+  }
+
+  &__footer {
+    @apply flex items-center gap-4;
+  }
+
+  &__empty,
+  &__loading {
+    @apply text-sm text-grey-65 py-4;
+  }
+}
+
+// ─── Compare Table ────────────────────────────────────────────────────────────
+
+.compare-table-wrap {
+  @apply overflow-x-auto -mx-6 px-6;
+}
+
+.compare-table {
+  @apply w-full border-collapse text-sm;
+
+  &__col-label {
+    width: 100px;
+
+    @screen md {
+      width: 130px;
+    }
+  }
+
+  &__col-product {
+    min-width: 160px;
+  }
+
+  &__row {
+    border-bottom: 1px solid theme("colors.border.light");
+
+    &--images {
+      border-bottom: none;
+    }
+  }
+
+  &__label {
+    @apply text-left text-xs font-semibold text-grey-65 uppercase tracking-wide pr-4 py-3 align-top;
+  }
+
+  &__cell {
+    @apply py-3 px-2 align-top;
+  }
+
+  &__product-header {
+    @apply relative;
+  }
+
+  &__image-link {
+    @apply block;
+  }
+
+  &__image {
+    @apply block w-full aspect-[3/4] object-cover rounded-0;
+    max-width: 180px;
+  }
+
+  &__remove {
+    @apply absolute top-1 right-1 w-6 h-6 flex items-center justify-center
+           bg-white rounded-full text-base leading-none cursor-pointer
+           border border-solid border-border-light;
+  }
+
+  &__product-title {
+    @apply font-semibold text-sm leading-snug no-underline;
+
+    &:hover {
+      @apply underline;
+    }
+  }
+
+  &__price {
+    @apply font-semibold;
+  }
+
+  &__compare-price {
+    @apply text-grey-65 ml-1;
+  }
+
+  &__availability {
+    @apply text-xs font-medium;
+
+    &--in {
+      color: theme("colors.success", green);
+    }
+
+    &--out {
+      @apply text-grey-65;
+    }
+  }
+
+  &__row--actions {
+    border-bottom: none;
+
+    .compare-table__cell {
+      @apply pt-4;
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{% render 'section-spacing-and-color' %}
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{section.id}} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {%- liquid
+    assign testimonial_blocks = section.blocks | where: 'type', 'testimonial'
+    assign section_header = section.blocks | where: 'type', 'section_header' | first
+    assign autoplay = section.settings.autoplay
+    assign autoplay_speed = section.settings.autoplay_speed
+    assign columns = section.settings.columns_per_view | default: 1
+    assign slider_autoplay = 0
+    if autoplay
+      assign slider_autoplay = autoplay_speed | times: 1000
+    endif
+  -%}
+
+  {%- if section_header -%}
+    {%- render 'object-content',
+      block: section_header.settings,
+      attributes: section_header.shopify_attributes,
+      class: 'section-header mb-8',
+      heading_font_weight: 'font-medium'
+    -%}
+  {%- endif -%}
+
+  {%- if testimonial_blocks.size > 0 -%}
+    <juno-slider
+      class="c-testimonials slider slider--testimonials"
+      enabled="true"
+      {% if autoplay and slider_autoplay > 0 %}autoplay="{{ slider_autoplay }}"{% endif %}
+      loop
+      showArrows
+    >
+      <div
+        class="slider__viewport"
+        data-slider="viewport"
+        style="--testimonials-columns: {{ columns }};"
+      >
+        <ul class="slider__track">
+          {%- for block in testimonial_blocks -%}
+            {%- liquid
+              assign rating = block.settings.rating | default: 5
+              assign has_avatar = false
+              if block.settings.avatar != blank
+                assign has_avatar = true
+              endif
+            -%}
+            <li
+              class="slider__item c-testimonials__item"
+              {{ block.shopify_attributes }}
+            >
+              <article class="c-testimonial">
+                {%- comment -%} Star rating {%- endcomment -%}
+                <div
+                  class="c-testimonial__rating rating-star"
+                  style="--rating: {{ rating }}; --rating-max: 5; --rating-decimal: 0;"
+                  aria-label="{{ rating }} out of 5 stars"
+                  role="img"
+                ></div>
+
+                {%- comment -%} Quote {%- endcomment -%}
+                {%- if block.settings.quote != blank -%}
+                  <blockquote class="c-testimonial__quote rte">
+                    {{- block.settings.quote -}}
+                  </blockquote>
+                {%- endif -%}
+
+                {%- comment -%} Author {%- endcomment -%}
+                <footer class="c-testimonial__footer">
+                  {%- if has_avatar -%}
+                    <div class="c-testimonial__avatar">
+                      {{-
+                        block.settings.avatar
+                        | image_url: width: 80
+                        | image_tag:
+                          loading: 'lazy',
+                          width: 40,
+                          height: 40,
+                          class: 'c-testimonial__avatar-image'
+                      -}}
+                    </div>
+                  {%- endif -%}
+
+                  <div class="c-testimonial__author-info">
+                    {%- if block.settings.author != blank -%}
+                      <cite class="c-testimonial__author-name">
+                        {{- block.settings.author -}}
+                      </cite>
+                    {%- endif -%}
+
+                    {%- if block.settings.author_title != blank -%}
+                      <span class="c-testimonial__author-title">
+                        {{- block.settings.author_title -}}
+                      </span>
+                    {%- endif -%}
+                  </div>
+                </footer>
+              </article>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </juno-slider>
+  {%- endif -%}
+{% endif %}

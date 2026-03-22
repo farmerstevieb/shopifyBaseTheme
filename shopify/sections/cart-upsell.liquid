@@ -1,0 +1,89 @@
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {%- if cart != empty -%}
+    {%- render 'section-spacing-and-color' -%}
+
+    {%- assign section_header = section.blocks | where: 'type', 'section_header' | first -%}
+    {%- if section_header -%}
+      {%- render 'object-content',
+        block: section_header.settings,
+        attributes: section_header.shopify_attributes,
+        class: 'section-header mb-12 md:mb-6',
+        heading_font_weight: 'font-medium'
+      -%}
+    {%- endif -%}
+
+    {%- assign max_products = section.settings.max_products | default: 4 -%}
+
+    {%- comment -%}
+      Cart upsell: collect a candidate product IDs from cart line items,
+      then use the first cart item for Shopify recommendations as a baseline.
+      The <cart-upsell> web component fetches ecomplete recommendations for
+      each cart product, deduplicates, and replaces this with live results.
+    {%- endcomment -%}
+
+    <cart-upsell
+      class="c-cart-upsell"
+      data-max-products="{{ max_products }}"
+      data-section-id="{{ section.id }}"
+      data-api-base="{{ '/apps/ecompleteSearch/api' }}"
+      data-placement="cart"
+    >
+      {%- comment -%} Seed with Shopify recommendations for the first cart item {%- endcomment -%}
+      {%- assign first_cart_item = cart.items.first -%}
+      {%- if first_cart_item -%}
+        <product-recommendations
+          data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ first_cart_item.product_id }}&limit={{ max_products }}&intent=complementary"
+        >
+          {%- if recommendations.performed and recommendations.products_count > 0 -%}
+            <ul
+              class="c-cart-upsell__list"
+              data-cart-upsell-list
+              role="list"
+            >
+              {%- assign cart_product_ids = cart.items | map: 'product_id' -%}
+              {%- assign shown = 0 -%}
+              {%- for rec_product in recommendations.products -%}
+                {%- if shown >= max_products -%}{%- break -%}{%- endif -%}
+                {%- unless cart_product_ids contains rec_product.id -%}
+                  <li class="c-cart-upsell__item">
+                    {%- render 'cart-upsell-product-card',
+                      product: rec_product,
+                      show_price: section.settings.show_price
+                    -%}
+                  </li>
+                  {%- assign shown = shown | plus: 1 -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </product-recommendations>
+      {%- endif -%}
+
+      {%- comment -%} Loading placeholder (shown while JS fetches ecomplete results) {%- endcomment -%}
+      <div class="c-cart-upsell__loading" data-cart-upsell-loading hidden>
+        {%- for i in (1..max_products) -%}
+          <div class="c-cart-upsell__skeleton">
+            <div class="c-cart-upsell__skeleton-img"></div>
+            <div class="c-cart-upsell__skeleton-text"></div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </cart-upsell>
+  {%- endif -%}
+{% endif %}
+

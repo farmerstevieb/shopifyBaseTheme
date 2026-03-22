@@ -1,0 +1,127 @@
+/* stylelint-disable custom-property-pattern */
+
+.newsletter-popup {
+  --popup-max-width: 900px;
+  --popup-image-width: 320px;
+
+  &__backdrop {
+    @apply fixed inset-0 z-30 bg-overlay-dark opacity-0 pointer-events-none transition-opacity duration-300;
+  }
+
+  &__dialog {
+    @apply fixed z-30 top-1/2 left-1/2 w-[calc(100%-3.2rem)] max-w-[var(--popup-max-width)]
+           bg-white overflow-hidden opacity-0 pointer-events-none
+           -translate-x-1/2 translate-y-[calc(-50%+2rem)];
+
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  &__close {
+    @apply absolute top-4 right-4 z-10 w-5 h-5 flex items-center justify-center cursor-pointer;
+
+    svg {
+      @apply w-full h-full;
+    }
+  }
+
+  &__inner {
+    @apply flex flex-col;
+
+    @screen md {
+      flex-direction: row;
+    }
+
+    &--has-image {
+      .newsletter-popup__content {
+        @screen md {
+          width: calc(100% - var(--popup-image-width));
+        }
+      }
+    }
+  }
+
+  &__media {
+    flex-shrink: 0;
+
+    @screen md {
+      width: var(--popup-image-width);
+    }
+  }
+
+  &__image {
+    @apply block w-full h-full object-cover;
+
+    @screen max-md {
+      max-height: 200px;
+    }
+  }
+
+  &__content {
+    @apply flex flex-col justify-center gap-4 p-8;
+
+    @screen md {
+      @apply p-10;
+    }
+  }
+
+  &__heading {
+    @apply text-xl font-semibold leading-tight;
+
+    @screen md {
+      @apply text-2xl;
+    }
+  }
+
+  &__body {
+    @apply text-sm leading-relaxed text-grey-65;
+  }
+
+  &__fields {
+    @apply flex flex-col gap-3;
+
+    @screen sm {
+      flex-direction: row;
+
+      .o-input {
+        flex: 1;
+      }
+
+      .button {
+        flex-shrink: 0;
+        width: auto;
+      }
+    }
+  }
+
+  &__success {
+    .form__state--success {
+      @apply text-sm py-3;
+    }
+  }
+
+  // ── Active state ───────────────────────────────────────────────────────────
+
+  &.is-active {
+    .newsletter-popup__backdrop {
+      @apply opacity-40 pointer-events-auto;
+    }
+
+    .newsletter-popup__dialog {
+      @apply opacity-100 pointer-events-auto translate-y-[-50%];
+    }
+  }
+
+  // ── Hide animation ─────────────────────────────────────────────────────────
+
+  &.is-hiding {
+    .newsletter-popup__backdrop {
+      @apply opacity-0 pointer-events-none;
+    }
+
+    .newsletter-popup__dialog {
+      @apply opacity-0 pointer-events-none translate-y-[calc(-50%+2rem)];
+    }
+  }
+}

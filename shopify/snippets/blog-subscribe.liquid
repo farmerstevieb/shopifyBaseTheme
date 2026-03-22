@@ -1,0 +1,85 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Blog Subscribe — Inline Newsletter Form
+  -------------------------------------------------------------------------------
+  Description
+  An inline newsletter sign-up form intended for use at the bottom of blog
+  article pages. Tags the subscriber as 'blog-subscriber' in Shopify Customers.
+  -------------------------------------------------------------------------------
+  Accepts
+  - heading: {String} — override the default heading text
+  - form_id: {String} — unique ID for the form element (required when multiple
+                         forms appear on the same page)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'blog-subscribe',
+    heading: 'Subscribe to our blog',
+    form_id: 'blog-subscribe-form'
+  -%}
+  -------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- liquid
+  assign heading = heading | default: 'Subscribe to our blog'
+  assign form_id = form_id | default: 'blog-subscribe-form'
+-%}
+
+<div class="blog-subscribe">
+  <div class="blog-subscribe__inner">
+    <div class="blog-subscribe__content">
+      <h3 class="blog-subscribe__heading">{{ heading }}</h3>
+      <p class="blog-subscribe__subtext">
+        {{ 'blog.subscribe.subtext' | t: default: 'Get the latest articles delivered straight to your inbox.' }}
+      </p>
+    </div>
+
+    <div class="blog-subscribe__form-wrap">
+      {%- form 'customer', id: form_id, class: 'blog-subscribe__form' -%}
+        <input type="hidden" name="contact[tags]" value="blog-subscriber">
+
+        {%- if form.posted_successfully? -%}
+          <p class="blog-subscribe__state blog-subscribe__state--success" role="status">
+            {{ 'customer.newsletter_form.success' | t }}
+          </p>
+        {%- else -%}
+          {%- if form.errors -%}
+            <p class="blog-subscribe__state blog-subscribe__state--error" role="alert">
+              {{ form.errors.translated_fields.email | capitalize }}
+              {{ form.errors.messages.email }}
+            </p>
+          {%- endif -%}
+
+          <div class="blog-subscribe__input-row">
+            <label class="blog-subscribe__label sr-only" for="{{ form_id }}-email">
+              {{ 'customer.newsletter_form.email' | t }}
+            </label>
+
+            <input
+              class="blog-subscribe__input o-input__field"
+              type="email"
+              id="{{ form_id }}-email"
+              name="contact[email]"
+              required
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="email"
+              placeholder="{{ 'customer.newsletter_form.email' | t }} *"
+              value="{% if customer %}{{ customer.email }}{% endif %}"
+              {% if form.errors %}
+                aria-invalid="true"
+              {% endif %}
+            >
+
+            <button
+              class="button button--primary blog-subscribe__submit"
+              type="submit"
+              name="subscribe"
+            >
+              {{ 'customer.newsletter_form.submit' | t }}
+            </button>
+          </div>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</div>

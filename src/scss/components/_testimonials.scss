@@ -1,0 +1,76 @@
+/* stylelint-disable custom-property-pattern */
+
+.c-testimonials {
+  // Override slider item width to respect the columns-per-view setting.
+  // On desktop the `--testimonials-columns` CSS var (set inline in Liquid)
+  // drives how wide each card appears.
+
+  .slider__track {
+    --col-gap: theme("spacing.6");
+
+    @screen md {
+      --col-gap: theme("spacing.8");
+    }
+  }
+
+  .slider__item {
+    --testimonials-columns: 1; // fallback; overridden inline on the viewport
+
+    @screen md {
+      // 1 or 2 or 3 columns visible on desktop
+      --_item-width: calc(
+        (100% / var(--testimonials-columns)) -
+          (var(--col-gap) * ((var(--testimonials-columns) - 1) / var(--testimonials-columns)))
+      );
+      --item-width: calc(var(--_item-width));
+    }
+  }
+
+  &__item {
+    height: auto;
+  }
+}
+
+// ─── Individual testimonial card ─────────────────────────────────────────────
+
+.c-testimonial {
+  @apply flex flex-col gap-4 p-6 border border-solid border-border-light h-full;
+
+  &__rating {
+    @apply text-xl;
+  }
+
+  &__quote {
+    @apply flex-1 text-base leading-relaxed m-0 italic;
+
+    // Override default blockquote browser styles
+    padding: 0;
+    border: none;
+  }
+
+  &__footer {
+    @apply flex items-center gap-3 mt-auto pt-4 border-t border-solid border-border-light;
+  }
+
+  &__avatar {
+    flex-shrink: 0;
+  }
+
+  &__avatar-image {
+    @apply rounded-full object-cover;
+    width: 40px;
+    height: 40px;
+  }
+
+  &__author-info {
+    @apply flex flex-col gap-0.5;
+  }
+
+  &__author-name {
+    @apply text-sm font-semibold not-italic;
+  }
+
+  &__author-title {
+    @apply text-xs text-grey-65;
+  }
+}

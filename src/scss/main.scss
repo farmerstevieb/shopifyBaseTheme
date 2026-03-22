@@ -46,9 +46,20 @@
 @import "components/account-dialog";
 @import "components/star-rating";
 @import "components/account-drawer";
+@import "components/age-verification";
+@import "components/blog-subscribe";
+@import "components/recently-viewed";
+@import "components/countdown-timer";
+@import "components/cookie-consent";
+@import "components/wishlist";
+@import "components/newsletter-popup";
+@import "components/compare";
+@import "components/upsell";
+@import "components/testimonials";
 
 /* App Components */
 @import "components/app/easy-appointment";
+@import "components/ecomplete-search";
 
 /** Tailwind Utilities */
 @import "tailwind/utilities";

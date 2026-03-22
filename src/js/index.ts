@@ -20,10 +20,24 @@ import tooltip from "./main/product-tooltip";
 import quickBuy from "./main/quick-buy";
 import share from "./main/share";
 import shopTheLook from "./main/shop-the-look";
+import wishlist from "./main/wishlist";
 import slider from "./main/slider";
 import video from "./main/video";
 
 import(/* webpackChunkName: "side-effects" */ `./side-effects`);
+import(/* webpackChunkName: "recently-viewed" */ `./modules/recently-viewed`);
+import(/* webpackChunkName: "countdown-timer" */ `./modules/countdown-timer`);
+import(/* webpackChunkName: "cookie-consent" */ `./modules/cookie-consent`);
+import(/* webpackChunkName: "ecomplete-search" */ `./modules/ecomplete-search`);
+import(/* webpackChunkName: "newsletter-popup" */ `./modules/newsletter-popup`).then(
+  (m) => m.default(),
+);
+import(/* webpackChunkName: "compare" */ `./modules/compare`).then(
+  (m) => m.default(),
+);
+import(/* webpackChunkName: "upsell" */ `./modules/upsell`).then(
+  (m) => m.default(),
+);
 
 const themeFunctions = [
   lazyload,
@@ -47,6 +61,7 @@ const themeFunctions = [
   share,
   helpCenter,
   geoip,
+  wishlist,
 ];
 
 for (const themeFn of themeFunctions) {

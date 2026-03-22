@@ -1,0 +1,104 @@
+/* stylelint-disable custom-property-pattern */
+
+.c-countdown-timer {
+  @apply flex w-full flex-col items-center justify-center gap-6 px-row py-12 text-center;
+
+  // Colors defaulted in liquid via inline CSS vars; clients can override here
+  background-color: var(--countdown-bg, #1a1a1a);
+  color: var(--countdown-color, #ffffff);
+
+  @screen md {
+    @apply flex-row flex-wrap gap-10 py-16;
+  }
+
+  // ── Content ──────────────────────────────────────────────────────────────
+
+  &__content {
+    @apply flex flex-col gap-2;
+
+    @screen md {
+      @apply flex-1 items-start text-left;
+    }
+  }
+
+  &__heading {
+    @apply text-2xl font-semibold leading-tight md:text-3xl;
+
+    color: inherit;
+  }
+
+  &__subheading {
+    @apply text-sm opacity-80 md:text-base;
+
+    color: inherit;
+  }
+
+  // ── Clock ─────────────────────────────────────────────────────────────────
+
+  &__clock {
+    @apply flex items-center gap-2 md:gap-4;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  &__box {
+    @apply flex flex-col items-center gap-1 rounded border border-solid px-4 py-3 md:px-6 md:py-4;
+
+    border-color: rgb(255 255 255 / 0.25);
+    min-width: 64px;
+
+    @screen md {
+      min-width: 80px;
+    }
+  }
+
+  &__unit-value {
+    @apply block text-3xl font-bold leading-none tabular-nums md:text-4xl;
+
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__unit-label {
+    @apply block text-xs uppercase tracking-widest opacity-70;
+
+    color: inherit;
+  }
+
+  &__separator {
+    @apply text-3xl font-bold leading-none opacity-50 md:text-4xl;
+
+    color: inherit;
+    align-self: flex-start;
+    padding-top: 0.2em;
+  }
+
+  // ── CTA ───────────────────────────────────────────────────────────────────
+
+  &__cta {
+    @apply flex items-center;
+  }
+
+  &__cta-btn {
+    // Inherits .btn styles — override only what's needed for dark backgrounds
+    @apply border-white text-white;
+
+    &:hover {
+      @apply bg-white text-grey-10;
+    }
+  }
+
+  // ── Expired message ───────────────────────────────────────────────────────
+
+  &__expired-message {
+    @apply text-lg font-medium opacity-80;
+
+    color: inherit;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}

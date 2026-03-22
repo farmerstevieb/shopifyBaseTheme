@@ -1,0 +1,30 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Snippet - Compare Button
+  -------------------------------------------------------------------------------
+  Description
+  A small compare checkbox rendered on product cards. Manages state via the
+  <compare-button> Web Component which syncs with CompareManager in compare.ts.
+  -------------------------------------------------------------------------------
+  Accepts
+  - product: {Product object}
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'compare-button', product: product -%}
+  -------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<compare-button
+  class="compare-button"
+  data-handle="{{ product.handle }}"
+  data-title="{{ product.title | escape }}"
+>
+  <label class="compare-button__label">
+    <input
+      class="compare-button__checkbox"
+      type="checkbox"
+      aria-label="{{ 'products.compare.add' | t: title: product.title }}"
+    >
+    <span class="compare-button__text">{{ 'products.compare.compare' | t | default: 'Compare' }}</span>
+  </label>
+</compare-button>

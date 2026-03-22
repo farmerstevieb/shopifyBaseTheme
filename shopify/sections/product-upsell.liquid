@@ -1,0 +1,200 @@
+{% liquid
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+%}
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
+  {%- render 'section-spacing-and-color' -%}
+
+  {%- assign section_header = section.blocks | where: 'type', 'section_header' | first -%}
+  {%- if section_header -%}
+    {%- render 'object-content',
+      block: section_header.settings,
+      attributes: section_header.shopify_attributes,
+      class: 'section-header mb-12 md:mb-6',
+      heading_font_weight: 'font-medium'
+    -%}
+  {%- endif -%}
+
+  {%- assign max_products = section.settings.max_products | default: 4 -%}
+
+  {%- comment -%}
+    Resolve product list from three sources in priority order:
+    1. Custom metafield: product.metafields.custom.upsell_products (JSON array of handles)
+    2. Section block product_list
+    3. Shopify recommendations API (rendered via product-recommendations web component)
+  {%- endcomment -%}
+
+  {%- assign upsell_metafield = product.metafields.custom.upsell_products.value -%}
+
+  {%- if upsell_metafield != blank -%}
+    {%- comment -%} Source 1: metafield (JSON array of handles) {%- endcomment -%}
+    <upsell-section
+      data-source="metafield"
+      data-section-id="{{ section.id }}"
+      data-show-price="{{ section.settings.show_price }}"
+      data-layout="{{ section.settings.layout }}"
+    >
+      {%- assign upsell_handles = upsell_metafield -%}
+      {%- assign rendered_count = 0 -%}
+
+      {%- if section.settings.layout == 'slider' -%}
+        <juno-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
+          <ul class="slider__track" id="upsell-section-{{ section.id }}">
+      {%- else -%}
+        <ul
+          class="upsell-section__grid"
+          id="upsell-section-{{ section.id }}"
+          style="--upsell-columns: {{ max_products | at_most: 4 }}"
+        >
+      {%- endif -%}
+
+        {%- for handle in upsell_handles -%}
+          {%- if rendered_count >= max_products -%}{%- break -%}{%- endif -%}
+          {%- assign upsell_product = all_products[handle] -%}
+          {%- if upsell_product != empty and upsell_product.available -%}
+            <li class="{% if section.settings.layout == 'slider' %}slider__item{% else %}upsell-section__item{% endif %}">
+              {%- render 'card-product',
+                product: upsell_product,
+                aspect_ratio: '300 / 384',
+                product_index: forloop.index
+              -%}
+            </li>
+            {%- assign rendered_count = rendered_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+      {%- if section.settings.layout == 'slider' -%}
+          </ul>
+        </juno-slider>
+      {%- else -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.show_add_all and rendered_count > 1 -%}
+        <div class="upsell-section__add-all">
+          <button
+            class="button button--primary"
+            type="button"
+            data-upsell-add-all
+            data-section-id="{{ section.id }}"
+          >
+            {{ 'sections.upsell.add_all_to_cart' | t | default: 'Add all to cart' }}
+            {%- comment -%} Total price computed by JS {%- endcomment -%}
+            <span class="upsell-section__add-all-total" data-upsell-add-all-total></span>
+          </button>
+        </div>
+      {%- endif -%}
+    </upsell-section>
+
+  {%- elsif section.blocks | where: 'type', 'product_list' | first -%}
+    {%- comment -%} Source 2: manually curated product list block {%- endcomment -%}
+    {%- assign product_list_block = section.blocks | where: 'type', 'product_list' | first -%}
+    <upsell-section
+      data-source="manual"
+      data-section-id="{{ section.id }}"
+      data-show-price="{{ section.settings.show_price }}"
+      data-layout="{{ section.settings.layout }}"
+    >
+      {%- assign rendered_count = 0 -%}
+
+      {%- if section.settings.layout == 'slider' -%}
+        <juno-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
+          <ul class="slider__track" id="upsell-section-{{ section.id }}">
+      {%- else -%}
+        <ul
+          class="upsell-section__grid"
+          id="upsell-section-{{ section.id }}"
+          style="--upsell-columns: {{ max_products | at_most: 4 }}"
+        >
+      {%- endif -%}
+
+        {%- for upsell_product in product_list_block.settings.products -%}
+          {%- if rendered_count >= max_products -%}{%- break -%}{%- endif -%}
+          <li class="{% if section.settings.layout == 'slider' %}slider__item{% else %}upsell-section__item{% endif %}">
+            {%- render 'card-product',
+              product: upsell_product,
+              aspect_ratio: '300 / 384',
+              product_index: forloop.index
+            -%}
+          </li>
+          {%- assign rendered_count = rendered_count | plus: 1 -%}
+        {%- endfor -%}
+
+      {%- if section.settings.layout == 'slider' -%}
+          </ul>
+        </juno-slider>
+      {%- else -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.show_add_all and rendered_count > 1 -%}
+        <div class="upsell-section__add-all">
+          <button
+            class="button button--primary"
+            type="button"
+            data-upsell-add-all
+            data-section-id="{{ section.id }}"
+          >
+            {{ 'sections.upsell.add_all_to_cart' | t | default: 'Add all to cart' }}
+            <span class="upsell-section__add-all-total" data-upsell-add-all-total></span>
+          </button>
+        </div>
+      {%- endif -%}
+    </upsell-section>
+
+  {%- else -%}
+    {%- comment -%} Source 3: Shopify recommendations API fallback {%- endcomment -%}
+    <product-recommendations
+      data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ max_products }}&intent=complementary"
+    >
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        <upsell-section
+          data-source="shopify"
+          data-section-id="{{ section.id }}"
+          data-show-price="{{ section.settings.show_price }}"
+          data-layout="{{ section.settings.layout }}"
+        >
+          {%- if section.settings.layout == 'slider' -%}
+            <juno-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
+              <ul class="slider__track" id="upsell-section-{{ section.id }}">
+          {%- else -%}
+            <ul
+              class="upsell-section__grid"
+              id="upsell-section-{{ section.id }}"
+              style="--upsell-columns: {{ max_products | at_most: 4 }}"
+            >
+          {%- endif -%}
+
+            {%- for rec_product in recommendations.products -%}
+              <li class="{% if section.settings.layout == 'slider' %}slider__item{% else %}upsell-section__item{% endif %}">
+                {%- render 'card-product',
+                  product: rec_product,
+                  aspect_ratio: '300 / 384',
+                  product_index: forloop.index
+                -%}
+              </li>
+            {%- endfor -%}
+
+          {%- if section.settings.layout == 'slider' -%}
+              </ul>
+            </juno-slider>
+          {%- else -%}
+            </ul>
+          {%- endif -%}
+        </upsell-section>
+      {%- endif -%}
+    </product-recommendations>
+  {%- endif -%}
+{% endif %}
+

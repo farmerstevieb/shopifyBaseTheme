@@ -99,6 +99,9 @@
       <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
     </ul>
 
+    {%- render 'cookie-consent' -%}
+    {%- render 'upsell-drawer' -%}
+
     {{ settings.body_scripts }}
   </body>
 </html>

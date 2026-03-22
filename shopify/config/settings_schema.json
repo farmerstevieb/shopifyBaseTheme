@@ -1547,6 +1547,24 @@
     ]
   },
   {
+    "name": "Age Verification",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_age_verification",
+        "label": "Enable age verification gate",
+        "default": false,
+        "info": "Shows a full-screen modal asking visitors to confirm they are 18 or older. Verified status is stored per browser session."
+      },
+      {
+        "type": "url",
+        "id": "age_verification_redirect_url",
+        "label": "Redirect URL for underage visitors",
+        "info": "Where to send visitors who click 'No'. Defaults to google.com if left blank."
+      }
+    ]
+  },
+  {
     "name": "Cart tooltips",
     "settings": [
       {
@@ -1562,6 +1580,87 @@
         "type": "text",
         "id": "tax_tooltips",
         "label": "Tax Tooltips"
+      }
+    ]
+  },
+  {
+    "name": "Cookie Consent",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cookie Consent Banner"
+      },
+      {
+        "type": "paragraph",
+        "content": "A fixed banner shown to first-time visitors for GDPR/POPIA compliance. Consent is stored in the browser and the banner is not shown again once a choice is made."
+      },
+      {
+        "type": "richtext",
+        "id": "cookie_consent_text",
+        "label": "Consent message",
+        "info": "Displayed in the banner. Leave blank to use the default text."
+      },
+      {
+        "type": "url",
+        "id": "cookie_privacy_url",
+        "label": "Privacy policy link",
+        "info": "Appended to the consent message as a 'Privacy Policy' link."
+      },
+      {
+        "type": "text",
+        "id": "cookie_accept_label",
+        "label": "Accept button label",
+        "default": "Accept"
+      },
+      {
+        "type": "text",
+        "id": "cookie_decline_label",
+        "label": "Decline button label",
+        "default": "Decline"
+      }
+    ]
+  },
+  {
+    "name": "eComplete Search",
+    "settings": [
+      {
+        "type": "header",
+        "content": "eComplete Search"
+      },
+      {
+        "type": "paragraph",
+        "content": "Instant AI-powered search powered by the ecomplete/ecomplete-search Shopify app. When enabled, replaces the native Shopify predictive search with live results, popular searches and optional AI chat. Gracefully falls back to native Shopify predictive search if the app is not installed."
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_ecomplete_search",
+        "label": "Enable eComplete Search",
+        "default": false,
+        "info": "Requires the ecomplete-search app to be installed. Native search is used as a fallback if the app is unavailable."
+      },
+      {
+        "type": "range",
+        "id": "ecomplete_search_results_limit",
+        "label": "Maximum results",
+        "min": 4,
+        "max": 24,
+        "step": 4,
+        "default": 8,
+        "info": "Number of product results shown in the instant search dropdown."
+      },
+      {
+        "type": "checkbox",
+        "id": "ecomplete_search_show_popular",
+        "label": "Show popular searches",
+        "default": true,
+        "info": "Displays a row of popular search terms below the product results."
+      },
+      {
+        "type": "checkbox",
+        "id": "ecomplete_search_show_chat",
+        "label": "Enable AI chat assistant",
+        "default": false,
+        "info": "Adds a chat toggle button to the search bar. Customers can ask questions and receive AI-generated product recommendations."
       }
     ]
   }

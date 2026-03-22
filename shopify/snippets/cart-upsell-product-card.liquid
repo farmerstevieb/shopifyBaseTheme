@@ -1,0 +1,53 @@
+{%- comment -%}
+  Cart Upsell Product Card
+  ────────────────────────
+  Compact product card used inside cart-upsell.liquid and the cart drawer.
+  Parameters:
+  - product    : Shopify product object
+  - show_price : boolean — show price below title
+{%- endcomment -%}
+
+{%- assign variant = product.selected_or_first_available_variant -%}
+
+<div class="c-cart-upsell__card" data-product-id="{{ product.id }}" data-variant-id="{{ variant.id }}">
+  <a href="{{ product.url }}" class="c-cart-upsell__image-link" tabindex="-1" aria-hidden="true">
+    {%- render 'object-image' with product.featured_image,
+      width: 80,
+      height: 100,
+      aspect: '80 / 100',
+      class: 'c-cart-upsell__image'
+    -%}
+  </a>
+
+  <div class="c-cart-upsell__info">
+    <a href="{{ product.url }}" class="c-cart-upsell__title">{{ product.title }}</a>
+
+    {%- if show_price != false -%}
+      <div class="c-cart-upsell__price">
+        {%- if variant.compare_at_price > variant.price -%}
+          <s class="c-cart-upsell__price--compare">{{ variant.compare_at_price | money }}</s>
+        {%- endif -%}
+        <span class="c-cart-upsell__price--current">{{ variant.price | money }}</span>
+      </div>
+    {%- endif -%}
+
+    {%- if variant.available -%}
+      {% form 'product', product, is: 'product-form', class: 'c-cart-upsell__form' %}
+        <input type="hidden" name="id" value="{{ variant.id }}">
+        <button
+          class="button button--secondary button--sm c-cart-upsell__add"
+          name="add"
+          type="submit"
+          data-upsell-quick-add
+          data-product-id="{{ product.id }}"
+          data-variant-id="{{ variant.id }}"
+        >
+          {%- render 'theme-icons' with 'plus', width: 14, height: 14 -%}
+          {{ 'sections.upsell.add_to_cart' | t | default: 'Add' }}
+        </button>
+      {% endform %}
+    {%- else -%}
+      <span class="c-cart-upsell__sold-out">{{ 'products.product.sold_out' | t | default: 'Sold out' }}</span>
+    {%- endif -%}
+  </div>
+</div>
