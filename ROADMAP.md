@@ -70,12 +70,18 @@ git push farmit main
 
 | Component | Status | Repo |
 |---|---|---|
-| Shopify Base Theme | Production-ready | `farmerstevieb/shopifyBaseTheme` + `ecomplete/ecomplete-shopify-base` |
-| Theme Builder (admin UI, job API) | Built, awaiting staging deploy | `ecomplete/ecomplete-api` + `Farm-IT-Ltd/ecomplete-api` |
-| Wishlist backend | Complete (DynamoDB + Lambda + Express) | `ecomplete/ecomplete-api` (packages/core) |
-| Back-in-stock notify | Complete | `ecomplete/ecomplete-api` (packages/core) |
-| eComplete Search | Live on ecompleteplus.myshopify.com | `ecomplete/pepSearch` (Shopify app, Remix) |
-| Infrastructure | Terraform in CB stack, shared GPU | `Farm-IT-Ltd/farmit-commercebridge-stockorder` |
+| Shopify Base Theme | DONE — production-ready | `farmerstevieb/shopifyBaseTheme` + `ecomplete/ecomplete-shopify-base` |
+| Theme Builder admin UI | DONE — live at d1d3aksfd7p614.cloudfront.net | `ecomplete/ecomplete-api` + `Farm-IT-Ltd/ecomplete-api` |
+| Theme Builder job API (Lambda) | DONE | `ecomplete/ecomplete-api` (packages/lambda) |
+| Auth Lambda (login, getMe, listUsers) | DONE | `ecomplete/ecomplete-api` (packages/lambda) |
+| Admin wizard — 18 features / 6 categories | DONE | `ecomplete/ecomplete-api` (packages/admin) |
+| CORS fix | DONE | `ecomplete/ecomplete-api` (packages/lambda) |
+| Wishlist backend | DONE (DynamoDB + Lambda + Express) | `ecomplete/ecomplete-api` (packages/core) |
+| Back-in-stock notify | DONE | `ecomplete/ecomplete-api` (packages/core) |
+| Wishlist enterprise — named lists, sharing, analytics | In progress | `ecomplete/ecomplete-api` (packages/core) |
+| Upsell module — rules, tracking, analytics | In progress | `ecomplete/ecomplete-api` (packages/upsell) |
+| eComplete Search | DONE — live on ecompleteplus.myshopify.com + pepkor.ecomplete.co.za | `ecomplete/ecomplete-search` (Shopify app, Remix) |
+| Infrastructure | DONE — Terraform in CB stack, shared GPU | `Farm-IT-Ltd/farmit-commercebridge-stockorder` |
 
 ### What's built on the theme side (as of 2026-03-22)
 
@@ -99,12 +105,24 @@ git push farmit main
 
 | Component | Status |
 |---|---|
-| Search — AI enhancements + base theme integration | Not started |
-| Upsell / Cross-sell module | Not started |
-| Loyalty program | Not started |
-| Magento 2 base theme | Not started |
-| WooCommerce base theme | Not started |
-| Admin UI platform selector | Not started |
+| Search — AI enhancements + base theme integration | In progress |
+| Upsell / Cross-sell — theme snippets | Planned — Phase 2 |
+| Loyalty program — theme snippets + Shopify Function | Planned — Phase 3 |
+| Shopify App: eComplete Search | Published (pepkor.ecomplete.co.za) — packaging as standalone app |
+| Shopify App: eComplete Wishlist | Planned |
+| Shopify App: eComplete Upsell | Planned |
+| Shopify App: eComplete Loyalty | Planned |
+| Magento 2 base theme | Planned — Phase 4 |
+| Magento 2 Module: Search | Planned — Phase 4 |
+| Magento 2 Module: Wishlist | Planned — Phase 4 |
+| Magento 2 Module: Upsell | Planned — Phase 4 |
+| Magento 2 Module: Loyalty | Planned — Phase 4 |
+| WooCommerce base theme | Planned — Phase 5 |
+| WooCommerce Plugin: Search | Planned — Phase 5 |
+| WooCommerce Plugin: Wishlist | Planned — Phase 5 |
+| WooCommerce Plugin: Upsell | Planned — Phase 5 |
+| WooCommerce Plugin: Loyalty | Planned — Phase 5 |
+| Admin UI platform selector (Shopify/M2/WC) | Planned — Phase 4 |
 
 ---
 
@@ -416,23 +434,23 @@ Build equivalent features natively in CB using the same architectural patterns b
 
 ### eComplete (their IP)
 
-| Repo | Purpose |
-|---|---|
-| `ecomplete/ecomplete-api` | Theme Builder platform — admin UI, job API, all modules |
-| `ecomplete/ecomplete-shopify-base` | Shopify base theme |
-| `ecomplete/ecomplete-magento-base` | Magento 2 base theme (to create) |
-| `ecomplete/ecomplete-woocommerce-base` | WooCommerce base theme (to create) |
-| `ecomplete/ecomplete-search` | Search app (currently `pepSearch`, rebrand) |
-| `ecomplete/hydraulics-shopify` | Client: Hydraulics |
-| `ecomplete/ecomplete-shopify-dev-agent` | n8n dev agent (their tool) |
-| `ecomplete/*` | All client stores |
+| Repo | Purpose | Status |
+|---|---|---|
+| `ecomplete/ecomplete-api` | Theme Builder platform — admin UI, job API, all module backends | Active |
+| `ecomplete/ecomplete-shopify-base` | Shopify base theme | Active |
+| `ecomplete/ecomplete-magento-base` | Magento 2 base theme (ground-up, Alpine.js + Tailwind) | To create — Phase 4 |
+| `ecomplete/ecomplete-woocommerce-base` | WooCommerce base theme (FSE + Tailwind + Alpine.js) | To create — Phase 5 |
+| `ecomplete/ecomplete-search` | Search Shopify app (live on pepkor.ecomplete.co.za) | Active (was `pepSearch`) |
+| `ecomplete/hydraulics-shopify` | Client: Hydraulics | Active |
+| `ecomplete/ecomplete-shopify-dev-agent` | n8n dev agent | Active |
+| `ecomplete/*` | All client stores | Per-client |
 
 ### Farm-IT (your IP / working copies)
 
 | Repo | Purpose |
 |---|---|
-| `Farm-IT-Ltd/ecomplete-api` | Fork — staging CI/deployment |
-| `Farm-IT-Ltd/farmit-commercebridge-stockorder` | Commerce Bridge + eComplete infrastructure |
+| `Farm-IT-Ltd/ecomplete-api` | Fork — staging CI/deployment + Farm-IT infrastructure (`ecomplete.tf`) |
+| `Farm-IT-Ltd/farmit-commercebridge-stockorder` | Commerce Bridge + eComplete infrastructure (Terraform, GPU, Loyalty module) |
 | `farmerstevieb/shopifyBaseTheme` | Working copy of Shopify base theme |
 | `farmerstevieb/hydraulics-shopify` | Working copy of Hydraulics |
 
@@ -605,18 +623,28 @@ Local first, Vertex when scale demands it. No OpenAI/Anthropic API calls in prod
 
 ## Phase Plan
 
-| Phase | What | Dependencies |
-|---|---|---|
-| **Now** | Deploy Theme Builder to staging (admin UI, job API, infrastructure) | Terraform apply, seed admin, GitHub secrets |
-| **Phase 1** | Wishlist theme integration (backend done) | Base theme + ecomplete-api |
-| **Phase 1** | eComplete Search rebrand + AI enhancements | pepSearch repo access |
-| **Phase 2** | Upsell / Cross-sell module | Shopify Checkout Extensions |
-| **Phase 3** | Loyalty program (tiers, points, referrals) | Shopify Functions |
-| **Phase 4** | Magento 2 base theme (ground-up) | Separate project, parallel workstream |
-| **Phase 4** | Admin UI platform selector | After M2 base theme exists |
-| **Phase 5** | WooCommerce / WordPress base theme | After M2 proves the pattern |
-| **Phase 5** | Platform-specific Ollama models | Training data from completed builds |
-| **Ongoing** | Commerce Bridge API integration | As modules become available |
+| Phase | What | Status | Dependencies |
+|---|---|---|---|
+| **Done** | Shopify Base Theme — all 13 native features | DONE | — |
+| **Done** | Theme Builder admin UI + job API (Lambda) | DONE | — |
+| **Done** | Auth Lambda (login, getMe, listUsers) | DONE | — |
+| **Done** | Admin wizard — 18 features, 6 categories | DONE | — |
+| **Done** | CORS fix | DONE | — |
+| **Done** | eComplete Search (pepSearch) — live on pepkor.ecomplete.co.za | DONE | — |
+| **Done** | Wishlist backend (DynamoDB + Lambda) | DONE | — |
+| **Phase 1** | Wishlist enterprise — named lists, sharing, analytics | In progress | ecomplete-api packages/core |
+| **Phase 1** | Upsell module — rules, tracking, revenue dashboard | In progress | ecomplete-api packages/upsell |
+| **Phase 1** | eComplete Search — AI enhancements (semantic, visual, autocomplete) | In progress | Ollama embeddings |
+| **Phase 2** | Loyalty program (tiers, points, referrals, gamification) | Planned | Shopify Functions |
+| **Phase 2** | Shopify Apps — package all 4 modules as App Store apps | Planned | Modules complete |
+| **Phase 3** | Upsell Shopify Checkout Extension + Post-purchase Extension | Planned | Shopify Checkout Extensions |
+| **Phase 4** | Magento 2 base theme (ground-up, Alpine.js + Tailwind) | Planned | Separate project |
+| **Phase 4** | Magento 2 modules — Search, Wishlist, Upsell, Loyalty | Planned | M2 base theme + CB modules |
+| **Phase 4** | Admin UI platform selector (Shopify / M2 / WooCommerce) | Planned | After M2 base theme |
+| **Phase 5** | WooCommerce base theme (FSE + Tailwind + Alpine.js) | Planned | After M2 proves pattern |
+| **Phase 5** | WooCommerce plugins — Search, Wishlist, Upsell, Loyalty | Planned | WC base theme + CB modules |
+| **Phase 5** | Platform-specific Ollama models (magento-coder, woocommerce-coder) | Planned | Training data from builds |
+| **Ongoing** | Commerce Bridge API integration | Ongoing | As modules become available |
 
 ---
 
