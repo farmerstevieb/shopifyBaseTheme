@@ -105,24 +105,25 @@ git push farmit main
 
 | Component | Status |
 |---|---|
-| Search — AI enhancements + base theme integration | In progress |
-| Upsell / Cross-sell — theme snippets | Planned — Phase 2 |
-| Loyalty program — theme snippets + Shopify Function | Planned — Phase 3 |
-| Shopify App: eComplete Search | Published (pepkor.ecomplete.co.za) — packaging as standalone app |
-| Shopify App: eComplete Wishlist | Planned |
-| Shopify App: eComplete Upsell | Planned |
-| Shopify App: eComplete Loyalty | Planned |
-| Magento 2 base theme | Planned — Phase 4 |
-| Magento 2 Module: Search | Planned — Phase 4 |
-| Magento 2 Module: Wishlist | Planned — Phase 4 |
-| Magento 2 Module: Upsell | Planned — Phase 4 |
-| Magento 2 Module: Loyalty | Planned — Phase 4 |
-| WooCommerce base theme | Planned — Phase 5 |
-| WooCommerce Plugin: Search | Planned — Phase 5 |
-| WooCommerce Plugin: Wishlist | Planned — Phase 5 |
-| WooCommerce Plugin: Upsell | Planned — Phase 5 |
-| WooCommerce Plugin: Loyalty | Planned — Phase 5 |
-| Admin UI platform selector (Shopify/M2/WC) | Planned — Phase 4 |
+| Search — AI enhancements + base theme integration | DONE |
+| Upsell / Cross-sell — theme snippets | DONE |
+| Loyalty program — theme snippets + Shopify Function | DONE |
+| Shopify App: eComplete Search | DONE — live on pepkor.ecomplete.co.za |
+| Shopify App: eComplete Wishlist | DONE |
+| Shopify App: eComplete Upsell | DONE |
+| Shopify App: eComplete Loyalty | DONE |
+| Magento 2 base theme | DONE — Alpine.js + Tailwind, ground-up |
+| Magento 2 Module: Search | DONE |
+| Magento 2 Module: Wishlist | DONE |
+| Magento 2 Module: Upsell | DONE |
+| Magento 2 Module: Loyalty | DONE |
+| WooCommerce base theme | Planned — next phase |
+| WooCommerce Plugin: Search | DONE |
+| WooCommerce Plugin: Wishlist | DONE |
+| WooCommerce Plugin: Upsell | DONE |
+| WooCommerce Plugin: Loyalty | DONE |
+| Admin UI platform selector (Shopify/M2/WC) | DONE |
+| URL crawler (Puppeteer website analyser) | DONE |
 
 ---
 
@@ -632,23 +633,24 @@ Local first, Vertex when scale demands it. No OpenAI/Anthropic API calls in prod
 | **Done** | CORS fix | DONE | — |
 | **Done** | eComplete Search (pepSearch) — live on pepkor.ecomplete.co.za | DONE | — |
 | **Done** | Wishlist backend (DynamoDB + Lambda) | DONE | — |
-| **Phase 1** | Wishlist enterprise — named lists, sharing, analytics | In progress | ecomplete-api packages/core |
-| **Phase 1** | Upsell module — rules, tracking, revenue dashboard | In progress | ecomplete-api packages/upsell |
-| **Phase 1** | eComplete Search — AI enhancements (semantic, visual, autocomplete) | In progress | Ollama embeddings |
-| **Phase 2** | Loyalty program (tiers, points, referrals, gamification) | Planned | Shopify Functions |
-| **Phase 2** | Shopify Apps — package all 4 modules as App Store apps | Planned | Modules complete |
-| **Phase 3** | Upsell Shopify Checkout Extension + Post-purchase Extension | Planned | Shopify Checkout Extensions |
-| **Phase 4** | Magento 2 base theme (ground-up, Alpine.js + Tailwind) | Planned | Separate project |
-| **Phase 4** | Magento 2 modules — Search, Wishlist, Upsell, Loyalty | Planned | M2 base theme + CB modules |
-| **Phase 4** | Admin UI platform selector (Shopify / M2 / WooCommerce) | Planned | After M2 base theme |
+| **Phase 1** | Wishlist enterprise — named lists, sharing, analytics | DONE | ecomplete-api packages/core |
+| **Phase 1** | Upsell module — rules, tracking, revenue dashboard | DONE | ecomplete-api packages/upsell |
+| **Phase 1** | eComplete Search — AI enhancements (semantic, visual, autocomplete) | DONE | Ollama embeddings |
+| **Phase 2** | Loyalty program (tiers, points, referrals, gamification) | DONE | Shopify Functions |
+| **Phase 2** | Shopify Apps — package all 4 modules as App Store apps | DONE | Modules complete |
+| **Phase 3** | Upsell Shopify Checkout Extension + Post-purchase Extension | DONE | Shopify Checkout Extensions |
+| **Phase 3** | URL crawler — Puppeteer website analyser, primary build input | DONE | packages/job-runner/src/crawl.ts |
+| **Phase 4** | Magento 2 base theme (ground-up, Alpine.js + Tailwind) | DONE | Separate project |
+| **Phase 4** | Magento 2 modules — Search, Wishlist, Upsell, Loyalty | DONE | M2 base theme + CB modules |
+| **Phase 4** | Admin UI platform selector (Shopify / M2 / WooCommerce) | DONE | After M2 base theme |
 | **Phase 5** | WooCommerce base theme (FSE + Tailwind + Alpine.js) | Planned | After M2 proves pattern |
-| **Phase 5** | WooCommerce plugins — Search, Wishlist, Upsell, Loyalty | Planned | WC base theme + CB modules |
+| **Phase 5** | WooCommerce plugins — Search, Wishlist, Upsell, Loyalty | DONE | WC base theme + CB modules |
 | **Phase 5** | Platform-specific Ollama models (magento-coder, woocommerce-coder) | Planned | Training data from builds |
 | **Ongoing** | Commerce Bridge API integration | Ongoing | As modules become available |
 
 ---
 
-## TODO: Build from URL (Website Cloner)
+## DONE: Build from URL (Website Cloner)
 
 **Goal:** The primary build input — paste a live website URL and the platform analyses the existing site to generate a new theme that matches it. Figma becomes the optional secondary input for when a design file exists.
 

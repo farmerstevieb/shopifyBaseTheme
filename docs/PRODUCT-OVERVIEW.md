@@ -14,13 +14,15 @@ eComplete is an AI-powered theme building and e-commerce module platform. It tak
 
 **Admin UI:** [d1d3aksfd7p614.cloudfront.net](https://d1d3aksfd7p614.cloudfront.net)
 
-The Theme Builder is a 5-step wizard in the admin UI. You paste a Figma file URL, enter a store handle, pick which features to include, review the AI-extracted design preview, then hit Build. The platform:
+The Theme Builder is a 7-step wizard in the admin UI. You paste a live website URL (primary) or a Figma file URL (optional), enter a store handle, pick your platform, pick which features to include, review the AI-extracted design preview, then hit Build. The platform:
 
-1. Downloads the Figma frames as images
-2. Runs a vision model to extract brand colours, typography, and section layout
-3. Generates all theme files (settings, templates, CSS, Liquid)
-4. Deploys to the store as an unpublished preview theme
-5. Runs an automated QA loop (Puppeteer + vision model) — up to 3 passes to catch layout issues, font 404s, and colour mismatches before a human reviews it
+1. **Source input** — website URL or Figma URL
+2. **Platform selection** — Shopify, Magento 2, or WooCommerce
+3. **Credentials** — store handle + API token (platform-appropriate)
+4. **Feature selection** — 18 features across 6 categories
+5. **Design analysis** — URL: Puppeteer crawls 5 pages (home, collection, product, cart, search), extracts computed styles, colours, typography, and section layout via vision model. Figma: downloads frames and runs same vision analysis.
+6. **Build** — generates all theme files (settings, templates, CSS, Liquid/phtml/PHP)
+7. **QA loop** — deploys to the store as an unpublished preview theme, then runs an automated QA loop (Puppeteer + vision model) — up to 3 passes to catch layout issues, font 404s, and colour mismatches before a human reviews it
 
 The result is a theme that is approximately 80–85% production-ready. A developer spends 2–4 hours of QA and polishing rather than 30–40 hours building from scratch.
 
@@ -144,13 +146,14 @@ GA4 click and conversion data feeds directly into the search training loop. Ever
 | WooCommerce Plugins (4) | Search, Wishlist, Upsell, Loyalty — WordPress standard |
 | AI Training Pipeline | Search model training from GA4 + click data, self-learning loop |
 | eComplete Search Enhancements | Training pipeline, GA4 integration, model switching to ecomplete-search-base |
+| URL Crawler | Puppeteer website analyser — crawls 5 pages, extracts computed styles, colours, typography, section inventory; feeds same vision model pipeline as Figma path |
+| Admin UI Platform Selector | Wizard step 2 — Shopify / Magento 2 / WooCommerce selection; platform-specific credentials and feature lists |
 
 ### Coming Next
 
 | Component | Status |
 |---|---|
-| Admin UI platform selector (Shopify / Magento / WooCommerce) | Next phase |
-| WooCommerce base theme | After Magento stabilises |
+| WooCommerce base theme | Next phase |
 | Platform-specific AI models (magento-coder, woocommerce-coder) | After first M2/WC builds |
 | Shopify App Store submissions | After QA + review |
 | Magento Marketplace submissions | After QA + review |
