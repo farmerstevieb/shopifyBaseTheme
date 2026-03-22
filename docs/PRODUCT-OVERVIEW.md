@@ -120,31 +120,40 @@ GA4 click and conversion data feeds directly into the search training loop. Ever
 
 ---
 
-## What's Live Now
+## Platform Status
+
+### Live
 
 | Component | Status |
 |---|---|
 | Shopify Base Theme | Production-ready, in use on Hydraulics |
-| Theme Builder admin UI | Built and deployed at d1d3aksfd7p614.cloudfront.net |
-| Search app (ecompleteSearch) | Live on ecompleteplus.myshopify.com and pepkor.ecomplete.co.za |
-| Wishlist backend | Complete (DynamoDB + Lambda) |
-| Wishlist theme UI (Shopify) | Built |
-| Back-in-stock backend and UI | Complete |
+| Theme Builder Admin UI | Deployed at d1d3aksfd7p614.cloudfront.net |
+| eComplete Search | Live on ecompleteplus.myshopify.com |
+| 13 Storefront Features | Wishlist, compare, countdown, cookie consent, age gate, newsletter popup, recently viewed, testimonials, infinite scroll, blog subscribe, back-in-stock, search integration, upsell sections |
 
-## Coming Soon
+### Built — Awaiting Deployment
 
 | Component | Status |
 |---|---|
-| Wishlist — named lists, sharing, analytics | In progress |
-| Upsell module (rules, tracking, analytics) | Planned — Phase 2 |
-| Loyalty program (tiers, points, referrals) | Planned — Phase 3 |
-| Magento 2 base theme | Planned — Phase 4 |
-| WooCommerce base theme | Planned — Phase 5 |
-| Shopify Apps (all 4 modules) | Planned |
-| Magento 2 modules (all 4) | Planned |
-| WooCommerce plugins (all 4) | Planned |
-| Admin UI platform selector (Shopify/M2/WC) | Planned — after M2 theme |
-| Platform-specific AI models (magento-coder, woocommerce-coder) | Future |
+| Wishlist Enterprise | Named lists, sharing, social proof, conversion tracking, analytics |
+| Upsell / Cross-sell | Rules engine, cart drawer, PDP section, progressive discounts, revenue tracking |
+| Loyalty Program | Points, tiers, referrals, campaigns, gamification, checkout redemption |
+| Magento 2 Base Theme | Alpine.js + Tailwind CSS, 12 components, 10 templates, Vite build |
+| Magento 2 Modules (4) | Search, Wishlist, Upsell, Loyalty — composer packages |
+| Shopify Apps (4) | Search, Wishlist, Upsell, Loyalty — Remix, App Store ready |
+| WooCommerce Plugins (4) | Search, Wishlist, Upsell, Loyalty — WordPress standard |
+| AI Training Pipeline | Search model training from GA4 + click data, self-learning loop |
+| eComplete Search Enhancements | Training pipeline, GA4 integration, model switching to ecomplete-search-base |
+
+### Coming Next
+
+| Component | Status |
+|---|---|
+| Admin UI platform selector (Shopify / Magento / WooCommerce) | Next phase |
+| WooCommerce base theme | After Magento stabilises |
+| Platform-specific AI models (magento-coder, woocommerce-coder) | After first M2/WC builds |
+| Shopify App Store submissions | After QA + review |
+| Magento Marketplace submissions | After QA + review |
 
 ---
 
