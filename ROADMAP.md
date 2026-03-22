@@ -648,6 +648,78 @@ Local first, Vertex when scale demands it. No OpenAI/Anthropic API calls in prod
 
 ---
 
+## TODO: Build from URL (Website Cloner)
+
+**Goal:** The primary build input — paste a live website URL and the platform analyses the existing site to generate a new theme that matches it. Figma becomes the optional secondary input for when a design file exists.
+
+### How it works
+
+```
+Step 0: Platform → Shopify / Magento / WooCommerce / WordPress
+Step 1: Source   → Website URL (primary)  OR  Figma URL (optional)
+                    ↓                          ↓
+              Puppeteer crawl              Figma API
+              screenshot + styles          frame export
+                    ↓                          ↓
+              Visual analysis (shopify-visual-coder)
+                    ↓
+              Design tokens (colours, fonts, spacing, sections)
+                    ↓
+              Build theme from tokens
+```
+
+### What the URL crawler needs to capture
+
+| Data | How |
+|---|---|
+| Full-page screenshots (home, collection, product, cart, search) | Puppeteer `page.screenshot({ fullPage: true })` |
+| Computed CSS styles (fonts, colours, spacing) | `window.getComputedStyle()` on key selectors |
+| Section/component inventory | DOM analysis — what sections exist, their order, layout |
+| Logo + brand assets | Extract from `<img>`, `<svg>`, favicon, OG image |
+| Typography scale | Extract all font-family, font-size, font-weight, line-height, letter-spacing |
+| Colour palette | Extract all unique colours from computed styles |
+| Navigation structure | Parse `<nav>`, `<header>` link structure |
+| Product card layout | Analyse product grid structure (columns, card content, aspect ratios) |
+| Footer structure | Parse footer columns, links, content |
+
+### Architecture
+
+```
+Admin wizard Step 1 (new tab: "From URL")
+  → POST /jobs with { sourceType: 'url', sourceUrl: 'https://example.com' }
+  → Job runner Phase 3 (analyse):
+      if sourceType === 'url':
+        → Puppeteer crawls 5 pages (/, /collections/all, /products/*, /cart, /search)
+        → Screenshots + computed styles extracted
+        → shopify-visual-coder analyses screenshots
+        → Same VisualAnalysis output as Figma path
+      else:
+        → Figma API path (existing)
+  → Rest of pipeline unchanged (build → deploy → QA)
+```
+
+### New files needed
+
+| File | Purpose |
+|---|---|
+| `packages/job-runner/src/crawl.ts` | Puppeteer crawler — screenshots, computed styles, DOM analysis |
+| `packages/job-runner/src/url-analyse.ts` | Feed screenshots to vision model, extract design tokens |
+| `packages/admin/src/pages/NewJobPage.tsx` | Add "From URL" tab in Step 1 alongside Figma |
+| `packages/core/src/types/index.ts` | Add `sourceType: 'figma' \| 'url'` + `sourceUrl` to CreateJobRequest |
+
+### Use cases
+
+- **Competitor cloning** — "Build me a store that looks like this competitor"
+- **Platform migration** — "Move this Magento store to Shopify" (crawl M2, build Shopify)
+- **Redesign reference** — "Use this site as inspiration for the new design"
+- **No Figma available** — client has a live site but no design file
+
+### Priority
+
+Medium — build after the current modules are deployed and tested. The Puppeteer infrastructure already exists in the QA runner (`qa-runner/src/browser.ts`) and the vision model analysis exists in `job-runner/src/analyse.ts`. This is mainly a new entry point, not a new pipeline.
+
+---
+
 ## eComplete Search — Current State (pepSearch)
 
 **Repo:** `ecomplete/pepSearch`
