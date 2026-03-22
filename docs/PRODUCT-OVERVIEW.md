@@ -43,7 +43,7 @@ The wizard supports feature selection grouped into:
 
 ### Shopify Base Theme
 
-A production-ready, white-label Shopify OS2.0 theme built from the ground up on the Juno Core Framework. Stack: Webpack, TypeScript, TailwindCSS v3, SCSS, React 19 (Radix UI). It includes 13+ native features with zero third-party app dependencies — wishlist, back-in-stock, compare, cookie consent, age verification, newsletter popup, countdown timer, testimonials, infinite scroll, and more.
+A production-ready, white-label Shopify OS2.0 theme built from the ground up. Stack: Webpack, TypeScript, TailwindCSS v3, SCSS, React 19 (Radix UI). It includes 13+ native features with zero third-party app dependencies — wishlist, back-in-stock, compare, cookie consent, age verification, newsletter popup, countdown timer, testimonials, infinite scroll, and more.
 
 Client projects use the base theme as a git submodule with a thin overlay (brand colours, fonts, CSS overrides) applied via a merge script. This means every client benefits from base theme improvements automatically.
 
@@ -156,6 +156,15 @@ GA4 click and conversion data feeds directly into the search training loop. Ever
 | `ecomplete/ecomplete-shopify-base` | Shopify base theme |
 | `ecomplete/ecomplete-magento-base` | Magento 2 base theme |
 | `ecomplete/ecomplete-search` | Search app (Shopify, Remix + Prisma + MySQL) |
-| `ecomplete/hydraulics-shopify` | Client: Hydraulics |
-| `ecomplete/ecomplete-shopify-dev-agent` | n8n dev agent |
-| `ecomplete/*` | All client store repos |
+| `ecomplete/module-search-magento2` | Magento 2 Search module |
+| `ecomplete/module-wishlist-magento2` | Magento 2 Wishlist module |
+| `ecomplete/module-upsell-magento2` | Magento 2 Upsell module |
+| `ecomplete/module-loyalty-magento2` | Magento 2 Loyalty module |
+| `ecomplete/cb-search-app` | eComplete Search — Shopify App (App Store ready) |
+| `ecomplete/cb-wishlist-app` | eComplete Wishlist — Shopify App (App Store ready) |
+| `ecomplete/cb-upsell-app` | eComplete Upsell — Shopify App (App Store ready) |
+| `ecomplete/cb-loyalty-app` | eComplete Loyalty — Shopify App (App Store ready) |
+| `ecomplete/cb-search-woo` | eComplete Search — WooCommerce Plugin |
+| `ecomplete/cb-wishlist-woo` | eComplete Wishlist — WooCommerce Plugin |
+| `ecomplete/cb-upsell-woo` | eComplete Upsell — WooCommerce Plugin |
+| `ecomplete/cb-loyalty-woo` | eComplete Loyalty — WooCommerce Plugin |
