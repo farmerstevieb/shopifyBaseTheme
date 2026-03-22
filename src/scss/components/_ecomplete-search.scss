@@ -93,7 +93,7 @@ $esearch-transition:     150ms ease;
   }
 
   // Apply base header input styles already defined in _header.scss
-  @apply text-md font-semibold uppercase leading-zero tracking-wide text-grey-20 text-opacity-50 transition-opacity;
+  @apply text-md font-semibold uppercase leading-zero tracking-wide text-grey-20 transition-opacity;
 
   .header__search--active & {
     @apply opacity-100;

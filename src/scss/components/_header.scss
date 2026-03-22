@@ -71,7 +71,7 @@
         @apply opacity-100;
       }
 
-      @apply h-full w-full text-center text-md font-semibold uppercase leading-zero tracking-wide text-grey-20 text-opacity-50 opacity-0 transition-opacity;
+      @apply h-full w-full text-center text-md font-semibold uppercase leading-zero tracking-wide text-grey-20 opacity-0 transition-opacity;
     }
   }
 

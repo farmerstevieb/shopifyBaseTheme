@@ -24,7 +24,7 @@
   }
 
   &__subtext {
-    @apply text-smd text-gray-600;
+    @apply text-smd text-grey-40;
   }
 
   &__form-wrap {
@@ -58,11 +58,11 @@
     @apply text-sm mb-3;
 
     &--success {
-      @apply text-green-600;
+      @apply text-green;
     }
 
     &--error {
-      @apply text-red-600;
+      @apply text-red-50;
     }
   }
 

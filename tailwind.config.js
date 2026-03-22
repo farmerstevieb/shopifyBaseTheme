@@ -49,6 +49,7 @@ const baseThemePreset = {
       black: "#000",
       white: "#fff",
       transparent: "transparent",
+      current: "currentColor",
       highlight: "var(--c-highlight)",
 
       // Semantic colours — driven by Shopify theme settings (CSS vars set in theme/_head.liquid)
@@ -204,6 +205,7 @@ const baseThemePreset = {
       px: "1px",
       rem: "1rem",
       0: "0px",
+      0.5: "0.2rem",
       1: "0.4rem",
       2: "0.8rem",
       3: "1.2rem",
@@ -242,6 +244,10 @@ const baseThemePreset = {
       zero: 0,
       none: 1,
       1: 1.1,
+      snug: 1.375,
+      tight: 1.25,
+      relaxed: 1.625,
+      loose: 2,
       base: 1.5,
       normal: "normal",
     },
@@ -253,11 +259,13 @@ const baseThemePreset = {
       small: "0.2em",
       standard: "0.12em",
       wide: "0.15em",
+      widest: "0.25em",
     },
     animation: {
       "fade-in": "fade-in 1s ease-in-out",
     },
     borderRadius: {
+      DEFAULT: "0.4rem",
       px: "1px",
       0: "0px",
       1: "0.4rem",
