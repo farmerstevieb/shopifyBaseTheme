@@ -14,11 +14,12 @@ for (const entry of fs.readdirSync(snippetsDir)) {
   if (fs.statSync(entryPath).isDirectory()) {
     for (const file of fs.readdirSync(entryPath)) {
       const src = path.join(entryPath, file);
+      if (!fs.existsSync(src) || fs.statSync(src).isDirectory()) continue;
       const flatName = `${entry}_${file.replace(/^_/, "")}`;
       fs.renameSync(src, path.join(snippetsDir, flatName));
       moved++;
     }
-    fs.rmdirSync(entryPath);
+    fs.rmSync(entryPath, { recursive: true, force: true });
   }
 }
 

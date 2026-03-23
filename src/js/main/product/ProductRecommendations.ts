@@ -15,7 +15,7 @@ export class ProductRecommendations extends HTMLElement {
           this.innerHTML = recommendations.innerHTML;
 
           // @ts-expect-error TODO
-          this.closest("juno-slider")?.reload();
+          this.closest("ecomplete-slider")?.reload();
         }
       })
       .catch((e) => {

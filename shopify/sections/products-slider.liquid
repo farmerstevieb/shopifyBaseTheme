@@ -53,7 +53,7 @@
       -%}
     {%- endif -%}
 
-    <juno-slider
+    <ecomplete-slider
       class="c-products-slider slider slider--products {% unless slider_enabled == 'false'%}slider--full{% endunless%}"
       enabled="{{ slider_enabled }}"
       loop
@@ -163,6 +163,6 @@
             {%- endif -%}
         {%- endcase -%}
       {%- endfor -%}
-    </juno-slider>
+    </ecomplete-slider>
   {%- endif -%}
 {% endif %}

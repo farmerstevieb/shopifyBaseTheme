@@ -81,7 +81,7 @@
       {%- # Media -%}
       <div class="w-[43%]	max-lg:hidden lg:pr-6">
         {%- if product.media.size > 1 -%}
-          <juno-slider
+          <ecomplete-slider
             class="{{ slider_classes }} sticky top-0 {{ media_wrapper_classes }}"
             {{ slider_settings }}
           >
@@ -151,7 +151,7 @@
           </ul>
         </div>
         {%- if product.media.size > 1 -%}
-          </juno-slider>
+          </ecomplete-slider>
         {%- else -%}
           </div>
         {%- endif -%}

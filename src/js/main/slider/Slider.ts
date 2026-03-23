@@ -192,4 +192,4 @@ class Slider extends HTMLElement {
 
 // Define element
 
-customElements.define("juno-slider", Slider);
+customElements.define("ecomplete-slider", Slider);

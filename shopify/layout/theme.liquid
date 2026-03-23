@@ -17,6 +17,12 @@
       render 'theme-seo'
 
       echo settings.head_scripts
+    -%}
+
+    {%- comment -%} eComplete global utilities — available to all section JS {%- endcomment -%}
+    <script src="{{ 'ecomplete-utils.js' | asset_url }}" defer="defer"></script>
+
+    {%- liquid
 
       if request.design_mode == false
         # Product stickers styles

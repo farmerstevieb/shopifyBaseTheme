@@ -41,13 +41,15 @@ function bindVideos() {
 export default function videoController() {
   bindVideos();
 
-  new MutationObserver(
-    debounce(() => {
-      bindVideos();
-    }, 250),
-    // @ts-expect-error This is an ID of main element
-  ).observe(MainContent, {
-    childList: true,
-    subtree: true,
-  });
+  const mainEl = document.getElementById('MainContent');
+  if (mainEl) {
+    new MutationObserver(
+      debounce(() => {
+        bindVideos();
+      }, 250),
+    ).observe(mainEl, {
+      childList: true,
+      subtree: true,
+    });
+  }
 }

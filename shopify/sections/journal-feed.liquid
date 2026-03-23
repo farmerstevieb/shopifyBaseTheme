@@ -42,7 +42,7 @@
     -%}
   {%- endif -%}
 
-  <juno-slider
+  <ecomplete-slider
     class="c-journal-feed slider slider--journal-feed slider--full {% if slider_enabled == 'false' %}slider--disable{% endif%}"
     enabled="{{ slider_enabled }}"
     loop
@@ -97,5 +97,5 @@
         {%- endfor -%}
       </ul>
     </div>
-  </juno-slider>
+  </ecomplete-slider>
 {% endif %}

@@ -43,7 +43,7 @@
 {% if display_section == 'true' %}
   {{ slider_variables }}
   <div class="relative lg:px-row">
-    <juno-slider
+    <ecomplete-slider
       class="slider slider--sub-collection slider--arrows {{ section_padding_class }} {{ slider_classes }}"
       {{ slider_settings }}
       loop
@@ -99,6 +99,6 @@
           {%- endfor -%}
         </ul>
       </div>
-    </juno-slider>
+    </ecomplete-slider>
   </div>
 {% endif %}

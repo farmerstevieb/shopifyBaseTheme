@@ -52,7 +52,7 @@
 
     {{ slider_variables }}
 
-    <juno-slider
+    <ecomplete-slider
       class="slider slider--banner-grid-carousel {{ section_padding_class }} {{ slider_classes }}"
       style="--overlay:{{ section.settings.overlay | default: 'none' }}"
       {{ slider_settings }}
@@ -119,6 +119,6 @@
           {%- endfor -%}
         </ul>
       </div>
-    </juno-slider>
+    </ecomplete-slider>
   {%- endif -%}
 {% endif %}
