@@ -38,7 +38,7 @@
   {%- endif -%}
 
   {%- if testimonial_blocks.size > 0 -%}
-    <juno-slider
+    <ecomplete-slider
       class="c-testimonials slider slider--testimonials"
       enabled="true"
       {% if autoplay and slider_autoplay > 0 %}autoplay="{{ slider_autoplay }}"{% endif %}
@@ -114,6 +114,6 @@
           {%- endfor -%}
         </ul>
       </div>
-    </juno-slider>
+    </ecomplete-slider>
   {%- endif -%}
 {% endif %}

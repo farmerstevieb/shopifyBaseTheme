@@ -1,11 +1,11 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Juno theme",
+    "theme_name": "eComplete theme",
     "theme_version": "2.0.0",
-    "theme_author": "Juno eCommerce",
-    "theme_documentation_url": "https://www.junoecommerce.com/",
-    "theme_support_url": "https://www.junoecommerce.com/"
+    "theme_author": "eComplete",
+    "theme_documentation_url": "https://www.ecomplete.com/",
+    "theme_support_url": "https://www.ecomplete.com/"
   },
   {
     "name": "Brand",
