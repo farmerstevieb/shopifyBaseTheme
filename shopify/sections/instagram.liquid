@@ -38,7 +38,7 @@
     {%- assign blocks = section.blocks | where: 'type', 'image' -%}
 
     <div class="max-w-[1196px] mx-auto">
-      <juno-slider
+      <ecomplete-slider
         class="slider slider--instagram"
         enabled="(max-width: 768px)"
         loop
@@ -65,7 +65,7 @@
             {%- endfor -%}
           </ul>
         </div>
-      </juno-slider>
+      </ecomplete-slider>
     </div>
   {% endfor %}
 

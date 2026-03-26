@@ -1,7 +1,7 @@
 import { get, rIC } from "../../utils";
 
 function sliderController() {
-  if (get("juno-slider") || get(".js-quickshop-trigger")) {
+  if (get("ecomplete-slider") || get(".js-quickshop-trigger")) {
     import(/* webpackChunkName: "slider" */ "./Slider");
   }
 }

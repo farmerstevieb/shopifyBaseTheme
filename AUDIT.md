@@ -6,7 +6,7 @@ _Generated: 2026-03-03_
 ## 1. Codebase Structure
 
 ### Theme Architecture
-Both stores run on **Juno Core Framework v2.6.0** — a custom Shopify theme with:
+Both stores run on **eComplete Core Framework v2.6.0** — a custom Shopify theme with:
 - **Webpack** build pipeline, **pnpm**, **TypeScript**, **TailwindCSS v3 + SCSS**
 - **React 19** for Nosto search/recommendation templates
 - Custom **Larken** typeface embedded as WOFF2 assets
@@ -199,7 +199,7 @@ These feed the theme's personalisation logic without additional apps.
 See `shopifyBaseTheme/GIT_DEPLOYMENT_GUIDE.md` for full workflow.
 
 **TL;DR:**
-- Extract Juno Core Framework into a clean `shopifyBaseTheme` repo (no client config)
+- Extract eComplete Core Framework into a clean `shopifyBaseTheme` repo (no client config)
 - Each new client gets a git clone of the base
 - Per-client customisation in: `shopify.theme.toml`, `tailwind.config.js`, `settings_schema.json`, `assets/` (fonts), `locales/` (copy)
 - Core architecture (sections, snippets, JS modules, build tooling) stays upstream-mergeable

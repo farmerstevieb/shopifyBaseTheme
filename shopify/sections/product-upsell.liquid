@@ -49,7 +49,7 @@
       {%- assign rendered_count = 0 -%}
 
       {%- if section.settings.layout == 'slider' -%}
-        <juno-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
+        <ecomplete-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
           <ul class="slider__track" id="upsell-section-{{ section.id }}">
       {%- else -%}
         <ul
@@ -76,7 +76,7 @@
 
       {%- if section.settings.layout == 'slider' -%}
           </ul>
-        </juno-slider>
+        </ecomplete-slider>
       {%- else -%}
         </ul>
       {%- endif -%}
@@ -109,7 +109,7 @@
       {%- assign rendered_count = 0 -%}
 
       {%- if section.settings.layout == 'slider' -%}
-        <juno-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
+        <ecomplete-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
           <ul class="slider__track" id="upsell-section-{{ section.id }}">
       {%- else -%}
         <ul
@@ -133,7 +133,7 @@
 
       {%- if section.settings.layout == 'slider' -%}
           </ul>
-        </juno-slider>
+        </ecomplete-slider>
       {%- else -%}
         </ul>
       {%- endif -%}
@@ -166,7 +166,7 @@
           data-layout="{{ section.settings.layout }}"
         >
           {%- if section.settings.layout == 'slider' -%}
-            <juno-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
+            <ecomplete-slider class="c-products-slider slider slider--products slider--full" enabled="true" loop showArrows>
               <ul class="slider__track" id="upsell-section-{{ section.id }}">
           {%- else -%}
             <ul
@@ -188,7 +188,7 @@
 
           {%- if section.settings.layout == 'slider' -%}
               </ul>
-            </juno-slider>
+            </ecomplete-slider>
           {%- else -%}
             </ul>
           {%- endif -%}

@@ -29,7 +29,7 @@ assign display_section = display_section_snippet | strip
     -%}
   {%- endif -%}
 
-  <juno-slider enabled loop showArrows>
+  <ecomplete-slider enabled loop showArrows>
     <div class="viewport" data-slider="viewport">
       <ul class="content-cards content-cards--carousel">
         {%- assign blocks = section.blocks | where: 'type', 'card' -%}
@@ -81,5 +81,5 @@ assign display_section = display_section_snippet | strip
         {%- endfor -%}
       </ul>
     </div>
-  </juno-slider>
+  </ecomplete-slider>
 {% endif %}
