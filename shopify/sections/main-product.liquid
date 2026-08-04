@@ -63,19 +63,19 @@
           {%- assign header_close_tag = null -%}
 
         {%- when 'body_start' -%}
-          {% if customer %}
+          {% if customer or settings.retail_mode %}
             {{ '<sticky-button class="product__details-body" ' | append: block.shopify_attributes | append: '>' }}
             {%- assign body_close_tag = '</sticky-button>' -%}
           {% endif %}
 
         {%- when 'body_end' -%}
-          {% if customer %}
+          {% if customer or settings.retail_mode %}
             {{ body_close_tag }}
             {%- assign body_close_tag = null -%}
           {% endif %}
 
         {%- when 'sticky_button' -%}
-          {% if customer %}
+          {% if customer or settings.retail_mode %}
             <div class="product__details-sitcky-button lg:hidden">
               {%- render 'product-sticky-button', product: product -%}
               <button
@@ -105,7 +105,7 @@
           </h1>
 
         {%- when 'price' -%}
-          {%- if customer -%}
+          {%- if customer or settings.retail_mode -%}
             {%- liquid
               assign selVar = product.selected_or_first_available_variant
               assign rrp_value = null
@@ -137,6 +137,11 @@
                 class: 'text-lg font-semibold flex flex-row-reverse gap-x-1'
               -%}
             </div>
+            {%- if customer.b2b? -%}
+              {%- render 'b2b-volume-pricing',
+                variant: product.selected_or_first_available_variant
+              -%}
+            {%- endif -%}
             {%- if block.settings.show_rrp -%}
               {% if rrp_value != blank %}
                 <div
@@ -220,7 +225,7 @@
             section: section
           -%}
         {%- when 'quantity_selector' -%}
-          {%- if customer -%}
+          {%- if customer or settings.retail_mode -%}
             <div class="product__details-quantity mb-2 flex flex-col text-grey-5" {{ block.shopify_attributes }}>
               {%- assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id -%}
               <label class="font-bold" for="Quantity-{{ section.id }}">

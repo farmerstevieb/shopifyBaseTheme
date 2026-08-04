@@ -171,7 +171,7 @@
             role="status"
             {{ block.shopify_attributes }}
           >
-            {%- if customer -%}
+            {%- if customer or settings.retail_mode -%}
               {%- render 'product-price',
                 product: product,
                 use_variant: true,
@@ -192,7 +192,7 @@
             length_guide_page: length_guide_page,
             colour_guide_page: colour_guide_page
           %}
-          {%- if customer -%}
+          {%- if customer or settings.retail_mode -%}
             <div class="mb-2 flex flex-col text-grey-5" {{ block.shopify_attributes }}>
               {%- assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id -%}
               <label class="font-bold" for="Quantity-{{ section.id }}">

@@ -266,6 +266,17 @@
         "sale_price": "Sale price",
         "unit_price": "Unit price"
       },
+      "volume_pricing": {
+        "title": "Volume pricing",
+        "note": "Available to trade accounts",
+        "minimum_html": "Buy {{ quantity }}+",
+        "price_at_each_html": "{{ price }} each"
+      },
+      "quantity_rule": {
+        "minimum_html": "Minimum of {{ quantity }}",
+        "maximum_html": "Maximum of {{ quantity }}",
+        "increment_html": "Increments of {{ quantity }}"
+      },
       "share": "Share this product",
       "sold_out": "Sold out",
       "unavailable": "Unavailable",
