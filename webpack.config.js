@@ -9,11 +9,25 @@
  *   shopify/**\/*         → dist/
  */
 
+const fs = require("fs");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const RemoveEmptyScripts = require("webpack-remove-empty-scripts");
+
+// Writes a marker file once webpack has finished emitting ALL assets for a
+// compile, including the theme files copied by CopyWebpackPlugin. `shopify
+// theme dev` must not start syncing until this exists — otherwise it can
+// race the copy step and try (and fail) to delete required theme files
+// (theme.liquid, settings_schema.json, ...) that just haven't landed yet.
+class BuildCompleteMarkerPlugin {
+  apply(compiler) {
+    compiler.hooks.done.tap("BuildCompleteMarkerPlugin", () => {
+      fs.writeFileSync(path.resolve(__dirname, "dist/.build-complete"), String(Date.now()));
+    });
+  }
+}
 
 module.exports = (env = {}) => {
   const isProd = !!env.production;
@@ -108,6 +122,7 @@ module.exports = (env = {}) => {
 
     plugins: [
       new RemoveEmptyScripts(),
+      new BuildCompleteMarkerPlugin(),
 
       new MiniCssExtractPlugin({
         filename: "[name].css",
