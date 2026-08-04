@@ -8,8 +8,15 @@
     "**/*.scss"
   ],
   "scripts": {
-    "shopify:dev": "wait-on dist && shopify theme dev -e local",
+    "shopify:dev": "wait-on dist/.build-complete && node scripts/theme-dev.js",
     "shopify:sync": "mkdir __sync && shopify theme pull -e local --path __sync --only */*.json && shopify theme push -e local --path __sync --nodelete && rimraf ./__sync",
+    "shopify:pull-settings": "node scripts/theme-pull-settings.js",
+    "prebuild": "npm run shopify:pull-settings",
+    "predev": "npm run shopify:pull-settings",
+    "theme:push": "node scripts/theme-push.js",
+    "theme:pull": "node scripts/theme-pull.js",
+    "theme:cleanup": "node scripts/theme-cleanup.js",
+    "promote": "node scripts/theme-promote.js",
     "webpack:dev": "webpack --progress --watch",
     "webpack:build": "rimraf ./dist && webpack --progress --env production && node scripts/flatten-snippets.js && node scripts/inject-schemas.js && node scripts/generate-theme-assets.js",
     "dev": "rimraf ./dist && npm-run-all --parallel webpack:dev shopify:dev",
