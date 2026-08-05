@@ -1,4 +1,5 @@
 const { execFileSync, spawn } = require("child_process");
+const fs = require("fs");
 const path = require("path");
 
 // node_modules/.bin/shopify isn't a single cross-platform executable: on
@@ -16,11 +17,24 @@ function resolveShopifyEntry() {
 
 const SHOPIFY_ENTRY = resolveShopifyEntry();
 
+// shopify.theme.toml's `-e local` environment points --path at ./dist. The
+// CLI validates that path exists on disk before running ANY command through
+// that environment, even a pure remote read like `theme list` that never
+// touches local files. On a fresh clone, predev (theme-pull-settings.js)
+// is the very first command to ever run, before anything has built dist/
+// -- so without this, every first-ever `npm run dev` fails immediately.
+const DIST_DIR = path.resolve(__dirname, "../../dist");
+function ensureDistDirExists() {
+  fs.mkdirSync(DIST_DIR, { recursive: true });
+}
+
 function shopify(args, options = {}) {
+  ensureDistDirExists();
   return execFileSync(process.execPath, [SHOPIFY_ENTRY, ...args], { encoding: "utf8", ...options });
 }
 
 function shopifySpawn(args, options = {}) {
+  ensureDistDirExists();
   return spawn(process.execPath, [SHOPIFY_ENTRY, ...args], options);
 }
 
