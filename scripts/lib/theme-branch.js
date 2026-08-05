@@ -28,9 +28,43 @@ function ensureDistDirExists() {
   fs.mkdirSync(DIST_DIR, { recursive: true });
 }
 
+// Shopify's Admin API throttles under sustained load (e.g. the whole team
+// pushing/creating branch themes against the same store at once) and the
+// CLI itself doesn't retry theme commands on that -- it just surfaces a bare
+// "Throttled" error box. Retry with backoff instead of letting a transient
+// rate limit crash the whole command. Only applies when output was actually
+// captured (the default): a caller that opted into `stdio: "inherit"` for a
+// live progress bar has no captured output to inspect, so this rethrows
+// immediately there, same as before -- no behavior change for those calls.
+const MAX_THROTTLE_RETRIES = 5;
+
+function sleepSync(ms) {
+  const sab = new SharedArrayBuffer(4);
+  Atomics.wait(new Int32Array(sab), 0, 0, ms);
+}
+
+function withThrottleRetry(run) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return run();
+    } catch (err) {
+      const output = `${err.stdout || ""}${err.stderr || ""}`;
+      if (/\bThrottled\b/.test(output) && attempt < MAX_THROTTLE_RETRIES) {
+        const delayMs = Math.min(2000 * 2 ** (attempt - 1), 30000) + Math.floor(Math.random() * 1000);
+        console.error(`→ Rate limited by Shopify — retrying in ${Math.round(delayMs / 1000)}s (attempt ${attempt}/${MAX_THROTTLE_RETRIES})...`);
+        sleepSync(delayMs);
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
 function shopify(args, options = {}) {
   ensureDistDirExists();
-  return execFileSync(process.execPath, [SHOPIFY_ENTRY, ...args], { encoding: "utf8", ...options });
+  return withThrottleRetry(() =>
+    execFileSync(process.execPath, [SHOPIFY_ENTRY, ...args], { encoding: "utf8", ...options }),
+  );
 }
 
 function shopifySpawn(args, options = {}) {
@@ -119,4 +153,13 @@ function ensureThemeExists(name) {
   return { id: result.theme.id, justCreated: true };
 }
 
-module.exports = { shopify, shopifySpawn, getBranchThemeName, findTheme, findLiveTheme, ensureThemeExists, parseJsonOutput };
+module.exports = {
+  shopify,
+  shopifySpawn,
+  getBranchThemeName,
+  findTheme,
+  findLiveTheme,
+  ensureThemeExists,
+  parseJsonOutput,
+  withThrottleRetry,
+};
