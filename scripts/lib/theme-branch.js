@@ -38,6 +38,40 @@ function shopifySpawn(args, options = {}) {
   return spawn(process.execPath, [SHOPIFY_ENTRY, ...args], options);
 }
 
+// Shopify CLI's background update-notifier ("checked-for-available-upgrade",
+// once per day) can print a "Version X available!" notice on stdout after a
+// command's own --json output, on top of it being a generic CLI-wide hook
+// with no guarantee it stays quiet for every command/version forever. Rather
+// than assume the whole of stdout is pure JSON, extract just the first
+// complete JSON value and ignore anything appended after it.
+function parseJsonOutput(out) {
+  const start = out.search(/[[{]/);
+  if (start === -1) throw new Error(`No JSON found in CLI output:\n${out.slice(0, 300)}`);
+  const open = out[start];
+  const close = open === "[" ? "]" : "}";
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (let i = start; i < out.length; i++) {
+    const ch = out[i];
+    if (inString) {
+      if (escape) escape = false;
+      else if (ch === "\\") escape = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+    } else if (ch === open) {
+      depth++;
+    } else if (ch === close) {
+      depth--;
+      if (depth === 0) return JSON.parse(out.slice(start, i + 1));
+    }
+  }
+  throw new Error(`Unterminated JSON in CLI output:\n${out.slice(0, 300)}`);
+}
+
 function getBranchThemeName() {
   const branch = execFileSync("git", ["rev-parse", "--abbrev-ref", "HEAD"], { encoding: "utf8" }).trim();
   if (branch === "HEAD") {
@@ -55,13 +89,13 @@ function getBranchThemeName() {
 // since --name only ever did a substring match).
 function findTheme(name) {
   const out = shopify(["theme", "list", "-e", "local", "--json"]);
-  const themes = JSON.parse(out);
+  const themes = parseJsonOutput(out);
   return themes.find((t) => t.name === name);
 }
 
 function findLiveTheme() {
   const out = shopify(["theme", "list", "-e", "local", "--json"]);
-  const themes = JSON.parse(out);
+  const themes = parseJsonOutput(out);
   return themes.find((t) => t.role === "live");
 }
 
@@ -80,9 +114,9 @@ function ensureThemeExists(name) {
 
   console.log(`→ No theme named "${name}" yet — creating it from dist/...`);
   const out = shopify(["theme", "push", "-e", "local", "--path", "dist", "--unpublished", "--theme", name, "--json"]);
-  const result = JSON.parse(out);
+  const result = parseJsonOutput(out);
   console.log(`✓ Created theme "${result.theme.name}" (#${result.theme.id})`);
   return { id: result.theme.id, justCreated: true };
 }
 
-module.exports = { shopify, shopifySpawn, getBranchThemeName, findTheme, findLiveTheme, ensureThemeExists };
+module.exports = { shopify, shopifySpawn, getBranchThemeName, findTheme, findLiveTheme, ensureThemeExists, parseJsonOutput };
