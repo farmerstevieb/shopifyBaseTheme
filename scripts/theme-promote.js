@@ -2,7 +2,7 @@ const { execFileSync } = require("child_process");
 const path = require("path");
 const readline = require("readline");
 
-const { shopify, findLiveTheme } = require("./lib/theme-branch");
+const { shopify, findLiveTheme, parseJsonOutput } = require("./lib/theme-branch");
 
 const root = path.resolve(__dirname, "..");
 const dryRun = process.argv.includes("--dry-run");
@@ -111,7 +111,7 @@ async function main() {
     "--name", backupName,
     "--force", "--json",
   ]);
-  const backupTheme = JSON.parse(dupOut).theme;
+  const backupTheme = parseJsonOutput(dupOut).theme;
   console.log(`✓ Backup theme "${backupTheme.name}" (#${backupTheme.id}) created — rollback with:`);
   console.log(`  shopify theme publish -e local --theme ${backupTheme.id} --force`);
 
@@ -123,7 +123,7 @@ async function main() {
     "theme", "push", "-e", "local", "--path", "dist",
     "--unpublished", "--theme", newThemeName, "--json",
   ]);
-  const newTheme = JSON.parse(pushOut).theme;
+  const newTheme = parseJsonOutput(pushOut).theme;
   console.log(`✓ Pushed "${newTheme.name}" (#${newTheme.id})`);
 
   console.log(`\n→ Publishing "${newTheme.name}" as the live theme...`);
