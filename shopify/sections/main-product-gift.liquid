@@ -57,30 +57,24 @@
           {%- assign header_close_tag = null -%}
 
         {%- when 'body_start' -%}
-          {% if customer %}
-            {{ '<sticky-button class="product__details-body" ' | append: block.shopify_attributes | append: '>' }}
-            {%- assign body_close_tag = '</sticky-button>' -%}
-          {% endif %}
+          {{ '<sticky-button class="product__details-body" ' | append: block.shopify_attributes | append: '>' }}
+          {%- assign body_close_tag = '</sticky-button>' -%}
 
         {%- when 'body_end' -%}
-          {% if customer %}
-            {{ body_close_tag }}
-            {%- assign body_close_tag = null -%}
-          {% endif %}
+          {{ body_close_tag }}
+          {%- assign body_close_tag = null -%}
 
         {%- when 'sticky_button' -%}
-          {% if customer %}
-            <div class="product__details-sitcky-button lg:hidden">
-              {%- render 'product-sticky-button', product: product -%}
-              <button
-                type="button"
-                class="js-show-variants ml-auto flex items-center gap-1 text-sm font-semibold uppercase tracking-standard underline"
-              >
-                {%- render 'theme-icons' with 'pencil', width: 18, height: 18 -%}
-                {{ 'products.product.change' | t }}
-              </button>
-            </div>
-          {% endif %}
+          <div class="product__details-sitcky-button lg:hidden">
+            {%- render 'product-sticky-button', product: product -%}
+            <button
+              type="button"
+              class="js-show-variants ml-auto flex items-center gap-1 text-sm font-semibold uppercase tracking-standard underline"
+            >
+              {%- render 'theme-icons' with 'pencil', width: 18, height: 18 -%}
+              {{ 'products.product.change' | t }}
+            </button>
+          </div>
 
         {%- when 'divider' -%}
           <hr class="o-hr {{ block.settings.hidden}}" role="presentation" {{ block.shopify_attributes }}>
@@ -178,49 +172,47 @@
             is_gift_card: true
           -%}
         {%- when 'quantity_selector' -%}
-          {%- if customer -%}
-            <div class="product__details-quantity mb-2 flex flex-col text-grey-5" {{ block.shopify_attributes }}>
-              {%- assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id -%}
-              <label class="font-bold" for="Quantity-{{ section.id }}">
-                <span class="sr-only{% if cart_qty == 0 %} hidden{% endif %}">
-                  {{- 'products.product.quantity.in_cart_html' | t: quantity: cart_qty -}}
+          <div class="product__details-quantity mb-2 flex flex-col text-grey-5" {{ block.shopify_attributes }}>
+            {%- assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id -%}
+            <label class="font-bold" for="Quantity-{{ section.id }}">
+              <span class="sr-only{% if cart_qty == 0 %} hidden{% endif %}">
+                {{- 'products.product.quantity.in_cart_html' | t: quantity: cart_qty -}}
+              </span>
+            </label>
+
+            <quantity-input class="quantity-input js-quantity-input">
+              <button class="button" name="minus">
+                <span class="sr-only">
+                  {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
                 </span>
-              </label>
+                {%- render 'theme-icons' with 'minus', width: 18, height: 18 -%}
+              </button>
 
-              <quantity-input class="quantity-input js-quantity-input">
-                <button class="button" name="minus">
-                  <span class="sr-only">
-                    {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
-                  </span>
-                  {%- render 'theme-icons' with 'minus', width: 18, height: 18 -%}
-                </button>
+              <input
+                class="quantity__input text-sm font-normal"
+                type="number"
+                name="quantity"
+                id="Quantity-{{ section.id }}"
+                data-cart-quantity="{{ cart_qty }}"
+                data-min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+                  data-max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                  max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                {% endif %}
+                step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+                value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                form="{{ product_form_id }}"
+              >
 
-                <input
-                  class="quantity__input text-sm font-normal"
-                  type="number"
-                  name="quantity"
-                  id="Quantity-{{ section.id }}"
-                  data-cart-quantity="{{ cart_qty }}"
-                  data-min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
-                  min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
-                  {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
-                    data-max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
-                    max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
-                  {% endif %}
-                  step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
-                  value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
-                  form="{{ product_form_id }}"
-                >
-
-                <button class="button" name="plus">
-                  <span class="sr-only">
-                    {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
-                  </span>
-                  {%- render 'theme-icons' with 'plus', width: 18, height: 18 -%}
-                </button>
-              </quantity-input>
-            </div>
-          {%- endif -%}
+              <button class="button" name="plus">
+                <span class="sr-only">
+                  {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                </span>
+                {%- render 'theme-icons' with 'plus', width: 18, height: 18 -%}
+              </button>
+            </quantity-input>
+          </div>
 
         {%- when 'share' -%}
           {%- assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin -%}
