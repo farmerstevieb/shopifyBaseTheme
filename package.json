@@ -23,6 +23,7 @@
     "format": "prettier --write . --ignore-path='.gitignore'",
     "lint:css": "stylelint **/*.scss",
     "lint:theme": "shopify theme check",
+    "merge": "node scripts/merge.js",
     "build": "npm-run-all webpack:build",
     "lint": "npm-run-all --parallel --continue-on-error \"lint:css --quiet\" \"lint:theme\""
   },
