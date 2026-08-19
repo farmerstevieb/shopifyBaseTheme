@@ -133,6 +133,38 @@ function findLiveTheme() {
   return themes.find((t) => t.role === "live");
 }
 
+// A branch name can coincidentally match a live theme's name -- callers that
+// write to (theme-dev/push) or repoint local source at (theme-pull) whatever
+// theme the branch name resolves to must not silently land on production.
+// Read-only settings bootstrapping (theme-pull-settings.js) already has its
+// own deliberate "pull from live" fallback and is unaffected by this -- it
+// calls findTheme directly, not this guard.
+function assertNotLive(theme, name) {
+  if (theme && theme.role === "live") {
+    console.error(`✗ "${name}" resolves to the LIVE published theme (#${theme.id}) — refusing to use it here.`);
+    console.error("  Your local branch name happens to match a Shopify theme name that is currently live.");
+    console.error("  To deploy to production, use `npm run promote` instead.");
+    process.exit(1);
+  }
+}
+
+// Every client clone's shopify.theme.toml has its own [environments.local]
+// store -- some CLI calls (e.g. a `theme pull` into a throwaway tmp dir
+// outside the project) can't rely on `-e local` to resolve it themselves
+// (the CLI resolves an environment's config relative to --path, so a
+// --path outside the project can't find shopify.theme.toml at all) and need
+// the store domain directly. Read it from the same config file everything
+// else already trusts, instead of hardcoding a client's domain anywhere.
+function readLocalStore() {
+  const tomlPath = path.resolve(__dirname, "../../shopify.theme.toml");
+  const content = fs.readFileSync(tomlPath, "utf8");
+  const match = content.match(/\[environments\.local\][^[]*?^store\s*=\s*"([^"]+)"/m);
+  if (!match) {
+    throw new Error(`Could not find [environments.local] store in ${tomlPath}`);
+  }
+  return match[1];
+}
+
 // Creates the theme (unpublished) if it doesn't exist yet, pushing the
 // current dist/ as part of creation. Returns { id, justCreated } so callers
 // that only need the theme to exist (theme-dev.js) can ignore justCreated,
@@ -162,4 +194,6 @@ module.exports = {
   ensureThemeExists,
   parseJsonOutput,
   withThrottleRetry,
+  assertNotLive,
+  readLocalStore,
 };
