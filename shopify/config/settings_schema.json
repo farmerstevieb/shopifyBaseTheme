@@ -1,11 +1,11 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "eComplete theme",
-    "theme_version": "2.0.0",
+    "theme_name": "eComplete Theme",
+    "theme_version": "1.5",
     "theme_author": "eComplete",
-    "theme_documentation_url": "https://www.ecomplete.com/",
-    "theme_support_url": "https://www.ecomplete.com/"
+    "theme_documentation_url": "https://help.shopify.com/en/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com/en/manual/online-store/themes"
   },
   {
     "name": "Brand",
@@ -18,18 +18,22 @@
         "type": "image_picker",
         "id": "brand_logo",
         "label": "Logo"
+      },
+      {
+        "type": "header",
+        "content": "Favicon"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Upload a square image (at least 32\u00d732px, ideally 180\u00d7180px) to use as your browser tab icon and bookmarks favicon."
       }
     ]
   },
   {
     "name": "Typography",
     "settings": [
-      {
-        "type": "checkbox",
-        "id": "use_custom_font",
-        "default": true,
-        "label": "Use Larken font"
-      },
       {
         "type": "header",
         "content": "Headings"
@@ -39,6 +43,17 @@
         "id": "type_header_font",
         "default": "raleway_n4",
         "label": "Font",
+        "info": "Selecting a different font can affect the speed of your store. [Learn more about system fonts.](https://help.shopify.com/en/manual/online-store/os/store-speed/improving-speed#fonts)"
+      },
+      {
+        "type": "header",
+        "content": "Display / Hero"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_display_font",
+        "default": "playfair_display_n4",
+        "label": "Display font",
         "info": "Selecting a different font can affect the speed of your store. [Learn more about system fonts.](https://help.shopify.com/en/manual/online-store/os/store-speed/improving-speed#fonts)"
       },
       {
@@ -1411,16 +1426,46 @@
         "id": "product_button_style",
         "label": "Button style",
         "options": [
-          { "value": "primary", "label": "Primary" },
-          { "value": "secondary", "label": "Secondary" },
-          { "value": "tertiary", "label": "Tertiary" },
-          { "value": "quaternary", "label": "Quaternary" },
-          { "value": "quinary", "label": "Quinary" },
-          { "value": "senary", "label": "Senary" },
-          { "value": "septenary", "label": "Septenary" },
-          { "value": "octonary", "label": "Octonary" },
-          { "value": "solid", "label": "Solid" },
-          { "value": "link", "label": "Link" }
+          {
+            "value": "primary",
+            "label": "Primary"
+          },
+          {
+            "value": "secondary",
+            "label": "Secondary"
+          },
+          {
+            "value": "tertiary",
+            "label": "Tertiary"
+          },
+          {
+            "value": "quaternary",
+            "label": "Quaternary"
+          },
+          {
+            "value": "quinary",
+            "label": "Quinary"
+          },
+          {
+            "value": "senary",
+            "label": "Senary"
+          },
+          {
+            "value": "septenary",
+            "label": "Septenary"
+          },
+          {
+            "value": "octonary",
+            "label": "Octonary"
+          },
+          {
+            "value": "solid",
+            "label": "Solid"
+          },
+          {
+            "value": "link",
+            "label": "Link"
+          }
         ],
         "default": "primary"
       },
@@ -1438,16 +1483,46 @@
         "id": "stocklist_button_style",
         "label": "Button style",
         "options": [
-          { "value": "primary", "label": "Primary" },
-          { "value": "secondary", "label": "Secondary" },
-          { "value": "tertiary", "label": "Tertiary" },
-          { "value": "quaternary", "label": "Quaternary" },
-          { "value": "quinary", "label": "Quinary" },
-          { "value": "senary", "label": "Senary" },
-          { "value": "septenary", "label": "Septenary" },
-          { "value": "octonary", "label": "Octonary" },
-          { "value": "solid", "label": "Solid" },
-          { "value": "link", "label": "Link" }
+          {
+            "value": "primary",
+            "label": "Primary"
+          },
+          {
+            "value": "secondary",
+            "label": "Secondary"
+          },
+          {
+            "value": "tertiary",
+            "label": "Tertiary"
+          },
+          {
+            "value": "quaternary",
+            "label": "Quaternary"
+          },
+          {
+            "value": "quinary",
+            "label": "Quinary"
+          },
+          {
+            "value": "senary",
+            "label": "Senary"
+          },
+          {
+            "value": "septenary",
+            "label": "Septenary"
+          },
+          {
+            "value": "octonary",
+            "label": "Octonary"
+          },
+          {
+            "value": "solid",
+            "label": "Solid"
+          },
+          {
+            "value": "link",
+            "label": "Link"
+          }
         ],
         "default": "secondary"
       },
@@ -1460,22 +1535,51 @@
         "id": "login_button_style",
         "label": "Button style",
         "options": [
-          { "value": "primary", "label": "Primary" },
-          { "value": "secondary", "label": "Secondary" },
-          { "value": "tertiary", "label": "Tertiary" },
-          { "value": "quaternary", "label": "Quaternary" },
-          { "value": "quinary", "label": "Quinary" },
-          { "value": "senary", "label": "Senary" },
-          { "value": "septenary", "label": "Septenary" },
-          { "value": "octonary", "label": "Octonary" },
-          { "value": "solid", "label": "Solid" },
-          { "value": "link", "label": "Link" }
+          {
+            "value": "primary",
+            "label": "Primary"
+          },
+          {
+            "value": "secondary",
+            "label": "Secondary"
+          },
+          {
+            "value": "tertiary",
+            "label": "Tertiary"
+          },
+          {
+            "value": "quaternary",
+            "label": "Quaternary"
+          },
+          {
+            "value": "quinary",
+            "label": "Quinary"
+          },
+          {
+            "value": "senary",
+            "label": "Senary"
+          },
+          {
+            "value": "septenary",
+            "label": "Septenary"
+          },
+          {
+            "value": "octonary",
+            "label": "Octonary"
+          },
+          {
+            "value": "solid",
+            "label": "Solid"
+          },
+          {
+            "value": "link",
+            "label": "Link"
+          }
         ],
         "default": "primary"
       }
     ]
   },
-
   {
     "name": "Markets",
     "settings": [
@@ -1500,6 +1604,23 @@
         "default": false,
         "label": "Enabled?",
         "info": "Show free delivery progress bar on cart page"
+      }
+    ]
+  },
+  {
+    "name": "Size guide",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "size_guide_enabled",
+        "label": "Enabled?",
+        "default": true
+      },
+      {
+        "type": "richtext",
+        "id": "size_guide_returns_text",
+        "label": "Returns or Exchanges text",
+        "default": "<p>Try your purchase in the comfort of your own home and, if it's not quite right, let us know and we'll arrange a free collection from your home or office.</p>"
       }
     ]
   },
@@ -1635,8 +1756,15 @@
         "type": "checkbox",
         "id": "enable_ecomplete_search",
         "label": "Enable eComplete Search",
-        "default": false,
-        "info": "Requires the ecomplete-search app to be installed. Native search is used as a fallback if the app is unavailable."
+        "default": true,
+        "info": "Recommended. Renders the instant-search dropdown, which falls back to Shopify's native /search/suggest.json predictive results when the eComplete Search app is not installed."
+      },
+      {
+        "type": "checkbox",
+        "id": "predictive_search_enabled",
+        "label": "Enable native predictive search markup",
+        "default": true,
+        "info": "Applies predictive-search combobox attributes to the native (non-eComplete) search fallback form."
       },
       {
         "type": "range",
