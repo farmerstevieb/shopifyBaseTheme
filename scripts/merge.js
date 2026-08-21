@@ -10,10 +10,17 @@
  *
  * Requires dist/ to already exist from a prior full build (compiled
  * JS/CSS assets aren't produced here) -- this only re-syncs shopify/.
+ *
+ * sections/schema/*.js is skipped by the copy (see IGNORE_REL_DIRS below)
+ * and instead injected into the matching dist/sections/*.liquid via
+ * inject-schemas.js, run at the end of this script -- without that step
+ * any section edited through this fast path loses its {% schema %} block
+ * entirely, since it only ever lived in dist/, never in shopify/.
  */
 
 const fs = require("fs");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 const SRC_DIR = path.resolve(__dirname, "../shopify");
 const DIST_DIR = path.resolve(__dirname, "../dist");
@@ -61,3 +68,7 @@ if (!fs.existsSync(DIST_DIR)) {
 
 copyRecursive(SRC_DIR, DIST_DIR);
 console.log("✓ Merged shopify/ into dist/");
+
+execFileSync(process.execPath, [path.join(__dirname, "inject-schemas.js")], {
+  stdio: "inherit",
+});
