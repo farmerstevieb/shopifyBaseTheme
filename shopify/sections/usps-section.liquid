@@ -18,7 +18,7 @@
   capture text_class
     case section.settings.text_color
       when 'dark'
-        echo ' text-brand-bramble'
+        echo ' text-brand-sable'
       when 'light'
         echo ' text-white'
     endcase
@@ -63,13 +63,13 @@
 
           <div class="card__content text-base {{ text_class }}">
             {% if block.settings.title != blank %}
-              <p class="text-[27px] font-heading font-normal tracking-0 text-brand-bramble">{{ block.settings.title }}</p>
+              <p class="text-[27px] font-heading font-normal tracking-0 text-brand-sable">{{ block.settings.title }}</p>
             {% endif %}
 
             {{ block.settings.text }}
 
             {%- if block.settings.cta_label != blank -%}
-              <p class="text-brand-bramble">
+              <p class="text-brand-sable">
                 <a
                   class="button button--{{ block.settings.cta_type | default: 'primary' }}"
                   {% if block.settings.cta_link == blank %}

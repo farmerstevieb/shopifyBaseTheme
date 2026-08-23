@@ -174,16 +174,16 @@
 
   case color
     when 'dark'
-      assign subheading_class = subheading_class | append: ' text-brand-bramble'
-      assign overline_class = overline_class | append: ' text-brand-bramble'
-      assign heading_class = heading_class | append: ' text-brand-bramble'
-      assign text_class = text_class | append: ' text-brand-bramble'
+      assign subheading_class = subheading_class | append: ' text-brand-sable'
+      assign overline_class = overline_class | append: ' text-brand-sable'
+      assign heading_class = heading_class | append: ' text-brand-sable'
+      assign text_class = text_class | append: ' text-brand-sable'
 
     when 'light'
-      assign subheading_class = subheading_class | append: ' text-primaryInverse'
-      assign overline_class = overline_class | append: ' text-primaryInverse'
-      assign heading_class = heading_class | append: ' text-primaryInverse'
-      assign text_class = text_class | append: ' text-primaryInverse'
+      assign subheading_class = subheading_class | append: ' text-white'
+      assign overline_class = overline_class | append: ' text-white'
+      assign heading_class = heading_class | append: ' text-white'
+      assign text_class = text_class | append: ' text-white'
   endcase
 
   if color == blank
@@ -198,15 +198,15 @@
   if color_desk == blank
     case color
       when 'dark'
-        assign subheading_class = subheading_class | append: ' text-brand-bramble'
-        assign overline_class = overline_class | append: ' text-brand-bramble'
-        assign heading_class = heading_class | append: ' text-brand-bramble'
-        assign text_class = text_class | append: ' text-brand-bramble'
+        assign subheading_class = subheading_class | append: ' text-brand-sable'
+        assign overline_class = overline_class | append: ' text-brand-sable'
+        assign heading_class = heading_class | append: ' text-brand-sable'
+        assign text_class = text_class | append: ' text-brand-sable'
       when 'light'
-        assign subheading_class = subheading_class | append: ' text-primaryInverse'
-        assign overline_class = overline_class | append: ' text-primaryInverse'
-        assign heading_class = heading_class | append: ' text-primaryInverse'
-        assign text_class = text_class | append: ' text-primaryInverse'
+        assign subheading_class = subheading_class | append: ' text-white'
+        assign overline_class = overline_class | append: ' text-white'
+        assign heading_class = heading_class | append: ' text-white'
+        assign text_class = text_class | append: ' text-white'
       else
         assign subheading_class = subheading_class | append: ' text-inherit'
         assign overline_class = overline_class | append: ' text-inherit'
@@ -216,15 +216,15 @@
   else
     case color
       when 'dark'
-        assign subheading_class = subheading_class | append: ' max-lg:text-brand-bramble'
-        assign overline_class = overline_class | append: ' max-lg:text-brand-bramble'
-        assign heading_class = heading_class | append: ' max-lg:text-brand-bramble'
-        assign text_class = text_class | append: ' max-lg:text-brand-bramble'
+        assign subheading_class = subheading_class | append: ' max-lg:text-brand-sable'
+        assign overline_class = overline_class | append: ' max-lg:text-brand-sable'
+        assign heading_class = heading_class | append: ' max-lg:text-brand-sable'
+        assign text_class = text_class | append: ' max-lg:text-brand-sable'
       when 'light'
-        assign subheading_class = subheading_class | append: ' max-lg:text-primaryInverse'
-        assign overline_class = overline_class | append: ' max-lg:text-primaryInverse'
-        assign heading_class = heading_class | append: ' max-lg:text-primaryInverse'
-        assign text_class = text_class | append: ' max-lg:text-primaryInverse'
+        assign subheading_class = subheading_class | append: ' max-lg:text-white'
+        assign overline_class = overline_class | append: ' max-lg:text-white'
+        assign heading_class = heading_class | append: ' max-lg:text-white'
+        assign text_class = text_class | append: ' max-lg:text-white'
       else
         assign subheading_class = subheading_class | append: ' max-lg:text-inherit'
         assign overline_class = overline_class | append: ' max-lg:text-inherit'
@@ -234,15 +234,15 @@
 
     case color_desk
       when 'dark'
-        assign subheading_class = subheading_class | append: ' lg:text-brand-bramble'
-        assign overline_class = overline_class | append: ' lg:text-brand-bramble'
-        assign heading_class = heading_class | append: ' lg:text-brand-bramble'
-        assign text_class = text_class | append: ' lg:text-brand-bramble'
+        assign subheading_class = subheading_class | append: ' lg:text-brand-sable'
+        assign overline_class = overline_class | append: ' lg:text-brand-sable'
+        assign heading_class = heading_class | append: ' lg:text-brand-sable'
+        assign text_class = text_class | append: ' lg:text-brand-sable'
       when 'light'
-        assign subheading_class = subheading_class | append: ' lg:text-primaryInverse'
-        assign overline_class = overline_class | append: ' lg:text-primaryInverse'
-        assign heading_class = heading_class | append: ' lg:text-primaryInverse'
-        assign text_class = text_class | append: ' lg:text-primaryInverse'
+        assign subheading_class = subheading_class | append: ' lg:text-white'
+        assign overline_class = overline_class | append: ' lg:text-white'
+        assign heading_class = heading_class | append: ' lg:text-white'
+        assign text_class = text_class | append: ' lg:text-white'
       else
         assign subheading_class = subheading_class | append: ' lg:text-inherit'
         assign overline_class = overline_class | append: ' lg:text-inherit'
