@@ -144,6 +144,11 @@ export class Header {
    * Displays and hides the search utility
    */
   handleSearch = () => {
+    // A simple header with no search UI legitimately has neither element --
+    // confirmed crash otherwise: "Cannot read properties of null (reading
+    // 'addEventListener')", thrown during synchronous page-init, which
+    // silently stops every script still queued to run after it.
+    if (!this.elSearchOpen || !this.elSearchClose) return;
     this.elSearchOpen.addEventListener("click", () => {
       this.openSearch();
     });
@@ -222,20 +227,20 @@ export class Header {
 
       submenu.addEventListener("mouseover", () => {
         if (window.innerWidth > 1024) {
-          this.elGlobalOverlay.classList.add("main-overlay--visible");
+          this.elGlobalOverlay?.classList.add("main-overlay--visible");
           trigger?.setAttribute("aria-expanded", "true");
         }
 
-        if (this.elSearch.classList.contains("header__search--active"))
+        if (this.elSearch?.classList.contains("header__search--active"))
           this.closeSearch();
       });
 
       submenu.addEventListener("mouseout", () => {
         if (
           window.innerWidth > 1024 &&
-          !this.elSearch.classList.contains("header__search--active")
+          !this.elSearch?.classList.contains("header__search--active")
         ) {
-          this.elGlobalOverlay.classList.remove("main-overlay--visible");
+          this.elGlobalOverlay?.classList.remove("main-overlay--visible");
           trigger?.setAttribute("aria-expanded", "false");
         }
       });
