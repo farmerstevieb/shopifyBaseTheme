@@ -4,11 +4,80 @@
   "sections": {
     "drawer-cart": {
       "type": "dialog-drawer-cart",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "header-open-0": { "type": "header-open", "settings": {} },
+        "header-controls-1": {
+          "type": "header-controls",
+          "settings": {
+            "count_one_item_text": "item",
+            "count_multi_item_text": "items"
+          }
+        },
+        "free-delivery-2": { "type": "free-delivery", "settings": {} },
+        "header-close-3": { "type": "header-close", "settings": {} },
+        "main-open-4": { "type": "main-open", "settings": {} },
+        "cart-items-5": { "type": "cart-items", "settings": {} },
+        "recommendations-6": {
+          "type": "recommendations",
+          "settings": {
+            "container_background": "#F5F5F5",
+            "card_background": "#FFFFFF",
+            "text_color": "text-grey-10"
+          }
+        },
+        "main-close-7": { "type": "main-close", "settings": {} },
+        "footer-open-8": { "type": "footer-open", "settings": {} },
+        "cart-totals-9": { "type": "cart-totals", "settings": {} },
+        "delivery-countdown-10": { "type": "delivery-countdown", "settings": {} },
+        "submit-buttons-11": { "type": "submit-buttons", "settings": {} },
+        "footer-close-12": { "type": "footer-close", "settings": {} }
+      },
+      "block_order": [
+        "header-open-0",
+        "header-controls-1",
+        "free-delivery-2",
+        "header-close-3",
+        "main-open-4",
+        "cart-items-5",
+        "recommendations-6",
+        "main-close-7",
+        "footer-open-8",
+        "cart-totals-9",
+        "delivery-countdown-10",
+        "submit-buttons-11",
+        "footer-close-12"
+      ]
     },
     "drawer-account": {
       "type": "dialog-drawer-account",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "header-open-0": { "type": "header-open", "settings": {} },
+        "header-controls-1": {
+          "type": "header-controls",
+          "settings": {
+            "tab_one_title": "Login",
+            "tab_two_title": "Register"
+          }
+        },
+        "header-close-2": { "type": "header-close", "settings": {} },
+        "main-open-3": { "type": "main-open", "settings": {} },
+        "account-tabs-4": { "type": "account-tabs", "settings": {} },
+        "main-close-5": { "type": "main-close", "settings": {} },
+        "footer-open-6": { "type": "footer-open", "settings": {} },
+        "footer-close-7": { "type": "footer-close", "settings": {} }
+      },
+      "block_order": [
+        "header-open-0",
+        "header-controls-1",
+        "header-close-2",
+        "main-open-3",
+        "account-tabs-4",
+        "main-close-5",
+        "footer-open-6",
+        "footer-close-7"
+      ]
     }
   },
   "order": ["drawer-cart", "drawer-account"]

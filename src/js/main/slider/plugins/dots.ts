@@ -86,7 +86,7 @@ export function Pagination(
     const elDots = Array.from(elPagination.children);
     const previous = slider.previousScrollSnap();
     const selected = slider.selectedScrollSnap();
-    elDots[previous].removeAttribute("aria-current");
+    elDots[previous]?.removeAttribute("aria-current");
     elDots[selected].setAttribute("aria-current", "true");
   }
 
