@@ -1,3 +1,20 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} .header__main {
+    background-color: var(--c-primary-1, #76bd22);
+    color: #ffffff;
+  }
+  #shopify-section-{{ section.id }} .header__main a,
+  #shopify-section-{{ section.id }} .header__main .nav-link,
+  #shopify-section-{{ section.id }} .header__main svg {
+    color: #ffffff;
+  }
+  #shopify-section-{{ section.id }} .header__main svg.stroke-primary {
+    stroke: #ffffff;
+  }
+  #shopify-section-{{ section.id }} .header__main .nav__link--top small {
+    color: #ffffff;
+  }
+{%- endstyle -%}
 <div class="header__main">
   <button
     type="button"
@@ -37,30 +54,32 @@
     {%- endif -%}
 
     {% # Search %}
-    <div class="header__search-triggers">
-      <button
-        class="header__search-open js-header-search-open"
-        type="button"
-      >
-        {%- render 'theme-icons' with 'search-dark', width: 28, height: 28 -%}
-        <span class="sr-only">{{ 'sections.header.search_form.open' | t }}</span>
-      </button>
+    {%- if section.settings.show_search -%}
+      <div class="header__search-triggers">
+        <button
+          class="header__search-open js-header-search-open"
+          type="button"
+        >
+          {%- render 'theme-icons' with 'search-dark', width: 28, height: 28 -%}
+          <span class="sr-only">{{ 'sections.header.search_form.open' | t }}</span>
+        </button>
 
-      <button
-        class="opacity-0 pointer-events-none header__search-close js-header-search-close"
-        type="button"
-        aria-hidden="true"
-      >
-        {%- render 'theme-icons' with 'close', classes: 'stroke-primary', width: 28, height: 28 -%}
-        <span class="sr-only">{{ 'sections.header.search_form.close' | t }}</span>
-      </button>
-    </div>
-
-    <div class="header__search js-header-search">
-      <div class="header__search-wrapper">
-        {%- render 'form-search' -%}
+        <button
+          class="opacity-0 pointer-events-none header__search-close js-header-search-close"
+          type="button"
+          aria-hidden="true"
+        >
+          {%- render 'theme-icons' with 'close', classes: 'stroke-primary', width: 28, height: 28 -%}
+          <span class="sr-only">{{ 'sections.header.search_form.close' | t }}</span>
+        </button>
       </div>
-    </div>
+
+      <div class="header__search js-header-search">
+        <div class="header__search-wrapper">
+          {%- render 'form-search' -%}
+        </div>
+      </div>
+    {%- endif -%}
 
     {% # Wishlist %}
     {%- if section.settings.wishlist_url != blank -%}
@@ -95,7 +114,14 @@
     </a>
 
     {% # Cart %}
-    <a href="{{ routes.cart_url }}" onclick="return DrawerCart.show();" class="header__cart" aria-label="{{ 'sections.header.cart_label' | t }}">
+    <a
+      href="{{ routes.cart_url }}"
+      {%- if settings.enable_cart_drawer != false %}
+        onclick="return DrawerCart.show();"
+      {%- endif -%}
+      class="header__cart"
+      aria-label="{{ 'sections.header.cart_label' | t }}"
+    >
       {%- render 'theme-icons' with 'shopping-bag', width: 28, height: 28, classes: 'stroke-primary' -%}
       <div class="cart-count">
         <span class="js-cart-item-count">

@@ -53,10 +53,10 @@ const baseThemePreset = {
       highlight: "var(--c-highlight)",
 
       // Semantic colours — driven by Shopify theme settings (CSS vars set in theme/_head.liquid)
-      primary: "var(--c-primary-claret)",
-      primaryInverse: "var(--c-primary-petal)",
-      secondary: "var(--c-secondary-bramble)",
-      secondaryInverse: "var(--c-secondary-moss)",
+      primary: "var(--c-primary-1)",
+      primaryInverse: "var(--c-primary-2)",
+      secondary: "var(--c-secondary-1)",
+      secondaryInverse: "var(--c-secondary-2)",
       primaryButtonHover: "var(--buttons-primary-border-hover)",
 
       // Pricing
@@ -68,28 +68,23 @@ const baseThemePreset = {
       /**
        * CLIENT BRAND COLOURS
        * All map to CSS variables set in theme/_head.liquid via settings_schema.json.
-       * Named tokens match schema naming convention; numeric aliases for generic use.
+       * These are merchant-configurable colour-picker slots (settings_schema.json
+       * "Colors" section) — deliberately named by position, not by hue, since each
+       * client picks their own colour per slot (e.g. Fair Price's "primary-1" is
+       * green, not the schema default's claret/maroon).
        */
       brand: {
         // Primary palette
-        claret: "var(--c-primary-claret)",   // Primary brand colour (darkest)
-        petal: "var(--c-primary-petal)",     // Primary light tint
-        carrara: "var(--c-primary-carrara)", // Primary lighter tint
-        orchid: "var(--c-primary-orchid)",   // Primary accent light
-        sable: "var(--c-primary-sable)",     // Near-black
+        1: "var(--c-primary-1)", // Primary brand colour
+        2: "var(--c-primary-2)", // Primary light tint
+        3: "var(--c-primary-3)", // Primary lighter tint
+        4: "var(--c-primary-4)", // Primary accent light
+        5: "var(--c-primary-5)", // Primary near-black
         // Secondary palette
-        bramble: "var(--c-secondary-bramble)", // Secondary brand / accent
-        moss: "var(--c-secondary-moss)",       // Secondary mid
-        sage: "var(--c-secondary-sage)",       // Secondary light
-        kelime: "var(--c-secondary-kelime)",   // Secondary lighter
-        // Generic numeric aliases (preferred for new code)
-        1: "var(--c-primary-claret)",
-        2: "var(--c-primary-petal)",
-        3: "var(--c-primary-carrara)",
-        accent1: "var(--c-secondary-bramble)",
-        accent2: "var(--c-secondary-moss)",
-        surface1: "var(--c-primary-carrara)",
-        surface2: "var(--c-primary-orchid)",
+        "secondary-1": "var(--c-secondary-1)",
+        "secondary-2": "var(--c-secondary-2)",
+        "secondary-3": "var(--c-secondary-3)",
+        "secondary-4": "var(--c-secondary-4)",
       },
 
       border: {
