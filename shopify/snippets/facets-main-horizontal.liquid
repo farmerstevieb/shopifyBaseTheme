@@ -98,24 +98,35 @@
                 echo 'w-full'
               endif
             endcapture
+
+            capture filter_fields
+              render 'facets-filter-list', results: results, t: t
+            endcapture
           -%}
 
           {%- comment -%}
-            A native <details>/<summary> disclosure: collapsed to a "Filters"
-            trigger on mobile, always expanded inline on desktop (lg:). No JS
-            required for the toggle to work.
+            Rendered twice — once for the mobile <details> disclosure, once as
+            a plain always-visible block for desktop — rather than toggling
+            one shared block with a CSS display override on <details>, since
+            `display: contents` on <details>/<summary> has inconsistent
+            cross-browser support for flex participation (the content
+            collapses to zero width in some browsers even though it renders
+            correctly as a block). Each block is hidden at the other's
+            breakpoint via max-lg:hidden / lg:hidden.
           {%- endcomment -%}
-          <details class="js-facets-filters {{ mobile_classes }} lg:contents">
+
+          {%- comment -%} Mobile — collapsible {%- endcomment -%}
+          <details class="js-facets-filters {{ mobile_classes }} lg:hidden">
             <summary
-              class="flex cursor-pointer list-none items-center gap-2 py-4 font-semibold select-none text-sm uppercase tracking-standard lg:hidden"
+              class="flex cursor-pointer list-none items-center gap-2 py-4 font-semibold select-none text-sm uppercase tracking-standard"
             >
               {%- render 'theme-icons' with 'sliders', width: 18, height: 18, class: 'flex' -%}
 
               {{- t | append: 'facets.mobile_drawer.trigger' | t -}}
             </summary>
 
-            <div class="flex w-full flex-col gap-4 pb-4 lg:flex-row lg:flex-wrap lg:items-end lg:gap-6 lg:pb-0">
-              {%- render 'facets-filter-list', results: results, t: t -%}
+            <div class="flex flex-col gap-4 pb-4">
+              {{ filter_fields }}
 
               <div class="flex items-center gap-4">
                 <button
@@ -131,6 +142,24 @@
               </div>
             </div>
           </details>
+
+          {%- comment -%} Desktop — always visible {%- endcomment -%}
+          <div class="js-facets-filters hidden w-full flex-wrap items-end gap-6 lg:flex">
+            {{ filter_fields }}
+
+            <div class="flex items-center gap-4">
+              <button
+                type="submit"
+                class="button button--secondary js-facets-apply"
+              >
+                {{- t | append: 'facets.apply' | t -}}
+              </button>
+
+              <a href="{{ results.url }}" class="js-facets-clear-all text-sm font-semibold uppercase tracking-standard underline">
+                {{- t | append: 'facets.clear_all' | t -}}
+              </a>
+            </div>
+          </div>
         {%- endif -%}
       {%- endif -%}
 
