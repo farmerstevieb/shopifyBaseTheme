@@ -98,14 +98,19 @@
           {%- assign header_close_tag = null -%}
 
         {%- when 'body_start' -%}
-          {{ '<sticky-button class="product__details-body" ' | append: block.shopify_attributes | append: '>' }}
-          {%- assign body_close_tag = '</sticky-button>' -%}
+          {% if customer or settings.retail_mode %}
+            {{ '<sticky-button class="product__details-body" ' | append: block.shopify_attributes | append: '>' }}
+            {%- assign body_close_tag = '</sticky-button>' -%}
+          {% endif %}
 
         {%- when 'body_end' -%}
-          {{ body_close_tag }}
-          {%- assign body_close_tag = null -%}
+          {% if customer or settings.retail_mode %}
+            {{ body_close_tag }}
+            {%- assign body_close_tag = null -%}
+          {% endif %}
 
         {%- when 'sticky_button' -%}
+          {% if customer or settings.retail_mode %}
             <div class="product__details-sitcky-button lg:hidden">
               {%- render 'product-sticky-button', product: product -%}
               <button
@@ -116,6 +121,7 @@
                 {{ 'products.product.change' | t }}
               </button>
             </div>
+          {% endif %}
 
         {%- when 'divider' -%}
           <hr class="o-hr {{ block.settings.hidden}}" role="presentation" {{ block.shopify_attributes }}>
@@ -134,6 +140,7 @@
           </h1>
 
         {%- when 'price' -%}
+          {%- if customer or settings.retail_mode -%}
             {%- liquid
               assign selVar = product.selected_or_first_available_variant
               assign rrp_value = null
@@ -165,6 +172,11 @@
                 class: 'text-lg font-semibold flex flex-row-reverse gap-x-1'
               -%}
             </div>
+            {%- if customer.b2b? -%}
+              {%- render 'b2b-volume-pricing',
+                variant: product.selected_or_first_available_variant
+              -%}
+            {%- endif -%}
             {%- if block.settings.show_rrp -%}
               {% if rrp_value != blank %}
                 <div
@@ -182,6 +194,7 @@
                 <div id="rrp-{{ section.id }}" class="hidden"></div>
               {% endif %}
             {%- endif -%}
+          {%- endif -%}
         {%- when 'description' -%}
           {%- if product.description != blank -%}
             <details
@@ -253,6 +266,9 @@
             if buy_buttons_block and buy_buttons_block.settings.show_quantity_selector == false
               assign show_quantity_selector = false
             endif
+            unless customer or settings.retail_mode
+              assign show_quantity_selector = false
+            endunless
           -%}
           {%- if show_quantity_selector -%}
             <div class="product__details-quantity mb-2 flex flex-col text-grey-5" {{ block.shopify_attributes }}>

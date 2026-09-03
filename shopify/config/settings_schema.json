@@ -1582,6 +1582,18 @@
     ]
   },
   {
+    "name": "Store type",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "retail_mode",
+        "label": "Retail mode",
+        "default": false,
+        "info": "This base theme is B2B-wholesale by default (product price, quantity selector, and the sticky add-to-cart bar require a customer login). Enable this for a retail-only store so those show to every guest visitor. B2B volume pricing still only renders for customer.b2b? accounts either way."
+      }
+    ]
+  },
+  {
     "name": "Markets",
     "settings": [
       {
