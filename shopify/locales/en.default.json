@@ -100,6 +100,13 @@
     "faqs": "faqs"
   },
   "sections": {
+    "countdown_timer": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "offer_ended": "This offer has ended."
+    },
     "header": {
       "trade": "Trade",
       "cart_label": "Shopping bag",
@@ -706,15 +713,6 @@
     "submit_logged_in": "Notify me when available",
     "success": "You're on the list! We'll email you when this item is back in stock.",
     "error": "Something went wrong. Please try again."
-  },
-  "sections": {
-    "countdown_timer": {
-      "days": "Days",
-      "hours": "Hours",
-      "minutes": "Minutes",
-      "seconds": "Seconds",
-      "offer_ended": "This offer has ended."
-    }
   },
   "snippets": {
     "cookie_consent": {
