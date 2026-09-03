@@ -100,6 +100,13 @@
     "faqs": "faqs"
   },
   "sections": {
+    "countdown_timer": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "offer_ended": "This offer has ended."
+    },
     "header": {
       "trade": "Trade",
       "cart_label": "Shopping bag",
@@ -632,7 +639,7 @@
     },
     "contact": {
       "call_us_subtitle": "Call us",
-      "call_us_html": "<a href=\"https://wa.me/message/KYL3KONWMOTIK1\"><img src=\"https://cdn.shopify.com/s/files/1/0252/5049/6566/files/icons8-whatsapp-24.png?v=1736847684\" style=\"height:20px; margin-right:5px;\"> Whatsapp Us</a><br><a href=\"tel:+443301752551\">+44 (0)330 175 2551</a><br><a href=\"mailto:help@remicachet.com\">help@remicachet.com</a>",
+      "call_us_html": "[Add client phone number]<br>[Add client email address]",
       "follow_us_subtitle": "Follow us",
       "form": {
         "name": "Full Name",
@@ -717,15 +724,6 @@
     "submit_logged_in": "Notify me when available",
     "success": "You're on the list! We'll email you when this item is back in stock.",
     "error": "Something went wrong. Please try again."
-  },
-  "sections": {
-    "countdown_timer": {
-      "days": "Days",
-      "hours": "Hours",
-      "minutes": "Minutes",
-      "seconds": "Seconds",
-      "offer_ended": "This offer has ended."
-    }
   },
   "snippets": {
     "cookie_consent": {

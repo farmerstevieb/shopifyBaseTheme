@@ -3,9 +3,43 @@
   render 'section-spacing', set_padding: false
   assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
 
-  assign title_class = 'text-grey-0 text-lg tracking-0'
+  capture display_section_snippet
+    render 'section_user-restriction'
+  endcapture
+  assign display_section = display_section_snippet | strip
+
+  capture title_color_class
+    case section.settings.text_color
+      when 'light'
+        echo 'text-white'
+      else
+        echo 'text-grey-0'
+    endcase
+  endcapture
+  assign title_class = title_color_class | append: ' text-lg tracking-0'
 -%}
 
+{%- style -%}
+  #shopify-section-{{ section.id }} .product {
+    {%- case section.settings.padding -%}
+      {%- when 'full' -%}
+        --product-container-padding: 0px;
+      {%- else -%}
+        --product-container-padding: var(--row-space);
+    {%- endcase -%}
+  }
+{%- endstyle -%}
+
+{% if display_section == 'false' %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+{% endif %}
+
+{% if display_section == 'true' %}
 <section
   id="MainProduct-{{ section.id }}"
   class="product"
@@ -27,7 +61,8 @@
     {%- render 'product-media-gallery',
       variant_images: variant_images,
       media_fit: section.settings.media_fit,
-      image_zoom: section.settings.image_zoom
+      image_zoom: section.settings.image_zoom,
+      constrain_to_viewport: section.settings.constrain_to_viewport
     -%}
   </div>
 
@@ -100,7 +135,7 @@
           </div>
 
         {%- when 'title' -%}
-          <h1 class="mb-3 text-2xl font-light tracking-0 text-grey-0 lg:text-4xxl" {{ block.shopify_attributes }}>
+          <h1 class="mb-3 text-2xl font-light tracking-0 {{ title_color_class }} lg:text-4xxl" {{ block.shopify_attributes }}>
             {{ product.title }}
           </h1>
 
@@ -225,7 +260,17 @@
             section: section
           -%}
         {%- when 'quantity_selector' -%}
-          {%- if customer or settings.retail_mode -%}
+          {%- liquid
+            assign show_quantity_selector = true
+            assign buy_buttons_block = section.blocks | where: 'type', 'buy_buttons' | first
+            if buy_buttons_block and buy_buttons_block.settings.show_quantity_selector == false
+              assign show_quantity_selector = false
+            endif
+            unless customer or settings.retail_mode
+              assign show_quantity_selector = false
+            endunless
+          -%}
+          {%- if show_quantity_selector -%}
             <div class="product__details-quantity mb-2 flex flex-col text-grey-5" {{ block.shopify_attributes }}>
               {%- assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id -%}
               <label class="font-bold" for="Quantity-{{ section.id }}">
@@ -636,3 +681,4 @@
     </div>
   </modal-dialog>
 {%- endfor -%}
+{% endif %}

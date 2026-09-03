@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const { getBranchThemeName, findTheme, shopify } = require("./lib/theme-branch");
+const { getBranchThemeName, findTheme, assertNotLive, shopify } = require("./lib/theme-branch");
 
 // Pulls only the JSON files a merchant/theme-editor could plausibly have changed
 // (settings, template section content, locale overrides) — never liquid/scss/ts
@@ -15,6 +15,7 @@ if (!theme) {
   console.error(`✗ No theme named "${branch}" exists yet — run "npm run dev" first.`);
   process.exit(1);
 }
+assertNotLive(theme, branch);
 
 const syncDir = path.resolve(__dirname, "../__sync");
 const shopifyDir = path.resolve(__dirname, "../shopify");
