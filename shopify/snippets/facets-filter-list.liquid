@@ -1,0 +1,79 @@
+{%- comment -%}
+  -------------------------------------------------------------------------------
+  Facets - Filter list
+  -------------------------------------------------------------------------------
+  Accepts
+  - results: {Object} the collection/search object carrying `.filters` (required)
+  - t: {String} translation key prefix, e.g. 'templates.collection.' (required)
+  -------------------------------------------------------------------------------
+  Usage
+  {%- render 'facets-filter-list', results: results, t: t -%}
+  -------------------------------------------------------------------------------
+  Description
+  Renders the selectable filter values (checkboxes for list/boolean filters,
+  a min/max range for price filters) for every filter Shopify has made
+  available on this collection/search result. Submitting the parent
+  <form id="Facets"> (native GET submit, or JS-enhanced) applies them via
+  Shopify's native filter query params.
+{%- endcomment -%}
+
+{%- for filter in results.filters -%}
+  {%- if filter.values.size == 0 and filter.type != 'price_range' -%}
+    {%- continue -%}
+  {%- endif -%}
+
+  <fieldset class="facets-filter">
+    <legend class="facets-filter__label text-sm font-semibold uppercase tracking-standard">
+      {{- filter.label -}}
+    </legend>
+
+    {%- case filter.type -%}
+      {%- when 'price_range' -%}
+        <div class="facets-filter__price-range flex items-center gap-2">
+          <label class="flex flex-col gap-1 text-xs">
+            {{- t | append: 'facets.price_range.from' | t -}}
+            <input
+              class="w-24 rounded-1 border border-solid border-border-light px-2 py-1 text-sm"
+              type="number"
+              name="{{ filter.min_value.param_name }}"
+              value="{{ filter.min_value.value }}"
+              min="0"
+              placeholder="{{ 0 | money }}"
+            >
+          </label>
+          <label class="flex flex-col gap-1 text-xs">
+            {{- t | append: 'facets.price_range.to' | t -}}
+            <input
+              class="w-24 rounded-1 border border-solid border-border-light px-2 py-1 text-sm"
+              type="number"
+              name="{{ filter.max_value.param_name }}"
+              value="{{ filter.max_value.value }}"
+              min="0"
+              placeholder="{{ filter.range_max | money }}"
+            >
+          </label>
+        </div>
+
+      {%- else -%}
+        <div class="facets-filter__values flex flex-col gap-1">
+          {%- for value in filter.values -%}
+            <label class="facets-filter__value flex items-center gap-2 text-sm{% if value.count == 0 and value.active == false %} opacity-50{% endif %}">
+              <input
+                type="checkbox"
+                name="{{ value.param_name }}"
+                value="{{ value.value }}"
+                {%- if value.active %}
+                  checked
+                {%- endif -%}
+                {%- if value.count == 0 and value.active == false %}
+                  disabled
+                {%- endif -%}
+              >
+              {{- value.label -}}
+              <span class="text-grey-50">({{ value.count }})</span>
+            </label>
+          {%- endfor -%}
+        </div>
+    {%- endcase -%}
+  </fieldset>
+{%- endfor -%}
