@@ -1,4 +1,4 @@
-{%- unless request.page_type contains 'cart' -%}
+{%- unless request.page_type contains 'cart' or settings.enable_cart_drawer == false -%}
   <drawer-cart
     class="dialog dialog--drawer dialog--drawer-cart dialog--drawer-right js-drawer-cart"
     style="--max-width: 480px"
@@ -17,7 +17,7 @@
       data-a11y-dialog-hide
     ></div>
 
-    <div class="drawer-cart__panel">
+    <div class="drawer-cart__panel" role="document">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'header-open' -%}
@@ -142,7 +142,7 @@
 
                       <tbody role="rowgroup">
                         {%- for item in cart.items -%}
-                          <tr id="DrawerCart-Item-{{- item.index | plus: 1 -}}" class="cart-item mb-6 pb-6" role="row">
+                          <tr id="DrawerCart-Item-{{- item.index | plus: 1 -}}" class="cart-item cart-item--drawer mb-6 pb-6" role="row">
                             <td class="cart-item__media relative" role="cell" headers="DrawerCart-ColumnProductImage">
                               {%- if item.image -%}
                                 <a
@@ -550,10 +550,26 @@
           {%- when 'cart-totals' -%}
             {%- if cart != empty -%}
               {%- assign header_class = 'capitalize text-smd text-grey-0' -%}
+              {%- liquid
+                assign total_savings = 0
+                for item in cart.items
+                  if item.variant.compare_at_price > item.variant.price
+                    assign line_savings = item.variant.compare_at_price | minus: item.variant.price | times: item.quantity
+                    assign total_savings = total_savings | plus: line_savings
+                  endif
+                endfor
+              -%}
               <div class="my-6 flex flex-col gap-y-2 text-smd">
                 <div class="flex flex-wrap justify-between gap-y-1" role="status">
                   <p class="{{ header_class }}">{{- 'sections.cart.subtotal' | t -}}</p>
                   <p class="font-semibold">{{- cart.total_price | money -}}</p>
+
+                  {%- if total_savings > 0 -%}
+                    <div class="flex w-full justify-between text-red-20">
+                      <p class="{{ header_class }}">{{- 'sections.cart.you_save' | t -}}</p>
+                      <p class="font-semibold">-{{- total_savings | money -}}</p>
+                    </div>
+                  {%- endif -%}
 
                   {%- if cart.cart_level_discount_applications.size > 0 -%}
                     <ul
@@ -627,6 +643,12 @@
               >
                 {{- 'sections.cart.checkout' | t -}}
               </button>
+              <a
+                href="{{- routes.cart_url -}}"
+                class="button button--secondary button--full mt-3"
+              >
+                {{- 'sections.cart.view_cart' | t -}}
+              </a>
             {%- endif -%}
 
           {%- when 'footer-close' -%}

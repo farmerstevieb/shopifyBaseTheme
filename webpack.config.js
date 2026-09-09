@@ -9,11 +9,29 @@
  *   shopify/**\/*         → dist/
  */
 
+const fs = require("fs");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const RemoveEmptyScripts = require("webpack-remove-empty-scripts");
+
+// Writes a marker file once webpack has finished emitting ALL assets for a
+// compile, including the theme files copied by CopyWebpackPlugin. `shopify
+// theme dev` must not start syncing until this exists — otherwise it can
+// race the copy step and try (and fail) to delete required theme files
+// (theme.liquid, settings_schema.json, ...) that just haven't landed yet.
+class BuildCompleteMarkerPlugin {
+  apply(compiler) {
+    compiler.hooks.done.tap("BuildCompleteMarkerPlugin", () => {
+      const distPath = path.resolve(__dirname, "dist");
+      if (!fs.existsSync(distPath)) {
+        fs.mkdirSync(distPath, { recursive: true });
+      }
+      fs.writeFileSync(path.join(distPath, ".build-complete"), String(Date.now()));
+    });
+  }
+}
 
 module.exports = (env = {}) => {
   const isProd = !!env.production;
@@ -21,6 +39,11 @@ module.exports = (env = {}) => {
   return {
     mode: isProd ? "production" : "development",
     devtool: isProd ? false : "source-map",
+    // Disable deterministic chunk IDs to prevent numeric-only chunk names
+    // (which cause conflicts between unhashed originals and hashed versions)
+    experiments: {
+      outputModule: false,
+    },
 
     entry: {
       "main.min": [
@@ -47,10 +70,16 @@ module.exports = (env = {}) => {
 
     output: {
       path: path.resolve(__dirname, "dist/assets"),
+      // Entry and async chunks must ALL be hashed to prevent stale chunk collisions
+      // Entry files (main.min.js, section-*.css) are version-busted by main.min.js hash
+      // Async chunks loaded by webpack runtime use content hash for cache busting
       filename: "[name].js",
-      chunkFilename: "[name].js",
+      chunkFilename: "[name].[contenthash:8].js",
       publicPath: "",
-      clean: false,
+      clean: true,
+      // Disable deterministic chunk IDs that cause numeric-only filenames
+      // Use hashed names only to avoid collision between old unhashed and new hashed chunks
+      hashFunction: "xxhash64",
     },
 
     resolve: {
@@ -108,9 +137,11 @@ module.exports = (env = {}) => {
 
     plugins: [
       new RemoveEmptyScripts(),
+      new BuildCompleteMarkerPlugin(),
 
       new MiniCssExtractPlugin({
         filename: "[name].css",
+        chunkFilename: "[name].[contenthash:8].css",
       }),
 
       // Copy Shopify theme files to dist/
@@ -135,6 +166,10 @@ module.exports = (env = {}) => {
     ],
 
     optimization: {
+      // Force named chunk IDs (e.g., "header", "cart") instead of numeric IDs (4897)
+      // This ensures chunkFilename pattern produces only hashed names, preventing
+      // conflicts between old unhashed and new hashed chunks from different builds
+      chunkIds: "named",
       minimizer: [
         "...",
         new CssMinimizerPlugin(),

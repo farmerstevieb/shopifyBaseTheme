@@ -4,7 +4,7 @@
 
   @screen md {
     grid-template-columns: repeat(12, 1fr);
-    padding-inline: var(--row-space);
+    padding-inline: var(--product-container-padding, var(--row-space));
   }
 
   &__media {

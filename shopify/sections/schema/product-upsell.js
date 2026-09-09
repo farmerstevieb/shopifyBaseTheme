@@ -68,7 +68,7 @@ module.exports = {
     ...sectionHeader(),
     {
       type: "product_list",
-      name: "Product list (manual override)",
+      name: "Manual product list",
       limit: 1,
       settings: [
         {

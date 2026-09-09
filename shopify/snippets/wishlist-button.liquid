@@ -22,6 +22,10 @@
   assign btn_size = size | default: 'sm'
   assign btn_price = btn_variant.price | default: product.price
   assign btn_image = product.featured_image | image_url: width: 400
+  assign btn_icon_size = 20
+  if btn_size == 'lg'
+    assign btn_icon_size = 28
+  endif
 -%}
 
 <wishlist-button
@@ -41,8 +45,8 @@
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="{{ btn_size == 'lg' ? 28 : 20 }}"
-      height="{{ btn_size == 'lg' ? 28 : 20 }}"
+      width="{{ btn_icon_size }}"
+      height="{{ btn_icon_size }}"
       fill="none"
       stroke="currentColor"
       stroke-width="1.5"
@@ -59,8 +63,8 @@
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="{{ btn_size == 'lg' ? 28 : 20 }}"
-      height="{{ btn_size == 'lg' ? 28 : 20 }}"
+      width="{{ btn_icon_size }}"
+      height="{{ btn_icon_size }}"
       fill="currentColor"
       stroke="currentColor"
       stroke-width="1.5"

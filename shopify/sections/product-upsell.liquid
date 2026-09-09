@@ -36,6 +36,7 @@
   {%- endcomment -%}
 
   {%- assign upsell_metafield = product.metafields.custom.upsell_products.value -%}
+  {%- assign product_list_block = section.blocks | where: 'type', 'product_list' | first -%}
 
   {%- if upsell_metafield != blank -%}
     {%- comment -%} Source 1: metafield (JSON array of handles) {%- endcomment -%}
@@ -97,9 +98,8 @@
       {%- endif -%}
     </upsell-section>
 
-  {%- elsif section.blocks | where: 'type', 'product_list' | first -%}
+  {%- elsif product_list_block -%}
     {%- comment -%} Source 2: manually curated product list block {%- endcomment -%}
-    {%- assign product_list_block = section.blocks | where: 'type', 'product_list' | first -%}
     <upsell-section
       data-source="manual"
       data-section-id="{{ section.id }}"

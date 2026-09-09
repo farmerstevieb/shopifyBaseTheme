@@ -127,6 +127,12 @@
         }
       }
     }
+
+    :where(.slider--constrain-viewport) & {
+      @screen md {
+        max-height: calc(100vh - var(--header-height, 0px));
+      }
+    }
   }
 
   &__track,

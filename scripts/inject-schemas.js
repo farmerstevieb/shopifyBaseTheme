@@ -22,7 +22,9 @@ if (!fs.existsSync(distSectionsDir)) {
 let injected = 0;
 let skipped = 0;
 
-for (const file of fs.readdirSync(schemaDir)) {
+const schemaFiles = fs.existsSync(schemaDir) ? fs.readdirSync(schemaDir) : [];
+
+for (const file of schemaFiles) {
   if (!file.endsWith(".js")) continue; // skip parts/ subdirectory entries
 
   const name = file.replace(/\.js$/, "");

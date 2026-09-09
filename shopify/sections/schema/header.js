@@ -62,6 +62,16 @@ module.exports = {
     },
     {
       type: "header",
+      content: "Search",
+    },
+    {
+      type: "checkbox",
+      id: "show_search",
+      label: "Show search icon",
+      default: true,
+    },
+    {
+      type: "header",
       content: "Wishlist",
     },
     {

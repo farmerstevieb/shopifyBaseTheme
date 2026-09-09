@@ -12,14 +12,36 @@ host = "localhost"
 port = 3000
 theme-editor-sync = true
 
-# Optional: separate staging environment
+# npm run promote:staging / promote:main read [environments.staging] and
+# [environments.production] below directly (not `-e`), and use their `store`
+# values to decide which of two modes to run in -- there's no separate
+# on/off switch, so getting this pair right is what matters:
+#
+#   - SAME store on both -> single-store mode. staging pushes into a
+#     persistent UNPUBLISHED theme (named by `theme` below, or "Staging" if
+#     omitted) on the client's one real store; it's never published, only
+#     previewed via its preview link. main promotes to that same store's
+#     live theme. Apps, metaobjects/metafields, and the product catalog are
+#     automatically shared between staging and production, since it's
+#     genuinely the same store -- the simpler default for a client with one
+#     store.
+#
+#   - DIFFERENT stores -> two-store mode. staging gets its own full
+#     duplicate/build/push/publish cycle on its own store (e.g. a
+#     "-development" store), main does the same on the real production
+#     store, fully isolated from each other. The cost: apps installed
+#     separately on each store get different block-type UUIDs, metaobject
+#     definitions and file/asset uploads don't carry over automatically, and
+#     the product catalogs can drift apart -- reconciling that is a manual
+#     checklist item, not something promote handles for you.
+#
+# CLIENT: uncomment both blocks below and fill in `store` for each -- same
+# value for single-store, different values for two-store.
 # [environments.staging]
 # store = "your-store-name"
-# theme = "STAGING_THEME_ID"
+# # theme = "Staging"  # optional, single-store mode only; defaults to "Staging"
 # path = "./dist"
 
-# Optional: production push (use with caution)
 # [environments.production]
 # store = "your-store-name"
-# theme = "PRODUCTION_THEME_ID"
 # path = "./dist"

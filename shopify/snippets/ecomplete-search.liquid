@@ -79,7 +79,7 @@
     </div>
   </form>
 
-  {{- /* Live results dropdown — populated by JS */ -}}
+  {%- comment -%} Live results dropdown — populated by JS {%- endcomment -%}
   <div
     id="ecomplete-search-results"
     class="c-esearch__dropdown  js-esearch-dropdown"
@@ -88,7 +88,7 @@
     hidden
   ></div>
 
-  {{- /* Chat panel — populated by JS when show-chat is enabled */ -}}
+  {%- comment -%} Chat panel — populated by JS when show-chat is enabled {%- endcomment -%}
   {%- if settings.ecomplete_search_show_chat -%}
     <div
       class="c-esearch__chat  js-esearch-chat"

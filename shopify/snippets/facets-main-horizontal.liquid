@@ -14,8 +14,9 @@
   -%}
   -------------------------------------------------------------------------------
   Description
-  Renders a horizontal facets bar, the section settings are reliant on
-  the facets.js part
+  Renders a horizontal facets bar. Filtering/sorting are controlled globally
+  via Theme settings > Collections (settings.enable_filtering /
+  settings.enable_sorting), not per-section.
 {%- endcomment -%}
 
 {%- liquid
@@ -42,13 +43,13 @@
   endcapture
 -%}
 
-{%- if section.settings.filtering or section.settings.sorting -%}
+{%- if settings.enable_filtering or settings.enable_sorting -%}
   {%- # Facets -%}
   <div class="js-facets mb-9 block border-y border-solid border-border-light py-2 lg:mb-14 lg:py-[21px] {{ container_class }}">
     {%- # Filters Form -%}
     {%- liquid
       capture justification_class
-        if results.filters.size == 0 or section.settings.filtering == false
+        if results.filters.size == 0 or settings.enable_filtering == false
           echo 'justify-center lg:justify-between'
         else
           echo 'justify-between lg:justify-between'
@@ -57,9 +58,10 @@
     -%}
 
     <form
-      class="flex {{ justification_class }} js-facets-form items-start px-row lg:gap-x-4"
-      data-filtering="{{ section.settings.filtering }}"
-      data-sorting="{{ section.settings.filtering }}"
+      method="get"
+      class="flex flex-wrap {{ justification_class }} js-facets-form items-start gap-y-3 px-row lg:gap-x-4"
+      data-filtering="{{ settings.enable_filtering }}"
+      data-sorting="{{ settings.enable_sorting }}"
       id="Facets"
       aria-label="{{ 'general.facets.filter_and_sort' | t | default: 'Filter and sort products' }}"
     >
@@ -85,31 +87,136 @@
         >
       {%- endif -%}
 
-      {%- if section.settings.filtering -%}
+      {%- if settings.enable_filtering -%}
         {%- # Filters -%}
         {%- if results.filters.size > 0 -%}
-          {%- # Mobile Drawer Trigger -%}
           {%- liquid
             capture mobile_classes
-              if section.settings.sorting
+              if settings.enable_sorting
                 echo 'w-1/2'
               else
                 echo 'w-full'
               endif
             endcapture
+
+            capture filter_fields
+              render 'facets-filter-list', results: results, t: t
+            endcapture
           -%}
 
-          <button
-            class="items-center gap-2 py-4 font-semibold {{ mobile_classes }} select-none text-sm uppercase tracking-standard lg:hidden"
-            onclick="return DrawerFacets.show()"
-            type="button"
-          >
-            {%- render 'theme-icons' with 'sliders', width: 18, height: 18, class: 'flex' -%}
+          {%- comment -%}
+            Rendered twice — once for the mobile <details> disclosure, once as
+            a plain always-visible block for desktop — rather than toggling
+            one shared block with a CSS display override on <details>, since
+            `display: contents` on <details>/<summary> has inconsistent
+            cross-browser support for flex participation (the content
+            collapses to zero width in some browsers even though it renders
+            correctly as a block). Each block is hidden at the other's
+            breakpoint via max-lg:hidden / lg:hidden.
+          {%- endcomment -%}
 
-            {{- t | append: 'facets.mobile_drawer.trigger' | t -}}
-          </button>
+          {%- comment -%} Mobile — collapsible {%- endcomment -%}
+          <details class="js-facets-filters {{ mobile_classes }} lg:hidden">
+            <summary
+              class="flex cursor-pointer list-none items-center gap-2 py-4 font-semibold select-none text-sm uppercase tracking-standard"
+            >
+              {%- render 'theme-icons' with 'sliders', width: 18, height: 18, class: 'flex' -%}
+
+              {{- t | append: 'facets.mobile_drawer.trigger' | t -}}
+            </summary>
+
+            <div class="flex flex-col gap-4 pb-4">
+              {{ filter_fields }}
+
+              <div class="flex items-center gap-4">
+                <button
+                  type="submit"
+                  class="button button--secondary js-facets-apply"
+                >
+                  {{- t | append: 'facets.apply' | t -}}
+                </button>
+
+                <a href="{{ results.url }}" class="js-facets-clear-all text-sm font-semibold uppercase tracking-standard underline">
+                  {{- t | append: 'facets.clear_all' | t -}}
+                </a>
+              </div>
+            </div>
+          </details>
+
+          {%- comment -%} Desktop — always visible {%- endcomment -%}
+          <div class="js-facets-filters hidden w-full flex-wrap items-end gap-6 lg:flex">
+            {{ filter_fields }}
+
+            <div class="flex items-center gap-4">
+              <button
+                type="submit"
+                class="button button--secondary js-facets-apply"
+              >
+                {{- t | append: 'facets.apply' | t -}}
+              </button>
+
+              <a href="{{ results.url }}" class="js-facets-clear-all text-sm font-semibold uppercase tracking-standard underline">
+                {{- t | append: 'facets.clear_all' | t -}}
+              </a>
+            </div>
+          </div>
         {%- endif -%}
       {%- endif -%}
+
+      {%- if settings.enable_sorting -%}
+        {%- liquid
+          assign sort_label_id = 'SortBy-' | append: section.id
+        -%}
+        <div class="js-facets-sort flex items-center gap-2 max-lg:order-2">
+          <label class="whitespace-nowrap text-sm font-semibold uppercase tracking-standard" for="{{ sort_label_id }}">
+            {{- t | append: 'facets.sort_by_label' | t -}}
+          </label>
+
+          <select
+            name="sort_by"
+            id="{{ sort_label_id }}"
+            class="js-facets-sort-select rounded-1 border border-solid border-border-light bg-white px-3 py-2 text-sm"
+          >
+            {%- for option in results.sort_options -%}
+              {%- liquid
+                assign show_option = false
+
+                case option.value
+                  when 'manual', 'featured', 'relevance'
+                    if settings.sort_manual
+                      assign show_option = true
+                    endif
+                  when 'best-selling'
+                    if settings.sort_best_selling
+                      assign show_option = true
+                    endif
+                  when 'title-ascending', 'title-descending'
+                    if settings.sort_title
+                      assign show_option = true
+                    endif
+                  when 'price-ascending', 'price-descending'
+                    if settings.sort_price
+                      assign show_option = true
+                    endif
+                  when 'created-ascending', 'created-descending'
+                    if settings.sort_created
+                      assign show_option = true
+                    endif
+                  else
+                    assign show_option = true
+                endcase
+              -%}
+
+              {%- if show_option -%}
+                <option value="{{ option.value }}" {% if option.value == results.sort_by %}selected{% endif %}>
+                  {{- option.name -}}
+                </option>
+              {%- endif -%}
+            {%- endfor -%}
+          </select>
+        </div>
+      {%- endif -%}
+
       {%- # Results Count -%}
 
       <div
