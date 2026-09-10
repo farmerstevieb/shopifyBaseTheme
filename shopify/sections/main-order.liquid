@@ -95,21 +95,23 @@
               </div>
             {%- endif -%}
           </div>
-          <div class="flex flex-col w-1/2 gap-1">
-            <span class="{{ text_header }}">{{ 'customer.order.invoice' | t }}</span>
-            <span class="c-customer-order__content-summary-field--value">
-              <a
-                class="underline"
-                target="_blank"
-                href="{{ shop.url }}/apps/sufio/invoice/download/?id={{ order.id }}&number={{ order.order_number }}"
-              >
-                <div class="flex items-center gap-1 text-grey-10">
-                  {{ 'customer.order.download_invoice' | t }}
-                  {%- render 'theme-icons' with 'link-external', width: 14, height: 14 -%}
-                </div>
-              </a>
-            </span>
-          </div>
+          {%- if section.settings.show_sufio_invoice -%}
+            <div class="flex flex-col w-1/2 gap-1">
+              <span class="{{ text_header }}">{{ 'customer.order.invoice' | t }}</span>
+              <span class="c-customer-order__content-summary-field--value">
+                <a
+                  class="underline"
+                  target="_blank"
+                  href="{{ shop.url }}/apps/sufio/invoice/download/?id={{ order.id }}&number={{ order.order_number }}"
+                >
+                  <div class="flex items-center gap-1 text-grey-10">
+                    {{ 'customer.order.download_invoice' | t }}
+                    {%- render 'theme-icons' with 'link-external', width: 14, height: 14 -%}
+                  </div>
+                </a>
+              </span>
+            </div>
+          {%- endif -%}
         </div>
 
         <hr class="mt-6 mb-2 o-hr" role="presentation">

@@ -45,11 +45,11 @@ first-party platform pieces are part of the base and are expected here:
   for search, upsell, and chat. This is the platform's own search/upsell module, not a
   per-client third-party add-on.
 
-**Finding — policy violation:** `shopify/sections/main-order.liquid:104` hardcodes a link to
-a **third-party** invoice app (`/apps/sufio/invoice/download/...`). This doesn't belong in
-the base theme under the app-free policy — it should either be removed, or gated behind a
-theme setting that's off by default so a client fork opts in deliberately instead of
-inheriting a specific vendor's app link unconditionally.
+**Fixed:** `shopify/sections/main-order.liquid` hardcoded a link to a **third-party** invoice
+app (`/apps/sufio/invoice/download/...`) unconditionally. Gated behind a new
+`show_sufio_invoice` section setting (`shopify/sections/schema/main-order.js`), off by
+default — a client fork only sees the link if they explicitly enable it after installing
+Sufio themselves.
 
 ## 4. Known TODOs in the codebase
 

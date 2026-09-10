@@ -12,6 +12,13 @@ module.exports = {
       type: "header",
       content: "Settings",
     },
+    {
+      type: "checkbox",
+      id: "show_sufio_invoice",
+      label: "Show downloadable invoice link (requires the Sufio app)",
+      info: "Only enable this if the Sufio invoicing app is installed on this store - the link is broken without it.",
+      default: false,
+    },
     ...sectionSettings({
       width: false,
       default_spacing: "lg",
